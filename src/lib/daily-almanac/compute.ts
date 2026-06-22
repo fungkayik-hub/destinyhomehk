@@ -1,21 +1,31 @@
 import { Solar } from "lunar-typescript";
+import {
+  formatHongKongDateISO,
+  getHongKongDateParts,
+} from "@/lib/hong-kong-time";
 import { officerCopy } from "./copy";
 import type { DailyAlmanac } from "./types";
 import { zodiacHintsForDay } from "./zodiac";
 
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
 
-function parseDateInput(input?: string): Date {
-  if (!input) return new Date();
-  const m = input.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (!m) return new Date();
-  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
-  if (Number.isNaN(d.getTime())) return new Date();
-  return d;
+function resolveDateParts(input?: string): { year: number; month: number; day: number } {
+  if (input) {
+    const m = input.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (m) {
+      const year = Number(m[1]);
+      const month = Number(m[2]);
+      const day = Number(m[3]);
+      if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+        return { year, month, day };
+      }
+    }
+  }
+  return getHongKongDateParts();
 }
 
-function formatSolar(d: Date): string {
-  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+function formatSolar(parts: { year: number; month: number; day: number }): string {
+  return `${parts.year}年${parts.month}月${parts.day}日`;
 }
 
 function filterJi(items: string[]): string[] {
@@ -24,10 +34,8 @@ function filterJi(items: string[]): string[] {
 
 /** 由 lunar-typescript 計算每日流日資料（宜忌、神煞以庫為準） */
 export function computeDailyAlmanac(dateInput?: string): DailyAlmanac {
-  const date = parseDateInput(dateInput);
-  const y = date.getFullYear();
-  const m = date.getMonth() + 1;
-  const day = date.getDate();
+  const parts = resolveDateParts(dateInput);
+  const { year: y, month: m, day } = parts;
 
   const solar = Solar.fromYmd(y, m, day);
   const lunar = solar.getLunar();
@@ -59,8 +67,8 @@ export function computeDailyAlmanac(dateInput?: string): DailyAlmanac {
       : "今日宜穩扎穩打，以守為攻。";
 
   return {
-    date: `${y}-${String(m).padStart(2, "0")}-${String(day).padStart(2, "0")}`,
-    solarLabel: formatSolar(date),
+    date: formatHongKongDateISO(parts),
+    solarLabel: formatSolar(parts),
     weekday,
     ganzhi: {
       year: lunar.getYearInGanZhiExact(),

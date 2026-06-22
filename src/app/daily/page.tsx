@@ -56,7 +56,7 @@ export default async function DailyPage({
             </button>
           </form>
           <p className="text-xs text-destiny-purple/50 mt-3">
-            干支、宜忌、神煞來自傳統曆法；師傅解讀僅供參考。個人運程請
+            「今日」以香港時間（HKT）為準。干支、宜忌、神煞來自傳統曆法；師傅解讀僅供參考。個人運程請
             <Link href="/chart" className="text-destiny-gold hover:underline mx-1">
               排盤
             </Link>
