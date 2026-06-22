@@ -8,6 +8,7 @@ import {
   formatDate,
 } from "@/lib/articles";
 import type { Metadata } from "next";
+import { articleJsonLd } from "@/components/JsonLd";
 import { buildPageMetadata, excerpt } from "@/lib/seo";
 import { getSiteUrl } from "@/lib/site-url";
 import { siteConfig } from "@/lib/site-config";
@@ -50,28 +51,19 @@ export default async function ArticlePage({ params }: Props) {
   const date = formatDate(article.publishedAt);
   const site = getSiteUrl();
   const articleUrl = `${site}/academy/${slug}/${encodeURIComponent(article.slug)}`;
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: article.title,
-    description: excerpt(article.content),
-    image: article.image ?? siteConfig.heroImage,
-    datePublished: article.publishedAt ?? undefined,
-    author: { "@type": "Person", name: "Sunny 師傅" },
-    publisher: {
-      "@type": "Organization",
-      name: siteConfig.name,
-      logo: { "@type": "ImageObject", url: siteConfig.logo },
-    },
-    mainEntityOfPage: articleUrl,
-    inLanguage: "zh-HK",
-  };
+  const jsonLd = articleJsonLd({
+    title: article.title,
+    description: excerpt(article.content) || siteConfig.description,
+    url: articleUrl,
+    image: article.image,
+    datePublished: article.publishedAt,
+  });
 
   return (
     <div className="py-12 px-4">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <article className="max-w-3xl mx-auto">
         <Link
