@@ -3,6 +3,10 @@ import SiteImage from "@/components/SiteImage";
 import PersonalityChart from "@/components/PersonalityChart";
 import MediaHighlights from "@/components/MediaHighlights";
 import YouTubeSection from "@/components/YouTubeSection";
+import SeoToolsGrid from "@/components/SeoToolsGrid";
+import FaqSection from "@/components/FaqSection";
+import { faqJsonLd } from "@/components/JsonLd";
+import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { academyCategories, services, siteConfig, whatsappUrl } from "@/lib/site-config";
 import { getArticlesByCategory, getCategoryCoverImage } from "@/lib/articles";
 import { siteImages } from "@/lib/site-images";
@@ -150,6 +154,16 @@ export default function HomePage() {
       </section>
 
       <YouTubeSection />
+
+      <SeoToolsGrid />
+
+      <section className="py-14 px-4">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ_BY_PAGE.home)) }}
+        />
+        <FaqSection items={FAQ_BY_PAGE.home} />
+      </section>
 
       <section className="py-14 px-4 bg-destiny-cream">
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 items-center">

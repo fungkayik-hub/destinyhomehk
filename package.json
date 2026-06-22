@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:clean": "node -e \"try{require('fs').rmSync('.next',{recursive:true,force:true})}catch(e){}\" && next dev",
+    "dev:clean": "node scripts/dev-clean.mjs && next dev",
     "build": "next build",
     "start": "next start",
     "calibrate": "node scripts/calibrate-chart.cjs",
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "iztro": "^2.5.8",
+    "lunar-typescript": "^1.8.6",
     "next": "^15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

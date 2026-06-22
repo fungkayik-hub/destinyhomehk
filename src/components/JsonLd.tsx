@@ -114,3 +114,19 @@ export function articleJsonLd(options: {
 
   return data;
 }
+
+/** FAQ 頁面結構化資料 — Google Rich Results */
+export function faqJsonLd(items: readonly { question: string; answer: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}

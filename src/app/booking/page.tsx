@@ -7,6 +7,9 @@ import {
   whatsappDatePickerUrl,
   whatsappUrl,
 } from "@/lib/site-config";
+import FaqSection from "@/components/FaqSection";
+import { faqJsonLd } from "@/components/JsonLd";
+import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -144,6 +147,13 @@ export default async function BookingPage({ searchParams }: Props) {
             </Link>
           </div>
         </div>
+      </div>
+      <div className="px-4 pb-12">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ_BY_PAGE.booking)) }}
+        />
+        <FaqSection items={FAQ_BY_PAGE.booking} />
       </div>
     </>
   );

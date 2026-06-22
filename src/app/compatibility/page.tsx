@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { PageBanner } from "@/components/SiteImage";
 import CompatibilityForm from "@/components/compatibility/CompatibilityForm";
 import CompatibilityResult from "@/components/compatibility/CompatibilityResult";
+import FaqSection from "@/components/FaqSection";
+import { faqJsonLd } from "@/components/JsonLd";
+import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { getCachedCompatibilityResults } from "@/lib/compatibility-cache";
 import { compatibilityInputFromSearchParams } from "@/lib/compatibility-parse-params";
 import { buildPageMetadata } from "@/lib/seo";
@@ -64,6 +67,15 @@ export default async function CompatibilityPage({
             result={result}
           />
         )}
+      </div>
+      <div className="px-4 pb-12">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqJsonLd(FAQ_BY_PAGE.compatibility)),
+          }}
+        />
+        <FaqSection items={FAQ_BY_PAGE.compatibility} />
       </div>
     </>
   );

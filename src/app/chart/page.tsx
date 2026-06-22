@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { PageBanner } from "@/components/SiteImage";
 import ChartBirthForm from "@/components/chart/ChartBirthForm";
 import ChartDisplay from "@/components/chart/ChartDisplay";
+import FaqSection from "@/components/FaqSection";
+import { faqJsonLd } from "@/components/JsonLd";
+import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { getCachedChartResults } from "@/lib/chart-analysis-cache";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
 import { parseChartLayout, parseFocusPalace } from "@/lib/chart-layout";
@@ -69,6 +72,13 @@ export default async function ChartPage({
             />
           </div>
         )}
+      </div>
+      <div className="px-4 pb-12">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ_BY_PAGE.chart)) }}
+        />
+        <FaqSection items={FAQ_BY_PAGE.chart} />
       </div>
     </>
   );

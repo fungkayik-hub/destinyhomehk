@@ -92,6 +92,7 @@ export const navItems = [
   { href: "/", label: "首頁" },
   { href: "/chart", label: "紫微即時排盤及分析" },
   { href: "/compatibility", label: "夾桃花配對" },
+  { href: "/daily", label: "每日流日" },
   { href: "/booking", label: "收費詳情及預約師傅" },
   {
     label: "紫微斗數學堂",
@@ -103,6 +104,7 @@ export const navItems = [
       { href: "/academy/ding-pan", label: "天地人與定盤" },
       { href: "/academy/theory", label: "玄學理論" },
       { href: "/academy/2026-zodiac", label: "2026 十二生肖流年" },
+      { href: "/academy/stars", label: "十四主星專題" },
     ],
   },
   { href: "/about", label: "關於師傅" },
@@ -131,10 +133,17 @@ export const services = [
     imageKey: "chart" as const,
   },
   {
+    title: "每日流日黃曆",
+    description: "今日干支、建除、宜忌、吉凶預報 — 每日更新。",
+    price: "免費",
+    href: "/daily",
+    imageKey: "chart" as const,
+  },
+  {
     title: "結婚擇日及吉時",
     description: "上頭、過大禮、出門、入門等，由師傅親自擇日。",
     price: "HK$800",
-    href: "/booking?service=date",
+    href: "/wedding-date",
     imageKey: "datePicker" as const,
   },
   {

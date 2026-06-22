@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ArticleCard from "@/components/academy/ArticleCard";
+import StarsHub from "@/components/academy/StarsHub";
 import ArticleContent, { ArticleHero } from "@/components/academy/ArticleContent";
 import {
   getArticlesByCategory,
@@ -55,6 +56,8 @@ export default async function AcademyCategoryPage({ params }: Props) {
         </Link>
         <h1 className="section-title mb-3 text-left">{meta.title}</h1>
         <p className="text-destiny-purple/70 mb-10">{meta.description}</p>
+
+        {slug === "stars" && <StarsHub />}
 
         {pageArticle && pageArticle.content.length > 50 && (
           <div className="mb-12">

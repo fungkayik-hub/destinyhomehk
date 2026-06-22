@@ -10,6 +10,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: site, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${site}/chart`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${site}/compatibility`, lastModified: now, changeFrequency: "monthly", priority: 0.88 },
+    { url: `${site}/daily`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
+    { url: `${site}/wedding-date`, lastModified: now, changeFrequency: "monthly", priority: 0.88 },
     { url: `${site}/booking`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${site}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
     { url: `${site}/academy`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },

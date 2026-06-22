@@ -3,7 +3,7 @@ import { shopifyRedirects } from "./src/lib/shopify-redirects";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  serverExternalPackages: ["iztro", "lunar-lite"],
+  serverExternalPackages: ["iztro", "lunar-lite", "lunar-typescript"],
   images: {
     remotePatterns: [],
   },
@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/date-picker",
-        destination: "/booking?service=date",
+        destination: "/wedding-date",
         permanent: true,
       },
       ...shopifyRedirects(),
