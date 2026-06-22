@@ -91,6 +91,7 @@ export const pricingPlans = [
 export const navItems = [
   { href: "/", label: "首頁" },
   { href: "/chart", label: "紫微即時排盤及分析" },
+  { href: "/compatibility", label: "夾桃花配對" },
   { href: "/booking", label: "收費詳情及預約師傅" },
   {
     label: "紫微斗數學堂",
@@ -120,6 +121,13 @@ export const services = [
     description: "輸入出生資料，即時生成命盤，了解基本性格與命格方向。",
     price: "免費",
     href: "/chart",
+    imageKey: "chart" as const,
+  },
+  {
+    title: "夾桃花配對",
+    description: "輸入雙方出生資料，用夫妻宮、命宮交叉睇配對分數同相處提示。",
+    price: "免費",
+    href: "/compatibility",
     imageKey: "chart" as const,
   },
   {
