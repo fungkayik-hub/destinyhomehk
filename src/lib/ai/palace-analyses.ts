@@ -17,6 +17,21 @@ const PALACE_THEMES: Record<PalaceName, string> = {
   父母宮: "長輩、上司同先天福蔭",
 };
 
+const PALACE_HOOKS: Record<PalaceName, string> = {
+  命宮: "成張盤嘅核心，性格同人生方向",
+  兄弟宮: "手足、同輩合作，同邊啲人夾得嚟",
+  夫妻宮: "感情觀、伴侶緣分同相處模式",
+  子女宮: "子女緣、後輩關係同創造力",
+  財帛宮: "賺錢方式、理財習慣同金錢觀",
+  疾厄宮: "體質、作息同要留意的健康習慣",
+  遷移宮: "外出、變動環境同外地貴人",
+  奴僕宮: "朋友、下屬同人際助力",
+  官祿宮: "事業方向、工作形象同社會地位",
+  田宅宮: "家庭氣氛、置業同居住運",
+  福德宮: "內心世界、嗜好同精神滿足",
+  父母宮: "長輩緣、上司關係同先天福蔭",
+};
+
 function majorStarsText(palace: PalaceInfo): string {
   const majors = palace.stars.filter((s) => s.type !== "minor");
   if (majors.length === 0) return "空宮（借對宮星力）";
@@ -28,22 +43,29 @@ function majorStarsText(palace: PalaceInfo): string {
 export function fallbackPalaceAnalysis(palace: PalaceInfo): string {
   const stars = majorStarsText(palace);
   const theme = PALACE_THEMES[palace.name];
+  const hook = PALACE_HOOKS[palace.name];
+  const minors = palace.stars
+    .filter((s) => s.type === "minor")
+    .slice(0, 3)
+    .map((s) => s.name)
+    .join("、");
+  const minorNote = minors ? `輔星有${minors}，會加強呢宮嘅特色。` : "";
   const empty =
     palace.stars.filter((s) => s.type !== "minor").length === 0
-      ? "此宫空宫，宜留意对宫照会，"
+      ? "此宮空宮，借對宮星力，變通同適應力反而係你優勢。"
       : "";
 
   if (palace.isSoulPalace) {
-    return `一開波睇成張盤，底子有睇頭㗎！要配合祿存、化祿同三方四正睇錢格同特殊格局。你命宮喺${palace.earthlyBranch}，主星${stars}，有自己一套。想知詳細，WhatsApp 搵 Sunny 師傅定盤。`;
+    return `一開波睇成張盤，${hook}方面有睇頭㗎！你命宮喺${palace.earthlyBranch}，主星${stars}，性格有自己一套，唔係隨波逐流嗰種。${minorNote}${empty}祿存、化祿同三方四正仲有幾個位值得一齊睇 — 免費版先講到呢度，想知錢格、桃花定特殊格局，左右滑動睇其他宮，或者 WhatsApp 搵 Sunny 師傅全批會拆得更深。`;
   }
 
-  return `你${palace.name}喺${palace.earthlyBranch}，主星${stars}，${theme}方面有發揮位。${empty}配合成張盤一齊睇會更清楚。WhatsApp 搵 Sunny 師傅定盤。`;
+  return `${palace.name}主要睇${hook}。你喺${palace.earthlyBranch}，主星${stars}，喺${theme}方面有自己嘅路。${minorNote}${empty}呢度只係皮毛，配合命宮同財帛、官祿一齊睇，成張盤嘅層次會清楚好多 — 不妨左右滑動睇下一宮。`;
 }
 
 export function fallbackPalaceAnalyses(palaces: PalaceInfo[]): PalaceAnalysis[] {
   return palaces.map((p) => ({
     palace: p.name,
-    text: fallbackPalaceAnalysis(p).slice(0, 220),
+    text: fallbackPalaceAnalysis(p).slice(0, p.isSoulPalace ? 500 : 420),
   }));
 }
 
@@ -68,7 +90,7 @@ export function parsePalaceAnalysesJson(
       if (!PALACES.includes(item.palace as PalaceName)) continue;
       byName.set(item.palace, {
         palace: item.palace as PalaceName,
-        text: item.text.trim().slice(0, 280),
+        text: item.text.trim().slice(0, item.palace === "命宮" ? 500 : 420),
       });
     }
 

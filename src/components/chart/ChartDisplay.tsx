@@ -67,7 +67,7 @@ export default function ChartDisplay({
       <section id="palaces">
         <h2 className="font-display text-lg font-bold text-destiny-purple mb-1">十二宮位</h2>
         <p className="text-xs text-destiny-purple/45 mb-4">
-          左右滑動揀宮 · 星曜同 AI 分析一屏睇晒
+          左右滑動揀宮 · 每宮都有 Sunny 師傅 AI 分析，越睇越清楚
         </p>
 
         {focusAnalysis && (

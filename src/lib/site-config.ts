@@ -17,6 +17,18 @@ export const siteConfig = {
   },
   phone: "+852 9263 1544",
   address: "灣仔駱克道382號1807室",
+  /** 本地 SEO — 灣仔駱克道382號（供 Google Maps / GBP 對應） */
+  geo: {
+    latitude: 22.2783,
+    longitude: 114.1728,
+  },
+  googleMapsUrl:
+    "https://www.google.com/maps/search/?api=1&query=" +
+    encodeURIComponent("灣仔駱克道382號1807室 Destiny Home"),
+  /** 喺 Google Business Profile 拎「分享」連結，填入 .env NEXT_PUBLIC_GOOGLE_BUSINESS_URL */
+  googleBusinessUrl:
+    process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL?.trim() || "",
+  youtubeChannel: process.env.NEXT_PUBLIC_YOUTUBE_URL?.trim() || "",
   hours: "星期一至六 12:00–20:00",
   rating: { score: 4.9, count: 1000 },
   school: "中洲派紫微斗數",

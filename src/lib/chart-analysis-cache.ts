@@ -29,7 +29,7 @@ export async function getCachedChartResults(input: BirthInput) {
       ]);
       return { chart, palaceScores, palaceAnalyses };
     },
-    ["chart-results", key],
+    ["chart-results-v2", key],
     { revalidate: 86400 },
   )();
 }

@@ -8,6 +8,7 @@ import {
   getCategoryPageArticle,
 } from "@/lib/articles";
 import type { Metadata } from "next";
+import { buildPageMetadata } from "@/lib/seo";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -29,7 +30,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const meta = getCategoryMeta(slug);
-  return { title: meta?.title ?? "學堂" };
+  if (!meta) return { title: "學堂" };
+  return buildPageMetadata({
+    title: meta.title,
+    description: meta.description,
+    path: `/academy/${slug}`,
+    keywords: [meta.title, "紫微斗數", "香港"],
+  });
 }
 
 export default async function AcademyCategoryPage({ params }: Props) {

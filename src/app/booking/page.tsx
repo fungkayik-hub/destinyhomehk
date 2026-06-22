@@ -7,13 +7,15 @@ import {
   whatsappDatePickerUrl,
   whatsappUrl,
 } from "@/lib/site-config";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "收費詳情及預約師傅",
   description:
-    "Destiny Home 全批 HK$2,000、擇日 HK$800、流年問事 HK$1,000、風水陽宅 HK$11/尺、生孩改名 HK$3,800 — Sunny 師傅親批，WhatsApp 預約。",
-  alternates: { canonical: "/booking" },
-};
+    "Destiny Home 全批 HK$2,000、擇日 HK$800、流年問事 HK$1,000、風水陽宅 HK$11/尺、生孩改名 HK$3,800 — 灣仔 Sunny 師傅親批，WhatsApp 預約。",
+  path: "/booking",
+  keywords: ["紫微斗數收費", "香港算命預約", "結婚擇日價錢"],
+});
 
 interface Props {
   searchParams: Promise<{ service?: string }>;

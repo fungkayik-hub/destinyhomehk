@@ -5,14 +5,17 @@ import ChartDisplay from "@/components/chart/ChartDisplay";
 import { getCachedChartResults } from "@/lib/chart-analysis-cache";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
 import { parseChartLayout, parseFocusPalace } from "@/lib/chart-layout";
+import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "紫微即時排盤及分析",
   description:
-    "免費紫微斗數即時排盤，輸入出生年月日時即時起盤。深度解盤請 WhatsApp 預約 Sunny 師傅。",
-  alternates: { canonical: "/chart" },
-};
+    "免費香港紫微斗數即時排盤 — 輸入出生年月日時，中洲派十二宮 AI 分析。灣仔 Sunny 師傅 Destiny Home。",
+  path: "/chart",
+  image: siteImages.services.chart,
+  keywords: ["紫微排盤", "免費算命", "十二宮", "AI 命盤"],
+});
 
 export default async function ChartPage({
   searchParams,

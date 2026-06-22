@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SiteImage, { PageBanner } from "@/components/SiteImage";
+import LocalBusinessCard from "@/components/LocalBusinessCard";
 import MediaHighlights from "@/components/MediaHighlights";
 import { siteConfig, whatsappUrl } from "@/lib/site-config";
+import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "關於師傅",
-  description: siteConfig.description,
-};
+  description:
+    "認識 Destiny Home Sunny 師傅 — 中洲派紫微斗數、灣仔駱克道工作室，過千好評，ViuTV 及企業風水講座經驗。",
+  path: "/about",
+  image: siteImages.sunnyStudio,
+  keywords: ["Sunny 師傅", "中洲派", "灣仔算命"],
+});
 
 export default function AboutPage() {
   return (
@@ -74,6 +80,7 @@ export default function AboutPage() {
         <MediaHighlights />
 
         <div className="max-w-4xl mx-auto">
+          <LocalBusinessCard />
           <div className="card mt-6 bg-gradient-to-r from-destiny-purple/5 to-destiny-gold/5 flex flex-col md:flex-row gap-6 items-center">
             <div className="relative w-full md:w-48 h-48 rounded-xl overflow-hidden shrink-0">
               <SiteImage

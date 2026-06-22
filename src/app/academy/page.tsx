@@ -3,10 +3,15 @@ import Link from "next/link";
 import SiteImage, { PageBanner } from "@/components/SiteImage";
 import { getArticlesByCategory, getCategoryCoverImage, getCategoryPageArticle } from "@/lib/articles";
 import { academyCategories } from "@/lib/site-config";
+import { buildPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = buildPageMetadata({
   title: "紫微斗數學堂",
-};
+  description:
+    "Destiny Home 學堂 — 風水、流年、十四主星、姓名學、Sunny 講故事，香港紫微斗數知識庫。",
+  path: "/academy",
+  keywords: ["紫微斗數文章", "風水知識", "流年運勢"],
+});
 
 export default function AcademyPage() {
   return (

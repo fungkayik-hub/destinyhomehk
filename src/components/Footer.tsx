@@ -47,6 +47,18 @@ export default function Footer() {
               </a>
             </li>
             <li>
+              <a href={siteConfig.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="hover:text-destiny-gold">
+                Google Maps
+              </a>
+            </li>
+            {siteConfig.googleBusinessUrl ? (
+              <li>
+                <a href={siteConfig.googleBusinessUrl} target="_blank" rel="noopener noreferrer" className="hover:text-destiny-gold">
+                  Google 商家
+                </a>
+              </li>
+            ) : null}
+            <li>
               <a href={siteConfig.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-destiny-gold">
                 Instagram
               </a>

@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { shopifyRedirects } from "./src/lib/shopify-redirects";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -24,6 +25,7 @@ const nextConfig: NextConfig = {
         destination: "/booking?service=date",
         permanent: true,
       },
+      ...shopifyRedirects(),
     ];
   },
 };
