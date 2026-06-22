@@ -3,7 +3,7 @@ import { PageBanner } from "@/components/SiteImage";
 import DailyPoster from "@/components/daily/DailyPoster";
 import FaqSection from "@/components/FaqSection";
 import { faqJsonLd } from "@/components/JsonLd";
-import { computeDailyAlmanac } from "@/lib/daily-almanac";
+import { getDailyAlmanacForPage } from "@/lib/daily-almanac";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
@@ -17,13 +17,15 @@ export const metadata = buildPageMetadata({
   keywords: ["每日運程", "黃曆", "流日", "宜忌", "農曆", "建除", "每日吉凶"],
 });
 
+export const dynamic = "force-dynamic";
+
 export default async function DailyPage({
   searchParams,
 }: {
   searchParams: Promise<{ date?: string }>;
 }) {
   const sp = await searchParams;
-  const data = computeDailyAlmanac(sp.date);
+  const data = await getDailyAlmanacForPage(sp.date);
   const faq = FAQ_BY_PAGE.daily;
   const faqLd = faqJsonLd(faq);
 
@@ -68,7 +70,7 @@ export default async function DailyPage({
 
         <div className="max-w-3xl mx-auto mt-8 text-center">
           <p className="text-sm text-destiny-purple/60 mb-4">
-            截圖即可發 IG Story · 每日更新
+            截圖即可發 IG Story · 每日 00:01（香港時間）自動更新
           </p>
           <div className="flex flex-wrap justify-center gap-3 text-sm">
             <Link href="/chart" className="text-destiny-gold hover:underline">

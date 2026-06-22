@@ -31,3 +31,35 @@ export function formatHongKongDateISO(parts: {
 export function getHongKongTodayISO(now = new Date()): string {
   return formatHongKongDateISO(getHongKongDateParts(now));
 }
+
+function getHongKongClockParts(now = new Date()): {
+  hour: number;
+  minute: number;
+  second: number;
+} {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: HK_TIMEZONE,
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+    hour12: false,
+  }).formatToParts(now);
+
+  return {
+    hour: Number(parts.find((p) => p.type === "hour")?.value),
+    minute: Number(parts.find((p) => p.type === "minute")?.value),
+    second: Number(parts.find((p) => p.type === "second")?.value),
+  };
+}
+
+/** 距離下一個香港 00:01 嘅秒數（每日流日自動換日） */
+export function getSecondsUntilNextHkDailyUpdate(now = new Date()): number {
+  const { hour, minute, second } = getHongKongClockParts(now);
+  const secondsSinceMidnight = hour * 3600 + minute * 60 + second;
+  const dailyUpdateAt = 61; // 00:01:00 HKT
+
+  if (secondsSinceMidnight < dailyUpdateAt) {
+    return dailyUpdateAt - secondsSinceMidnight;
+  }
+  return 86400 - secondsSinceMidnight + dailyUpdateAt;
+}
