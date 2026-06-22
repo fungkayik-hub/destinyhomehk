@@ -1,0 +1,82 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import ArticleCard from "@/components/academy/ArticleCard";
+import ArticleContent, { ArticleHero } from "@/components/academy/ArticleContent";
+import {
+  getArticlesByCategory,
+  getCategoryMeta,
+  getCategoryPageArticle,
+} from "@/lib/articles";
+import type { Metadata } from "next";
+
+interface Props {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  return [
+    { slug: "name-numerology" },
+    { slug: "history" },
+    { slug: "feng-shui" },
+    { slug: "stories" },
+    { slug: "ding-pan" },
+    { slug: "theory" },
+    { slug: "2026-zodiac" },
+    { slug: "stars" },
+  ];
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const meta = getCategoryMeta(slug);
+  return { title: meta?.title ?? "學堂" };
+}
+
+export default async function AcademyCategoryPage({ params }: Props) {
+  const { slug } = await params;
+  const meta = getCategoryMeta(slug);
+  if (!meta) notFound();
+
+  const pageArticle = getCategoryPageArticle(slug);
+  const listArticles = getArticlesByCategory(slug);
+
+  return (
+    <div className="py-12 px-4">
+      <div className="max-w-3xl mx-auto">
+        <Link href="/academy" className="text-sm text-destiny-purple/50 hover:text-destiny-gold mb-4 inline-block">
+          ← 返回學堂
+        </Link>
+        <h1 className="section-title mb-3 text-left">{meta.title}</h1>
+        <p className="text-destiny-purple/70 mb-10">{meta.description}</p>
+
+        {pageArticle && pageArticle.content.length > 50 && (
+          <div className="mb-12">
+            <ArticleHero image={pageArticle.image} title={pageArticle.title} />
+            <ArticleContent html={pageArticle.content} />
+          </div>
+        )}
+
+        {listArticles.length > 0 && (
+          <div>
+            {pageArticle?.content && (
+              <h2 className="font-display text-xl font-bold mb-6 pt-6 border-t border-destiny-purple/10">
+                文章列表
+              </h2>
+            )}
+            <div className="space-y-4">
+              {listArticles.map((article) => (
+                <ArticleCard key={article.slug} article={article} categorySlug={slug} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {listArticles.length === 0 && !pageArticle?.content && (
+          <div className="card text-center text-destiny-purple/60">
+            內容整理中，敬請期待。
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

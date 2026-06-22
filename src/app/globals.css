@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* 防止 iOS 聚焦表單時自動放大 */
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  @media (min-width: 640px) {
+    input,
+    select,
+    textarea {
+      font-size: inherit;
+    }
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-full
+           bg-destiny-gold text-destiny-purple font-medium
+           hover:bg-destiny-gold-light transition-colors duration-200
+           shadow-sm;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 rounded-full
+           border-2 border-destiny-gold text-destiny-gold
+           hover:bg-destiny-gold hover:text-destiny-purple transition-colors duration-200;
+  }
+
+  .section-title {
+    @apply font-display text-2xl sm:text-3xl md:text-4xl font-bold text-destiny-purple text-center;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-md p-5 sm:p-6 md:p-8 border border-destiny-purple/10;
+  }
+
+  /* 學堂文章排版 — 從 Shopify 匯入的 HTML */
+  .article-prose {
+    @apply text-destiny-purple/80 leading-relaxed text-base;
+  }
+
+  .article-prose img {
+    @apply rounded-xl my-3 max-w-full h-auto shadow-sm mx-auto;
+    display: block;
+  }
+
+  .article-prose span:has(img) {
+    @apply block my-4;
+  }
+
+  .article-prose span img + img {
+    @apply mt-3;
+  }
+
+  .article-prose p {
+    @apply mb-4;
+  }
+
+  .article-prose span {
+    @apply leading-relaxed;
+  }
+
+  .article-prose h2,
+  .article-prose h3 {
+    @apply font-display font-bold text-destiny-purple mt-8 mb-3;
+  }
+
+  .article-prose h2 {
+    @apply text-xl;
+  }
+
+  .article-prose h3 {
+    @apply text-lg;
+  }
+
+  .article-prose a {
+    @apply text-destiny-gold hover:underline;
+  }
+
+  .article-prose ul,
+  .article-prose ol {
+    @apply mb-4 pl-6 space-y-2;
+  }
+
+  .article-prose ul {
+    @apply list-disc;
+  }
+
+  .article-prose strong {
+    @apply font-bold text-destiny-purple;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
