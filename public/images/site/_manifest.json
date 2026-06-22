@@ -1,0 +1,19 @@
+{
+  "migratedAt": "2026-06-22T15:56:23.968Z",
+  "total": 10,
+  "success": 10,
+  "failed": 0,
+  "mapping": {
+    "//www.destinyhomehk.com/cdn/shop/files/6.jpg?v=1760601228&width=165": "/images/site/6.jpg",
+    "//www.destinyhomehk.com/cdn/shop/files/6.jpg?v=1760601228&width=360": "/images/site/6.jpg",
+    "//www.destinyhomehk.com/cdn/shop/files/6.jpg?v=1760601228&width=535": "/images/site/6.jpg",
+    "//www.destinyhomehk.com/cdn/shop/files/6.jpg?v=1760601228": "/images/site/6.jpg",
+    "//www.destinyhomehk.com/cdn/shop/files/6.jpg?v=1760601228&width=1500\\": "/images/site/6.jpg",
+    "//www.destinyhomehk.com/cdn/shop/files/6.jpg?v=1760601228&width=1500": "/images/site/6.jpg",
+    "https://cdn.shopify.com/s/files/1/0655/4189/8475/files/236.jpg": "/images/site/236.jpg",
+    "https://cdn.shopify.com/s/files/1/0655/4189/8475/files/6.jpg": "/images/site/6.jpg",
+    "https://cdn.shopify.com/s/files/1/0655/4189/8475/files/6bc8d850816d1b76a987a8e771a21a89.png": "/images/site/6bc8d850816d1b76a987a8e771a21a89.png",
+    "https://cdn.shopify.com/s/files/1/0655/4189/8475/files/WhatsApp_Image_2022-07-22_at_2.39.31_PM.webp": "/images/site/WhatsApp_Image_2022-07-22_at_2.39.31_PM.webp"
+  },
+  "failedUrls": []
+}

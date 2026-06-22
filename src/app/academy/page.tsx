@@ -17,7 +17,7 @@ export default function AcademyPage() {
   return (
     <>
       <PageBanner
-        src="https://www.destinyhomehk.com/cdn/shop/files/6662222.webp?v=1761017321"
+        src="/images/site/6662222.webp"
         title="紫微斗數學堂"
         subtitle="命理知識、風水心得、流年運勢 — 持續更新"
       />

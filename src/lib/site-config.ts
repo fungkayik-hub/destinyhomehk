@@ -6,9 +6,9 @@ export const siteConfig = {
   announcement:
     "可能係最體貼嘅紫微斗數師傅 🤍🤍🤍 已達過千客人真實好評‼️請到 IG 查詢好評，不斷更新",
   announcementShort: "過千真實好評 ⭐ 4.9 · ViuTV · 企業風水講座",
-  logo: "https://www.destinyhomehk.com/cdn/shop/files/Adobe_Express_-_file.png?v=1760593648",
+  logo: "/images/site/Adobe_Express_-_file.png",
   heroImage:
-    "https://www.destinyhomehk.com/cdn/shop/files/10.18CharlotteSunny6242QP.jpg?v=1760597984",
+    "/images/site/10.18CharlotteSunny6242QP.jpg",
   instagram: "https://www.instagram.com/destiny_home_/",
   whatsapp: {
     number: "85292631544",

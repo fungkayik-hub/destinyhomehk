@@ -22,13 +22,29 @@ const articles: Article[] = articlesData.articles.map((a) => ({
 export function prepareArticleHtml(html: string): string {
   return html
     .replace(/_\d+x\d+\./g, ".")
+    .replace(/src="(\/images\/site\/[^"?]+)(\?[^"]*)?"/g, 'src="$1"')
     .replace(/<img(?![^>]*loading=)/gi, '<img loading="lazy"');
 }
 
 /** 移除 Shopify 模板殘留 HTML */
 export function cleanContent(html: string): string {
   if (!html) return "";
+
   let cleaned = html;
+
+  // 學堂「頁面」類型：抽出主內容 rte 區塊，去掉佈景主題殘留
+  if (cleaned.includes("shopify-section")) {
+    const rteMatch = cleaned.match(
+      /<div class="page-width page-width--narrow[^"]*">[\s\S]*?<div class="rte">([\s\S]*?)<\/div>\s*<\/div>/,
+    );
+    if (rteMatch?.[1]) {
+      cleaned = rteMatch[1].trim();
+    } else {
+      const simpleRte = cleaned.match(/<div class="rte">([\s\S]*?)<\/div>/);
+      if (simpleRte?.[1]) cleaned = simpleRte[1].trim();
+    }
+  }
+
   const cutPoints = [
     '<div class="article-template__back',
     "<div class=\"article-template__back",
@@ -38,7 +54,14 @@ export function cleanContent(html: string): string {
     const idx = cleaned.indexOf(point);
     if (idx > 0) cleaned = cleaned.slice(0, idx);
   }
-  return cleaned.trim();
+
+  return cleaned
+    .replace(/<link[^>]*cdn\/shop[^>]*>/gi, "")
+    .replace(/<noscript>[\s\S]*?<\/noscript>/gi, "")
+    .replace(/<section[^>]*shopify-section[^>]*>[\s\S]*?<\/section>/gi, "")
+    .replace(/href="\/products\//g, 'href="/booking')
+    .replace(/href="\/pages\//g, 'href="/academy/')
+    .trim();
 }
 
 export function getAllArticles(): Article[] {
