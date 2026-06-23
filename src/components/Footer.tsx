@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { navItems, siteConfig, whatsappUrl } from "@/lib/site-config";
+import GbpCta from "@/components/GbpCta";
+import { gbpMapsUrl } from "@/lib/gbp-links";
 
 export default function Footer() {
   const academyLinks = navItems.find((n) => n.children)?.children ?? [];
@@ -16,19 +18,23 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="font-medium text-white mb-3">服務</h4>
+          <h4 className="font-medium text-white mb-3">免費工具</h4>
           <ul className="space-y-2 text-sm">
             <li><Link href="/chart" className="hover:text-destiny-gold">紫微即時排盤</Link></li>
-            <li><Link href="/booking" className="hover:text-destiny-gold">結婚擇日（預約）</Link></li>
-            <li><Link href="/booking" className="hover:text-destiny-gold">收費及預約</Link></li>
-            <li><Link href="/about" className="hover:text-destiny-gold">關於師傅</Link></li>
+            <li><Link href="/compatibility" className="hover:text-destiny-gold">夾桃花配對</Link></li>
+            <li><Link href="/daily" className="hover:text-destiny-gold">每日流日黃曆</Link></li>
+            <li><Link href="/wedding-date" className="hover:text-destiny-gold">結婚擇日</Link></li>
           </ul>
         </div>
 
         <div>
-          <h4 className="font-medium text-white mb-3">學堂</h4>
+          <h4 className="font-medium text-white mb-3">預約 · 本地</h4>
           <ul className="space-y-2 text-sm">
-            {academyLinks.slice(0, 5).map((link) => (
+            <li><Link href="/booking" className="hover:text-destiny-gold">收費及預約</Link></li>
+            <li><Link href="/wan-chai-ziwei" className="hover:text-destiny-gold">灣仔紫微斗數</Link></li>
+            <li><Link href="/hong-kong-fortune-telling" className="hover:text-destiny-gold">香港算命師傅</Link></li>
+            <li><Link href="/about" className="hover:text-destiny-gold">關於師傅</Link></li>
+            {academyLinks.slice(0, 3).map((link) => (
               <li key={link.href}>
                 <Link href={link.href} className="hover:text-destiny-gold">{link.label}</Link>
               </li>
@@ -47,17 +53,10 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <a href={siteConfig.googleMapsUrl} target="_blank" rel="noopener noreferrer" className="hover:text-destiny-gold">
+              <a href={gbpMapsUrl("footer")} target="_blank" rel="noopener noreferrer" className="hover:text-destiny-gold">
                 Google Maps
               </a>
             </li>
-            {siteConfig.googleBusinessUrl ? (
-              <li>
-                <a href={siteConfig.googleBusinessUrl} target="_blank" rel="noopener noreferrer" className="hover:text-destiny-gold">
-                  Google 商家
-                </a>
-              </li>
-            ) : null}
             <li>
               <a href={siteConfig.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-destiny-gold">
                 Instagram
@@ -69,6 +68,9 @@ export default function Footer() {
               </a>
             </li>
           </ul>
+          <div className="mt-4">
+            <GbpCta source="footer" compact />
+          </div>
         </div>
       </div>
 

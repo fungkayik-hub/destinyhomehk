@@ -1,6 +1,7 @@
 import { astro } from "iztro";
 import type { BirthInput, PalaceInfo, StarPlacement, ZiWeiChart } from "./types";
 import { hourMinuteToTimeIndex, formatSolarDate } from "./time";
+import { applyTrueSolarTime } from "./true-solar-time";
 
 const PALACE_NAME_MAP: Record<string, string> = {
   命宫: "命宮",
@@ -109,7 +110,11 @@ function buildSummary(chart: {
  * @see https://github.com/SylarLong/iztro
  */
 export function generateChart(input: BirthInput): ZiWeiChart {
-  const timeIndex = hourMinuteToTimeIndex(input.hour, input.minute);
+  const trueSolarTime = applyTrueSolarTime(input);
+  const timeIndex = hourMinuteToTimeIndex(
+    trueSolarTime.correctedHour,
+    trueSolarTime.correctedMinute,
+  );
   const gender = input.gender === "male" ? "男" : "女";
   const solarDate = formatSolarDate(input.year, input.month, input.day);
 
@@ -163,6 +168,7 @@ export function generateChart(input: BirthInput): ZiWeiChart {
 
   return {
     input,
+    trueSolarTime,
     solarDate: astrolabe.solarDate,
     lunarDateText: astrolabe.lunarDate,
     chineseDate: astrolabe.chineseDate,

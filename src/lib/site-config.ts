@@ -28,6 +28,9 @@ export const siteConfig = {
   /** 喺 Google Business Profile 拎「分享」連結，填入 .env NEXT_PUBLIC_GOOGLE_BUSINESS_URL */
   googleBusinessUrl:
     process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL?.trim() || "",
+  /** 留評價直連（GBP → 邀請評論 → 複製連結） */
+  googleReviewUrl:
+    process.env.NEXT_PUBLIC_GOOGLE_REVIEW_URL?.trim() || "",
   youtubeChannel: process.env.NEXT_PUBLIC_YOUTUBE_URL?.trim() || "",
   hours: "星期一至六 12:00–20:00",
   rating: { score: 4.9, count: 1000 },
@@ -106,6 +109,7 @@ export const navItems = [
       { href: "/academy/2026-zodiac", label: "2026 十二生肖流年" },
       { href: "/academy/stars", label: "十四主星專題" },
       { href: "/academy/instagram", label: "Sunny IG 精選" },
+      { href: "/academy/daily-insights", label: "流日點撥文章" },
     ],
   },
   { href: "/about", label: "關於師傅" },
@@ -227,6 +231,11 @@ export const academyCategories = [
     slug: "instagram",
     title: "Sunny IG 精選",
     description: "Destiny Home Instagram 最新命理、風水、流年分享 — 同步網站方便搜尋。",
+  },
+  {
+    slug: "daily-insights",
+    title: "流日點撥文章",
+    description: "Sunny 師傅每日流日解讀、黃曆宜忌延伸文章。",
   },
 ];
 

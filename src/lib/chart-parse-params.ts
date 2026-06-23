@@ -1,4 +1,6 @@
 import type { BirthInput } from "@/lib/ziwei/types";
+import { DEFAULT_BIRTH_PLACE_ID } from "@/lib/ziwei/birth-places";
+import { parseBirthPlaceId, parseUseTrueSolarTime } from "@/lib/parse-birth-fields";
 
 const DEFAULT_INPUT: BirthInput = {
   year: 2000,
@@ -8,6 +10,8 @@ const DEFAULT_INPUT: BirthInput = {
   minute: 0,
   gender: "male",
   calendarType: "solar",
+  birthPlaceId: DEFAULT_BIRTH_PLACE_ID,
+  useTrueSolarTime: true,
 };
 
 function first(sp: Record<string, string | string[] | undefined>, key: string): string | undefined {
@@ -38,7 +42,15 @@ export function birthInputFromSearchParams(
     minute: clampInt(first(sp, "minute"), DEFAULT_INPUT.minute, 0, 59),
     gender: first(sp, "gender") === "female" ? "female" : "male",
     calendarType: first(sp, "calendarType") === "lunar" ? "lunar" : "solar",
+    birthPlaceId: parseBirthPlaceId(first(sp, "birthPlaceId")),
+    useTrueSolarTime: parseUseTrueSolarTime(first(sp, "useTrueSolarTime")),
   };
+
+  if (input.birthPlaceId === "standard") {
+    input.useTrueSolarTime = false;
+  } else if (input.useTrueSolarTime === undefined) {
+    input.useTrueSolarTime = true;
+  }
 
   if (input.month === 2 && input.day > 29) {
     return { submitted: true, input, error: "請檢查日期是否正確（2 月最多 29 日）" };

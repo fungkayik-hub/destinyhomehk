@@ -14,6 +14,8 @@ function inputKey(input: BirthInput): string {
     input.gender,
     input.calendarType,
     input.isLeapMonth ?? false,
+    input.birthPlaceId ?? "",
+    input.useTrueSolarTime ?? true,
   ].join("-");
 }
 
@@ -29,7 +31,7 @@ export async function getCachedChartResults(input: BirthInput) {
       ]);
       return { chart, palaceScores, palaceAnalyses };
     },
-    ["chart-results-v5", key],
+    ["chart-results-v6", key],
     { revalidate: 86400 },
   )();
 }

@@ -1,4 +1,6 @@
 import type { BirthInput } from "@/lib/ziwei/types";
+import { DEFAULT_BIRTH_PLACE_ID } from "@/lib/ziwei/birth-places";
+import { parseBirthPlaceId, parseUseTrueSolarTime } from "@/lib/parse-birth-fields";
 
 const DEFAULT_A: BirthInput = {
   year: 1995,
@@ -8,6 +10,8 @@ const DEFAULT_A: BirthInput = {
   minute: 0,
   gender: "female",
   calendarType: "solar",
+  birthPlaceId: DEFAULT_BIRTH_PLACE_ID,
+  useTrueSolarTime: true,
 };
 
 const DEFAULT_B: BirthInput = {
@@ -18,6 +22,8 @@ const DEFAULT_B: BirthInput = {
   minute: 0,
   gender: "male",
   calendarType: "solar",
+  birthPlaceId: DEFAULT_BIRTH_PLACE_ID,
+  useTrueSolarTime: true,
 };
 
 function first(sp: Record<string, string | string[] | undefined>, key: string): string | undefined {
@@ -33,6 +39,14 @@ function clampInt(raw: string | undefined, fallback: number, min: number, max: n
   return Math.min(max, Math.max(min, n));
 }
 
+function normalizeBirthInput(input: BirthInput): BirthInput {
+  const birthPlaceId = input.birthPlaceId ?? DEFAULT_BIRTH_PLACE_ID;
+  let useTrueSolarTime = input.useTrueSolarTime;
+  if (birthPlaceId === "standard") useTrueSolarTime = false;
+  else if (useTrueSolarTime === undefined) useTrueSolarTime = true;
+  return { ...input, birthPlaceId, useTrueSolarTime };
+}
+
 function parsePerson(
   sp: Record<string, string | string[] | undefined>,
   prefix: "a" | "b",
@@ -46,6 +60,8 @@ function parsePerson(
     minute: clampInt(first(sp, `${prefix}_minute`), defaults.minute, 0, 59),
     gender: first(sp, `${prefix}_gender`) === "female" ? "female" : "male",
     calendarType: first(sp, `${prefix}_calendarType`) === "lunar" ? "lunar" : "solar",
+    birthPlaceId: parseBirthPlaceId(first(sp, `${prefix}_birthPlaceId`) ?? defaults.birthPlaceId),
+    useTrueSolarTime: parseUseTrueSolarTime(first(sp, `${prefix}_useTrueSolarTime`)),
   };
 }
 
@@ -68,8 +84,8 @@ export function compatibilityInputFromSearchParams(
     return { submitted: false, personA: DEFAULT_A, personB: DEFAULT_B };
   }
 
-  const personA = parsePerson(sp, "a", DEFAULT_A);
-  const personB = parsePerson(sp, "b", DEFAULT_B);
+  const personA = normalizeBirthInput(parsePerson(sp, "a", DEFAULT_A));
+  const personB = normalizeBirthInput(parsePerson(sp, "b", DEFAULT_B));
   const error = validateDate(personA) ?? validateDate(personB);
 
   return { submitted: true, personA, personB, error };

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import SiteImage from "@/components/SiteImage";
+import LangSwitch from "@/components/LangSwitch";
 import { useState } from "react";
 import { navItems, siteConfig, whatsappUrl } from "@/lib/site-config";
 import { siteImages } from "@/lib/site-images";
@@ -59,6 +60,7 @@ export default function Header() {
         </nav>
 
         <div className="hidden xl:flex items-center gap-3 shrink-0">
+          <LangSwitch />
           <a
             href={siteConfig.instagram}
             target="_blank"
@@ -73,6 +75,7 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2 xl:hidden shrink-0">
+          <LangSwitch />
           <a
             href={whatsappUrl()}
             target="_blank"

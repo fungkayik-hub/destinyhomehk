@@ -1,5 +1,6 @@
 import type { BirthInput } from "@/lib/ziwei";
 import { getShichenLabel, hourMinuteToTimeIndex } from "@/lib/ziwei";
+import BirthPlaceFields from "@/components/chart/BirthPlaceFields";
 
 interface Props {
   prefix: "a" | "b";
@@ -107,6 +108,8 @@ export default function PersonBirthFields({ prefix, title, accentClass, input }:
           </div>
           <span className="text-xs text-destiny-gold mt-1 block">→ {shichenLabel}</span>
         </label>
+
+        <BirthPlaceFields namePrefix={`${prefix}_`} input={input} />
       </div>
     </fieldset>
   );

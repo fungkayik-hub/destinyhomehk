@@ -3,6 +3,9 @@ import type { PalaceName } from "@/lib/ziwei/types";
 import type { PalaceAnalysesResponse, PalaceScoresResponse } from "@/lib/ai/types";
 import { buildChartHref, type ChartLayoutId } from "@/lib/chart-layout";
 import { chartWhatsAppUrl } from "@/lib/chart-whatsapp";
+import { formatClock } from "@/lib/ziwei/true-solar-time";
+import MasterReadingCta from "@/components/MasterReadingCta";
+import ChartSavedHistory from "./ChartSavedHistory";
 import { PalaceScoresLegend } from "./PalaceScoreBadge";
 import ChartPalacesFocus from "./layouts/ChartPalacesFocus";
 
@@ -13,6 +16,7 @@ interface Props {
   focusPalace: PalaceName;
   layout: ChartLayoutId;
   searchParams: Record<string, string | string[] | undefined>;
+  locale?: "zh" | "en";
 }
 
 export default function ChartDisplay({
@@ -22,6 +26,7 @@ export default function ChartDisplay({
   focusPalace,
   layout,
   searchParams,
+  locale = "zh",
 }: Props) {
   const waUrl = chartWhatsAppUrl(chart);
   const scoreByPalace = new Map(palaceScores.scores.map((s) => [s.palace, s]));
@@ -35,6 +40,21 @@ export default function ChartDisplay({
 
   return (
     <div className="space-y-8">
+      <ChartSavedHistory current={chart.input} locale={locale} />
+
+      {chart.trueSolarTime?.applied && (
+        <p className="text-sm text-destiny-gold bg-destiny-gold/10 border border-destiny-gold/25 rounded-lg px-4 py-3">
+          {locale === "en" ? "True solar time: " : "真太陽時："}
+          {chart.trueSolarTime.placeName} ·{" "}
+          {formatClock(chart.trueSolarTime.civilHour, chart.trueSolarTime.civilMinute)}
+          {" → "}
+          {formatClock(chart.trueSolarTime.correctedHour, chart.trueSolarTime.correctedMinute)}
+          {locale === "en"
+            ? ` (${chart.trueSolarTime.offsetMinutes} min)`
+            : `（${chart.trueSolarTime.offsetMinutes > 0 ? "+" : ""}${chart.trueSolarTime.offsetMinutes} 分鐘）`}
+        </p>
+      )}
+
       <div className="rounded-xl bg-destiny-purple text-white px-4 py-4 sm:px-6 sm:py-5">
         <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-x-4 gap-y-2.5 text-sm">
           <span>
@@ -84,22 +104,7 @@ export default function ChartDisplay({
         </div>
       </section>
 
-      <div className="rounded-xl border border-destiny-gold/30 bg-white px-5 sm:px-6 py-8 text-center">
-        <h3 className="font-display text-lg font-bold text-destiny-purple mb-2">
-          請 Sunny 師傅親自解盤
-        </h3>
-        <p className="text-sm text-destiny-purple/60 mb-5 max-w-sm mx-auto">
-          AI 僅供參考；定盤、全批、擇日由師傅親自服務。
-        </p>
-        <a
-          href={waUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-primary inline-flex"
-        >
-          WhatsApp 發命盤俾師傅
-        </a>
-      </div>
+      <MasterReadingCta whatsappHref={waUrl} locale={locale} variant="chart" />
     </div>
   );
 }

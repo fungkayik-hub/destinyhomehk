@@ -1,6 +1,7 @@
 import type { CompatibilityResult } from "@/lib/compatibility/types";
 import type { BirthInput, ZiWeiChart } from "@/lib/ziwei/types";
 import { compatibilityWhatsAppUrl } from "@/lib/compatibility-whatsapp";
+import MasterReadingCta from "@/components/MasterReadingCta";
 import {
   COMPAT_LABEL_BG,
   COMPAT_LABEL_TEXT,
@@ -111,20 +112,7 @@ export default function CompatibilityResult({
         </div>
       </div>
 
-      <div className="card border-destiny-gold/30 bg-destiny-gold/5 text-center">
-        <h3 className="font-display font-bold text-lg mb-2">想深入睇合婚？</h3>
-        <p className="text-sm text-destiny-purple/70 mb-4">
-          大限十年、流年感情、結婚時機 — Sunny 師傅全批幫你拆清楚。
-        </p>
-        <a
-          href={waUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-primary inline-flex items-center gap-2"
-        >
-          WhatsApp 師傅深入睇
-        </a>
-      </div>
+      <MasterReadingCta whatsappHref={waUrl} variant="compatibility" />
     </div>
   );
 }

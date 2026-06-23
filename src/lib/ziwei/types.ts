@@ -1,4 +1,6 @@
 /** iztro 時辰索引對照 */
+import type { TrueSolarTimeResult } from "./true-solar-time";
+
 export const SHICHEN = [
   { index: 0, name: "早子", range: "00:00–00:59", branch: "子" },
   { index: 1, name: "丑", range: "01:00–02:59", branch: "丑" },
@@ -34,6 +36,10 @@ export interface BirthInput {
   gender: Gender;
   calendarType: CalendarType;
   isLeapMonth?: boolean;
+  /** 出生地 ID — 用於真太陽時 */
+  birthPlaceId?: string;
+  /** 預設啟用；設 false 則用鐘錶時間 */
+  useTrueSolarTime?: boolean;
 }
 
 export interface StarPlacement {
@@ -56,6 +62,7 @@ export interface PalaceInfo {
 
 export interface ZiWeiChart {
   input: BirthInput;
+  trueSolarTime?: TrueSolarTimeResult;
   solarDate: string;
   lunarDateText: string;
   chineseDate: string;

@@ -19,9 +19,12 @@ export async function GET(request: NextRequest) {
   revalidateTag("daily-almanac");
   revalidateTag(`daily-${today}`);
   revalidatePath("/daily");
+  revalidatePath(`/daily/${today}`);
+  revalidatePath("/api/og/daily");
 
   try {
     await fetch(`${getSiteUrl()}/daily`, { cache: "no-store" });
+    await fetch(`${getSiteUrl()}/api/og/daily?date=${today}`, { cache: "no-store" });
   } catch {
     // 預熱失敗不影響 cron 成功
   }

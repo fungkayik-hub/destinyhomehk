@@ -9,9 +9,13 @@
     "start": "next start",
     "calibrate": "node scripts/calibrate-chart.cjs",
     "import-content": "node scripts/import-content.mjs",
-    "import-instagram": "node scripts/import-instagram.mjs"
+    "import-instagram": "node scripts/import-instagram.mjs",
+    "import-article": "node scripts/import-article.mjs",
+    "import-daily-tip": "node scripts/import-daily-tip.mjs",
+    "seed-seo-articles": "node scripts/seed-seo-articles.mjs"
   },
   "dependencies": {
+    "html-to-image": "^1.11.13",
     "iztro": "^2.5.8",
     "lunar-typescript": "^1.8.6",
     "next": "^15.1.0",

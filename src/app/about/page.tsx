@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import SiteImage, { PageBanner } from "@/components/SiteImage";
 import LocalBusinessCard from "@/components/LocalBusinessCard";
+import GoogleMapsEmbed from "@/components/GoogleMapsEmbed";
+import ReviewShowcase from "@/components/ReviewShowcase";
+import GbpCta from "@/components/GbpCta";
 import MediaHighlights from "@/components/MediaHighlights";
 import { siteConfig, whatsappUrl } from "@/lib/site-config";
 import { buildPageMetadata } from "@/lib/seo";
@@ -80,7 +83,14 @@ export default function AboutPage() {
         <MediaHighlights />
 
         <div className="max-w-4xl mx-auto">
+          <GoogleMapsEmbed className="mb-8" />
           <LocalBusinessCard />
+          <div className="mt-8">
+            <ReviewShowcase />
+          </div>
+          <div className="mt-6 flex justify-center">
+            <GbpCta source="about" />
+          </div>
           <div className="card mt-6 bg-gradient-to-r from-destiny-purple/5 to-destiny-gold/5 flex flex-col md:flex-row gap-6 items-center">
             <div className="relative w-full md:w-48 h-48 rounded-xl overflow-hidden shrink-0">
               <SiteImage

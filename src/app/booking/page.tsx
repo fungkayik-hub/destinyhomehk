@@ -8,7 +8,11 @@ import {
   whatsappUrl,
 } from "@/lib/site-config";
 import FaqSection from "@/components/FaqSection";
+import GbpCta from "@/components/GbpCta";
+import GoogleMapsEmbed from "@/components/GoogleMapsEmbed";
+import ReviewShowcase from "@/components/ReviewShowcase";
 import { faqJsonLd } from "@/components/JsonLd";
+import { servicesJsonLd } from "@/lib/schema-extra";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { buildPageMetadata } from "@/lib/seo";
 
@@ -30,6 +34,12 @@ export default async function BookingPage({ searchParams }: Props) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([faqJsonLd(FAQ_BY_PAGE.booking), servicesJsonLd()]),
+        }}
+      />
       <PageBanner
         src="/images/home-hero-stars.png"
         title={isDateService ? "結婚／入伙擇日預約" : "服務及收費"}
@@ -146,13 +156,17 @@ export default async function BookingPage({ searchParams }: Props) {
               先試即時排盤
             </Link>
           </div>
+          <div className="mt-6">
+            <GbpCta source="booking" />
+          </div>
+        </div>
+
+        <div className="max-w-3xl mx-auto mt-10 space-y-8">
+          <GoogleMapsEmbed />
+          <ReviewShowcase />
         </div>
       </div>
       <div className="px-4 pb-12">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ_BY_PAGE.booking)) }}
-        />
         <FaqSection items={FAQ_BY_PAGE.booking} />
       </div>
     </>

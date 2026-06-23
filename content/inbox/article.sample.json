@@ -1,0 +1,8 @@
+{
+  "title": "文章標題（例：夏至流日 — 陽氣最盛點樣養生）",
+  "category": "daily-insights",
+  "slug": "可選-唔填就自動由標題生成",
+  "publishedAt": "2026-06-22",
+  "content": "第一段文字。\n\n第二段文字。每日你俾我嘅文章就咁貼入 content 欄位就得。\n\n支援用 \\n\\n 分段。",
+  "image": null
+}

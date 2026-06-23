@@ -6,6 +6,7 @@ import {
 import { officerCopy } from "./copy";
 import type { DailyAlmanac } from "./types";
 import { zodiacHintsForDay } from "./zodiac";
+import { applyDailyOverride } from "@/lib/daily-overrides";
 
 const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
 
@@ -66,32 +67,35 @@ export function computeDailyAlmanac(dateInput?: string): DailyAlmanac {
       ? `吉星${luckyStars.slice(0, 3).join("、")}護航，宜把握貴人緣。`
       : "今日宜穩扎穩打，以守為攻。";
 
-  return {
-    date: formatHongKongDateISO(parts),
-    solarLabel: formatSolar(parts),
-    weekday,
-    ganzhi: {
-      year: lunar.getYearInGanZhiExact(),
-      month: lunar.getMonthInGanZhiExact(),
-      day: lunar.getDayInGanZhiExact(),
+  return applyDailyOverride(
+    {
+      date: formatHongKongDateISO(parts),
+      solarLabel: formatSolar(parts),
+      weekday,
+      ganzhi: {
+        year: lunar.getYearInGanZhiExact(),
+        month: lunar.getMonthInGanZhiExact(),
+        day: lunar.getDayInGanZhiExact(),
+      },
+      lunarLabel: `${lunarLabel} · ${dayOfficer}日`,
+      dayOfficer,
+      dayOfficerFull: `${dayOfficer}日`,
+      tianShen: lunar.getDayTianShen(),
+      tianShenLuck: lunar.getDayTianShenLuck(),
+      headline: copy.headline,
+      specialTip: copy.special,
+      masterTip: copy.tip,
+      luckyStars,
+      unluckyStars,
+      starNote,
+      yi,
+      ji,
+      zodiacs: zodiacHintsForDay(lunar.getDayZhiExact()),
+      closing: copy.closing,
+      quote: copy.quote,
+      chong: lunar.getDayChongDesc(),
+      sha: `煞${lunar.getDaySha()}`,
     },
-    lunarLabel: `${lunarLabel} · ${dayOfficer}日`,
-    dayOfficer,
-    dayOfficerFull: `${dayOfficer}日`,
-    tianShen: lunar.getDayTianShen(),
-    tianShenLuck: lunar.getDayTianShenLuck(),
-    headline: copy.headline,
-    specialTip: copy.special,
-    masterTip: copy.tip,
-    luckyStars,
-    unluckyStars,
-    starNote,
-    yi,
-    ji,
-    zodiacs: zodiacHintsForDay(lunar.getDayZhiExact()),
-    closing: copy.closing,
-    quote: copy.quote,
-    chong: lunar.getDayChongDesc(),
-    sha: `煞${lunar.getDaySha()}`,
-  };
+    formatHongKongDateISO(parts),
+  );
 }

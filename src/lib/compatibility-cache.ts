@@ -14,6 +14,8 @@ function inputKey(prefix: string, input: BirthInput): string {
     input.gender,
     input.calendarType,
     input.isLeapMonth ?? false,
+    input.birthPlaceId ?? "",
+    input.useTrueSolarTime ?? true,
   ].join("-");
 }
 

@@ -7,7 +7,10 @@ const GENDER_LABEL = { male: "男", female: "女" } as const;
 /** 將命盤整理成 WhatsApp 訊息，方便客人發俾師傅解盤 */
 export function buildChartWhatsAppMessage(chart: ZiWeiChart): string {
   const { input } = chart;
-  const shichen = getShichenLabel(hourMinuteToTimeIndex(input.hour, input.minute));
+  const solar = chart.trueSolarTime;
+  const hour = solar?.correctedHour ?? input.hour;
+  const minute = solar?.correctedMinute ?? input.minute;
+  const shichen = getShichenLabel(hourMinuteToTimeIndex(hour, minute));
   const soulPalace = chart.palaces.find((p) => p.isSoulPalace);
   const soulStars =
     soulPalace?.stars
@@ -30,6 +33,11 @@ export function buildChartWhatsAppMessage(chart: ZiWeiChart): string {
     `陽曆：${chart.solarDate}`,
     `性別：${GENDER_LABEL[input.gender]}`,
     `時間：${String(input.hour).padStart(2, "0")}:${String(input.minute).padStart(2, "0")}（${shichen}）`,
+    ...(solar?.applied
+      ? [
+          `真太陽時：${solar.placeName} 校正 → ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`,
+        ]
+      : []),
     "",
     "【命盤摘要】",
     `農曆：${chart.lunarDateText}`,

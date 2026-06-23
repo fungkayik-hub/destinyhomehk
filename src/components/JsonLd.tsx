@@ -62,6 +62,12 @@ export default function JsonLd() {
           "@type": "Country",
           name: "Hong Kong",
         },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: String(siteConfig.rating.score),
+          reviewCount: String(siteConfig.rating.count),
+          bestRating: "5",
+        },
       },
       {
         "@type": "WebSite",
