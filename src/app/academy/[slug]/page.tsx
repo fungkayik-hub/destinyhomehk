@@ -10,6 +10,7 @@ import {
 } from "@/lib/articles";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
+import { siteConfig } from "@/lib/site-config";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -25,6 +26,7 @@ export async function generateStaticParams() {
     { slug: "theory" },
     { slug: "2026-zodiac" },
     { slug: "stars" },
+    { slug: "instagram" },
   ];
 }
 
@@ -56,6 +58,20 @@ export default async function AcademyCategoryPage({ params }: Props) {
         </Link>
         <h1 className="section-title mb-3 text-left">{meta.title}</h1>
         <p className="text-destiny-purple/70 mb-10">{meta.description}</p>
+
+        {slug === "instagram" && listArticles.length === 0 && (
+          <div className="card mb-8 text-sm text-destiny-purple/70">
+            <p className="mb-2">IG 帖子匯入緊 — 請用 Meta「下載你的資訊」匯出後執行 <code className="text-xs bg-destiny-cream px-1 rounded">npm run import-instagram</code>。</p>
+            <a
+              href={siteConfig.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-destiny-gold hover:underline"
+            >
+              追蹤 @destiny_home_ ↗
+            </a>
+          </div>
+        )}
 
         {slug === "stars" && <StarsHub />}
 

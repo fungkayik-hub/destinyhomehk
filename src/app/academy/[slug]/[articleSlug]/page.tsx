@@ -79,6 +79,18 @@ export default async function ArticlePage({ params }: Props) {
             {article.title}
           </h1>
           {date && <p className="text-sm text-destiny-purple/50 mt-3">{date}</p>}
+          {article.sourceUrl.includes("instagram.com") && (
+            <p className="mt-2">
+              <a
+                href={article.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-destiny-gold hover:underline"
+              >
+                Instagram 原文 ↗
+              </a>
+            </p>
+          )}
         </header>
 
         <ArticleHero image={article.image} title={article.title} />

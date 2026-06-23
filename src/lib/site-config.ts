@@ -105,6 +105,7 @@ export const navItems = [
       { href: "/academy/theory", label: "玄學理論" },
       { href: "/academy/2026-zodiac", label: "2026 十二生肖流年" },
       { href: "/academy/stars", label: "十四主星專題" },
+      { href: "/academy/instagram", label: "Sunny IG 精選" },
     ],
   },
   { href: "/about", label: "關於師傅" },
@@ -221,6 +222,11 @@ export const academyCategories = [
     slug: "stars",
     title: "十四主星專題",
     description: "紫微斗數十四主星逐一解析。",
+  },
+  {
+    slug: "instagram",
+    title: "Sunny IG 精選",
+    description: "Destiny Home Instagram 最新命理、風水、流年分享 — 同步網站方便搜尋。",
   },
 ];
 

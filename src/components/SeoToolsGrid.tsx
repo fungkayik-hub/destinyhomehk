@@ -37,6 +37,13 @@ const TOOLS = [
     keywords: "2026 運程",
   },
   {
+    href: "/academy/instagram",
+    title: "Sunny IG 精選",
+    desc: "Instagram 最新命理分享",
+    tag: "學堂",
+    keywords: "IG、命理",
+  },
+  {
     href: "/academy/stars",
     title: "十四主星",
     desc: "紫微十四主星逐一解析",
