@@ -9,15 +9,36 @@ function sameAsLinks(): string[] {
   ].filter(Boolean);
 }
 
+function absoluteUrl(site: string, path: string): string {
+  if (path.startsWith("http")) return path;
+  return `${site}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+/** Article / WebSite publisher — Google 要求 Organization + ImageObject logo */
+export function organizationJsonLd(site: string) {
+  return {
+    "@type": "Organization",
+    "@id": `${site}/#organization`,
+    name: siteConfig.name,
+    url: site,
+    logo: {
+      "@type": "ImageObject",
+      url: absoluteUrl(site, siteConfig.logo),
+    },
+  };
+}
+
 /** 全站 LocalBusiness + WebSite — 符合 Google Rich Results 格式 */
 export default function JsonLd() {
   const site = getSiteUrl();
   const businessId = `${site}/#business`;
   const websiteId = `${site}/#website`;
+  const organization = organizationJsonLd(site);
 
   const graph = {
     "@context": "https://schema.org",
     "@graph": [
+      organization,
       {
         "@type": "LocalBusiness",
         "@id": businessId,
@@ -25,8 +46,8 @@ export default function JsonLd() {
         alternateName: "Destiny Home 紫微斗數",
         description: siteConfig.description,
         url: site,
-        image: [siteConfig.heroImage, siteConfig.logo],
-        logo: siteConfig.logo,
+        image: [absoluteUrl(site, siteConfig.heroImage), absoluteUrl(site, siteConfig.logo)],
+        logo: absoluteUrl(site, siteConfig.logo),
         telephone: siteConfig.phone.replace(/\s/g, ""),
         priceRange: "$$",
         address: {
@@ -62,12 +83,6 @@ export default function JsonLd() {
           "@type": "Country",
           name: "Hong Kong",
         },
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: String(siteConfig.rating.score),
-          reviewCount: String(siteConfig.rating.count),
-          bestRating: "5",
-        },
       },
       {
         "@type": "WebSite",
@@ -75,7 +90,7 @@ export default function JsonLd() {
         name: "Destiny Home | Master Sunny",
         url: site,
         inLanguage: "zh-HK",
-        publisher: { "@id": businessId },
+        publisher: { "@id": organization["@id"] },
       },
     ],
   };
@@ -88,7 +103,7 @@ export default function JsonLd() {
   );
 }
 
-/** 學堂文章 — Article/BlogPosting 結構化資料 */
+/** 學堂文章 — BlogPosting（publisher 用 Organization，唔引用 LocalBusiness） */
 export function articleJsonLd(options: {
   title: string;
   description: string;
@@ -97,16 +112,26 @@ export function articleJsonLd(options: {
   datePublished?: string | null;
 }) {
   const site = getSiteUrl();
-  const businessId = `${site}/#business`;
+  const imageUrl = options.image
+    ? absoluteUrl(site, options.image)
+    : absoluteUrl(site, siteConfig.heroImage);
 
   const data: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: options.title,
     description: options.description,
-    image: options.image ?? siteConfig.heroImage,
+    image: imageUrl,
     author: { "@type": "Person", name: "Sunny 師傅" },
-    publisher: { "@id": businessId },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: site,
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl(site, siteConfig.logo),
+      },
+    },
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": options.url,

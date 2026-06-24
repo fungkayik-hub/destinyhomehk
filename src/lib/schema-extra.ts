@@ -1,4 +1,4 @@
-import { pricingPlans, siteConfig } from "@/lib/site-config";
+import { pricingPlans } from "@/lib/site-config";
 import { getSiteUrl } from "@/lib/site-url";
 
 export interface BreadcrumbItem {
@@ -23,38 +23,27 @@ export function breadcrumbJsonLd(items: BreadcrumbItem[]) {
 /** 預約頁服務項目 — Local SEO */
 export function servicesJsonLd() {
   const site = getSiteUrl();
-  const businessId = `${site}/#business`;
+  const orgId = `${site}/#organization`;
 
   return {
     "@context": "https://schema.org",
-    "@graph": pricingPlans.map((plan) => ({
-      "@type": "Service",
-      name: plan.title,
-      description: plan.description,
-      provider: { "@id": businessId },
-      areaServed: { "@type": "Country", name: "Hong Kong" },
-      offers: {
+    "@graph": pricingPlans.map((plan) => {
+      const priceDigits = plan.price.replace(/[^0-9.]/g, "");
+      const offer: Record<string, unknown> = {
         "@type": "Offer",
-        price: plan.price.replace(/[^0-9.]/g, "") || undefined,
         priceCurrency: "HKD",
         url: `${site}/booking#${plan.id}`,
-      },
-    })),
-  };
-}
+      };
+      if (priceDigits) offer.price = priceDigits;
 
-export function reviewJsonLd() {
-  const site = getSiteUrl();
-  return {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": `${site}/#business`,
-    name: siteConfig.name,
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: String(siteConfig.rating.score),
-      reviewCount: String(siteConfig.rating.count),
-      bestRating: "5",
-    },
+      return {
+        "@type": "Service",
+        name: plan.title,
+        description: plan.description,
+        provider: { "@id": orgId },
+        areaServed: { "@type": "Country", name: "Hong Kong" },
+        offers: offer,
+      };
+    }),
   };
 }
