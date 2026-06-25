@@ -12,7 +12,8 @@
     "import-instagram": "node scripts/import-instagram.mjs",
     "import-article": "node scripts/import-article.mjs",
     "import-daily-tip": "node scripts/import-daily-tip.mjs",
-    "seed-seo-articles": "node scripts/seed-seo-articles.mjs"
+    "seed-seo-articles": "node scripts/seed-seo-articles.mjs",
+    "seed-geju-articles": "node scripts/seed-geju-articles.mjs"
   },
   "dependencies": {
     "html-to-image": "^1.11.13",

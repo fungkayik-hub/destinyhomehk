@@ -102,6 +102,23 @@
     @apply font-bold text-destiny-purple;
   }
 
+  .article-prose table {
+    @apply w-full text-sm my-6 border-collapse;
+  }
+
+  .article-prose th,
+  .article-prose td {
+    @apply border border-destiny-purple/15 px-2 py-1.5 align-top;
+  }
+
+  .article-prose th {
+    @apply bg-destiny-cream/80 font-semibold text-destiny-purple text-left;
+  }
+
+  .article-prose tbody tr:nth-child(even) {
+    @apply bg-destiny-cream/40;
+  }
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;

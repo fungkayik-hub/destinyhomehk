@@ -2,7 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import ArticleCard from "@/components/academy/ArticleCard";
 import StarsHub from "@/components/academy/StarsHub";
-import ArticleContent, { ArticleHero } from "@/components/academy/ArticleContent";
+import GejuHub from "@/components/academy/GejuHub";
+import ArticleContent, { ArticleHero, ArticleCta } from "@/components/academy/ArticleContent";
 import {
   getArticlesByCategory,
   getCategoryMeta,
@@ -27,6 +28,7 @@ export async function generateStaticParams() {
     { slug: "2026-zodiac" },
     { slug: "stars" },
     { slug: "instagram" },
+    { slug: "geju" },
   ];
 }
 
@@ -75,14 +77,17 @@ export default async function AcademyCategoryPage({ params }: Props) {
 
         {slug === "stars" && <StarsHub />}
 
+        {slug === "geju" && <GejuHub />}
+
         {pageArticle && pageArticle.content.length > 50 && (
           <div className="mb-12">
             <ArticleHero image={pageArticle.image} title={pageArticle.title} />
             <ArticleContent html={pageArticle.content} />
+            <ArticleCta />
           </div>
         )}
 
-        {listArticles.length > 0 && (
+        {listArticles.length > 0 && slug !== "geju" && (
           <div>
             {pageArticle?.content && (
               <h2 className="font-display text-xl font-bold mb-6 pt-6 border-t border-destiny-purple/10">

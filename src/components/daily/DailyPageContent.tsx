@@ -5,6 +5,7 @@ import DailyShareTools from "@/components/daily/DailyShareTools";
 import FaqSection from "@/components/FaqSection";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import type { FaqItem } from "@/lib/faq-content";
+import { getDailyOverride } from "@/lib/daily-overrides";
 
 interface Props {
   data: DailyAlmanac;
@@ -13,6 +14,8 @@ interface Props {
 }
 
 export default function DailyPageContent({ data, faq, showBreadcrumb = false }: Props) {
+  const override = getDailyOverride(data.date);
+
   return (
     <div className="py-10 px-4">
       <div className="max-w-3xl mx-auto">
@@ -72,6 +75,14 @@ export default function DailyPageContent({ data, faq, showBreadcrumb = false }: 
           <Link href="/academy/daily-insights" className="text-destiny-gold hover:underline">
             流日文章
           </Link>
+          {override?.articleUrl && (
+            <>
+              <span className="text-destiny-purple/30">·</span>
+              <Link href={override.articleUrl} className="text-destiny-gold hover:underline">
+                今日格局詳文
+              </Link>
+            </>
+          )}
         </div>
       </div>
 

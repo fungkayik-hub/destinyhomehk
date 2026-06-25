@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "Destiny Home",
   tagline: "香港紫微斗數 · 風水擇日 · Master Sunny",
   description:
-    "【過千真實好評】Destiny Home 由 Sunny 師傅主理，提供專業紫微斗數命盤分析、結婚擇日、台灣姓名學及風水顧問服務。",
+    "灣仔 Destiny Home｜紫微斗數全批 HK$2,000、免費排盤、結婚擇日、台灣姓名學總格改名。過千 Google 好評，WhatsApp 預約 Sunny 師傅親批。",
   announcement:
     "可能係最體貼嘅紫微斗數師傅 🤍🤍🤍 已達過千客人真實好評‼️請到 IG 查詢好評，不斷更新",
   announcementShort: "過千真實好評 ⭐ 4.9 · ViuTV · 企業風水講座",
@@ -100,14 +100,15 @@ export const navItems = [
   {
     label: "紫微斗數學堂",
     children: [
-      { href: "/academy/name-numerology", label: "台灣姓名學（總筆劃吉凶）" },
+      { href: "/academy/name-numerology", label: "台灣姓名學總格" },
       { href: "/academy/history", label: "紫微斗數與子平八字的歷史故事" },
       { href: "/academy/feng-shui", label: "Sunny 談風水" },
       { href: "/academy/stories", label: "Sunny 講故事" },
-      { href: "/academy/ding-pan", label: "天地人與定盤" },
+      { href: "/academy/ding-pan", label: "天地人盤定盤" },
       { href: "/academy/theory", label: "玄學理論" },
       { href: "/academy/2026-zodiac", label: "2026 十二生肖流年" },
       { href: "/academy/stars", label: "十四主星專題" },
+      { href: "/academy/geju", label: "紫微格局（吉格凶格）" },
       { href: "/academy/instagram", label: "Sunny IG 精選" },
       { href: "/academy/daily-insights", label: "流日點撥文章" },
     ],
@@ -189,8 +190,9 @@ export const youtubeVideos = [
 export const academyCategories = [
   {
     slug: "name-numerology",
-    title: "台灣姓名學（總筆劃吉凶）",
-    description: "以總筆劃分析姓名吉凶，為改名提供專業參考。",
+    title: "台灣姓名學總格／總筆劃吉凶",
+    description:
+      "台灣姓名學五格剖象：天格、人格、地格、外格、總格筆劃吉凶對照。Destiny Home Sunny 師傅提供香港改名諮詢（HK$3,800）。",
   },
   {
     slug: "history",
@@ -209,8 +211,9 @@ export const academyCategories = [
   },
   {
     slug: "ding-pan",
-    title: "天地人與定盤",
-    description: "定盤的重要性與方法，確保命盤準確。",
+    title: "紫微斗數天地人盤定盤",
+    description:
+      "中洲派天地人三盤定盤方法 — 時辰唔準點算？Sunny 師傅灣仔全批定盤 HK$2,000，配合免費紫微排盤試用。",
   },
   {
     slug: "theory",
@@ -236,6 +239,12 @@ export const academyCategories = [
     slug: "daily-insights",
     title: "流日點撥文章",
     description: "Sunny 師傅每日流日解讀、黃曆宜忌延伸文章。",
+  },
+  {
+    slug: "geju",
+    title: "紫微斗數格局（吉格凶格）",
+    description:
+      "極向離明、君臣慶會、日月反背等吉格凶格逐一解析 — 配合免費排盤了解你命盤。",
   },
 ];
 

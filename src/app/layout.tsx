@@ -32,6 +32,8 @@ export const metadata: Metadata = {
     "Master Sunny",
     "紫微排盤",
     "姓名學",
+    "姓名學總格",
+    "天地人盤",
     "灣仔",
     ...LOCAL_SEO_KEYWORDS,
   ],

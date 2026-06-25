@@ -6,6 +6,8 @@ export interface DailyOverride {
   masterTip?: string;
   closing?: string;
   quote?: string;
+  /** 連去當日學堂格局／文章 */
+  articleUrl?: string;
 }
 
 type OverridesMap = Record<string, DailyOverride>;
