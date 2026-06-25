@@ -5,9 +5,9 @@ import StarsHub from "@/components/academy/StarsHub";
 import GejuHub from "@/components/academy/GejuHub";
 import ArticleContent, { ArticleHero, ArticleCta } from "@/components/academy/ArticleContent";
 import {
-  getArticlesByCategory,
   getCategoryMeta,
   getCategoryPageArticle,
+  getVisibleArticlesByCategory,
 } from "@/lib/articles";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
@@ -16,6 +16,9 @@ import { siteConfig } from "@/lib/site-config";
 interface Props {
   params: Promise<{ slug: string }>;
 }
+
+/** 格局文每日 00:01 HKT 後可能新增 — 每小時 revalidate */
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
   return [
@@ -50,7 +53,7 @@ export default async function AcademyCategoryPage({ params }: Props) {
   if (!meta) notFound();
 
   const pageArticle = getCategoryPageArticle(slug);
-  const listArticles = getArticlesByCategory(slug);
+  const listArticles = getVisibleArticlesByCategory(slug);
 
   return (
     <div className="py-12 px-4">
@@ -87,13 +90,11 @@ export default async function AcademyCategoryPage({ params }: Props) {
           </div>
         )}
 
-        {listArticles.length > 0 && slug !== "geju" && (
+        {listArticles.length > 0 && (
           <div>
-            {pageArticle?.content && (
-              <h2 className="font-display text-xl font-bold mb-6 pt-6 border-t border-destiny-purple/10">
-                文章列表
-              </h2>
-            )}
+            <h2 className="font-display text-xl font-bold mb-6 pt-6 border-t border-destiny-purple/10">
+              {slug === "geju" ? "已發佈文章" : "文章列表"}
+            </h2>
             <div className="space-y-4">
               {listArticles.map((article) => (
                 <ArticleCard key={article.slug} article={article} categorySlug={slug} />
@@ -102,7 +103,7 @@ export default async function AcademyCategoryPage({ params }: Props) {
           </div>
         )}
 
-        {listArticles.length === 0 && !pageArticle?.content && (
+        {listArticles.length === 0 && !pageArticle?.content && slug !== "geju" && slug !== "stars" && (
           <div className="card text-center text-destiny-purple/60">
             內容整理中，敬請期待。
           </div>

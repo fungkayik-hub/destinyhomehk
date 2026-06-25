@@ -8,6 +8,7 @@ export interface DailyOverride {
   quote?: string;
   /** 連去當日學堂格局／文章 */
   articleUrl?: string;
+  articleUrl2?: string;
 }
 
 type OverridesMap = Record<string, DailyOverride>;
@@ -32,5 +33,7 @@ export function applyDailyOverride<T extends DailyOverride>(
     ...(patch.masterTip ? { masterTip: patch.masterTip } : {}),
     ...(patch.closing ? { closing: patch.closing } : {}),
     ...(patch.quote ? { quote: patch.quote } : {}),
+    ...(patch.articleUrl ? { articleUrl: patch.articleUrl } : {}),
+    ...(patch.articleUrl2 ? { articleUrl2: patch.articleUrl2 } : {}),
   };
 }

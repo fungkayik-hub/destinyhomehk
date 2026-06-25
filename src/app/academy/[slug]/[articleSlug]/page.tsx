@@ -17,6 +17,8 @@ interface Props {
   params: Promise<{ slug: string; articleSlug: string }>;
 }
 
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   return getAllArticleParams().map(({ slug, articleSlug }) => ({
     slug,

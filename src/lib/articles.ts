@@ -1,4 +1,5 @@
 import articlesData from "@/data/articles.json";
+import { getHongKongTodayISO } from "./hong-kong-time";
 import { academyCategories } from "./site-config";
 
 export interface Article {
@@ -68,8 +69,29 @@ export function getAllArticles(): Article[] {
   return articles;
 }
 
+/** 格局文用 publishedAt（香港日期）排期；其他分類一律可見 */
+export function isArticlePublished(
+  article: Article,
+  today = getHongKongTodayISO(),
+): boolean {
+  if (article.category !== "geju") return true;
+  if (!article.publishedAt) return false;
+  return article.publishedAt.slice(0, 10) <= today;
+}
+
 export function getArticlesByCategory(category: string): Article[] {
   return articles.filter((a) => a.category === category && a.slug !== category);
+}
+
+/** 學堂列表／sitemap 用 — 未到期嘅格局文唔顯示 */
+export function getVisibleArticlesByCategory(category: string): Article[] {
+  return getArticlesByCategory(category)
+    .filter((a) => isArticlePublished(a))
+    .sort((a, b) => {
+      const da = a.publishedAt?.slice(0, 10) ?? "";
+      const db = b.publishedAt?.slice(0, 10) ?? "";
+      return db.localeCompare(da);
+    });
 }
 
 export function getCategoryPageArticle(category: string): Article | undefined {
@@ -77,7 +99,11 @@ export function getCategoryPageArticle(category: string): Article | undefined {
 }
 
 export function getArticle(category: string, articleSlug: string): Article | undefined {
-  return articles.find((a) => a.category === category && a.slug === articleSlug);
+  const article = articles.find(
+    (a) => a.category === category && a.slug === articleSlug,
+  );
+  if (!article || !isArticlePublished(article)) return undefined;
+  return article;
 }
 
 export function getCategoryMeta(slug: string) {
@@ -87,7 +113,7 @@ export function getCategoryMeta(slug: string) {
 export function getAllArticleParams(): { slug: string; articleSlug: string }[] {
   const params: { slug: string; articleSlug: string }[] = [];
   for (const cat of academyCategories) {
-    const catArticles = getArticlesByCategory(cat.slug);
+    const catArticles = getVisibleArticlesByCategory(cat.slug);
     for (const a of catArticles) {
       params.push({ slug: cat.slug, articleSlug: a.slug });
     }
@@ -98,7 +124,7 @@ export function getAllArticleParams(): { slug: string; articleSlug: string }[] {
 export function getCategoryCoverImage(category: string): string | null {
   const page = getCategoryPageArticle(category);
   if (page?.image) return page.image;
-  const list = getArticlesByCategory(category);
+  const list = getVisibleArticlesByCategory(category);
   return list[0]?.image ?? null;
 }
 

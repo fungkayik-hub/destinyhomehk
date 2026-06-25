@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import SiteImage, { PageBanner } from "@/components/SiteImage";
-import { getArticlesByCategory, getCategoryCoverImage, getCategoryPageArticle } from "@/lib/articles";
+import { getArticlesByCategory, getCategoryCoverImage, getCategoryPageArticle, getVisibleArticlesByCategory } from "@/lib/articles";
 import { academyCategories } from "@/lib/site-config";
 import { buildPageMetadata } from "@/lib/seo";
 
@@ -12,6 +12,8 @@ export const metadata: Metadata = buildPageMetadata({
   path: "/academy",
   keywords: ["紫微斗數文章", "風水知識", "流年運勢"],
 });
+
+export const revalidate = 3600;
 
 export default function AcademyPage() {
   return (
@@ -24,7 +26,7 @@ export default function AcademyPage() {
       <div className="py-12 px-4">
         <div className="max-w-4xl mx-auto grid sm:grid-cols-2 gap-5">
           {academyCategories.map((cat) => {
-            const count = getArticlesByCategory(cat.slug).length;
+            const count = getVisibleArticlesByCategory(cat.slug).length;
             const hasPage = Boolean(getCategoryPageArticle(cat.slug)?.content);
             const total = count + (hasPage ? 1 : 0);
             const cover = getCategoryCoverImage(cat.slug);

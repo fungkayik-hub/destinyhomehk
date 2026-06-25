@@ -72,14 +72,22 @@ export default function DailyPageContent({ data, faq, showBreadcrumb = false }: 
             結婚擇日
           </Link>
           <span className="text-destiny-purple/30">·</span>
-          <Link href="/academy/daily-insights" className="text-destiny-gold hover:underline">
-            流日文章
+          <Link href="/academy/geju" className="text-destiny-gold hover:underline">
+            紫微格局
           </Link>
           {override?.articleUrl && (
             <>
               <span className="text-destiny-purple/30">·</span>
               <Link href={override.articleUrl} className="text-destiny-gold hover:underline">
-                今日格局詳文
+                今日格局 ①
+              </Link>
+            </>
+          )}
+          {override?.articleUrl2 && (
+            <>
+              <span className="text-destiny-purple/30">·</span>
+              <Link href={override.articleUrl2} className="text-destiny-gold hover:underline">
+                今日格局 ②
               </Link>
             </>
           )}
