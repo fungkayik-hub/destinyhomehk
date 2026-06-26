@@ -26,8 +26,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["Noto Serif TC", "Songti TC", "PMingLiU", "serif"],
-        sans: ["Noto Sans TC", "PingFang TC", "Helvetica Neue", "sans-serif"],
+        display: ["var(--font-noto-serif)", "Noto Serif TC", "Songti TC", "PMingLiU", "serif"],
+        sans: ["var(--font-noto-sans)", "Noto Sans TC", "PingFang TC", "Helvetica Neue", "sans-serif"],
       },
     },
   },

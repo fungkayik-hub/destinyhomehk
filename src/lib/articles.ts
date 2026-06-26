@@ -24,7 +24,14 @@ export function prepareArticleHtml(html: string): string {
   return html
     .replace(/_\d+x\d+\./g, ".")
     .replace(/src="(\/images\/site\/[^"?]+)(\?[^"]*)?"/g, 'src="$1"')
-    .replace(/<img(?![^>]*loading=)/gi, '<img loading="lazy"');
+    .replace(/<img([^>]*)>/gi, (_match, attrs: string) => {
+      let a = attrs;
+      if (!/\bloading=/i.test(a)) a += ' loading="lazy"';
+      if (!/\bwidth=/i.test(a)) a += ' width="800"';
+      if (!/\bheight=/i.test(a)) a += ' height="533"';
+      if (!/\bdecoding=/i.test(a)) a += ' decoding="async"';
+      return `<img${a}>`;
+    });
 }
 
 /** 移除 Shopify 模板殘留 HTML */

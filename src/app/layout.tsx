@@ -4,6 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import JsonLd from "@/components/JsonLd";
+import { notoSansTC, notoSerifTC } from "@/lib/fonts";
 import { siteConfig } from "@/lib/site-config";
 import { LOCAL_SEO_KEYWORDS } from "@/lib/seo";
 import { getSiteUrl } from "@/lib/site-url";
@@ -71,16 +72,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-HK">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="font-sans antialiased bg-destiny-cream text-destiny-ink min-h-screen flex flex-col">
+    <html lang="zh-HK" className={`${notoSansTC.variable} ${notoSerifTC.variable}`}>
+      <body className={`${notoSansTC.className} antialiased bg-destiny-cream text-destiny-ink min-h-screen flex flex-col`}>
         <JsonLd />
         <AnnouncementBar />
         <Header />

@@ -23,6 +23,12 @@ const BLOG_CATEGORY_REDIRECTS: Record<string, string> = {
   "/blogs/refund-policy/refund-policy": "/booking",
 };
 
+/** GSC / 舊連結錯字（據設 → 擺設） */
+const TYPO_REDIRECTS: Record<string, string> = {
+  "/blogs/sunny%E8%AB%87%E9%A2%A8%E6%B0%B4/2022-%E4%B9%9D%E5%AE%AE%E9%A3%9B%E6%98%9F%E5%9C%96%E5%8F%8A%E6%93%9A%E8%A8%AD":
+    "/academy/feng-shui/2022-%E4%B9%9D%E5%AE%AE%E9%A3%9B%E6%98%9F%E5%9C%96%E5%8F%8A%E6%93%BA%E8%A8%AD",
+};
+
 /** 旧 Shopify 固定页面 */
 const STATIC_PAGE_REDIRECTS: Record<string, string> = {
   "/pages/about-us": "/about",
@@ -61,6 +67,9 @@ function register(map: Map<string, string>, source: string, destination: string)
 export function shopifyRedirects(): Redirect[] {
   const map = new Map<string, string>();
 
+  for (const [source, destination] of Object.entries(TYPO_REDIRECTS)) {
+    register(map, source, destination);
+  }
   for (const [source, destination] of Object.entries(BLOG_CATEGORY_REDIRECTS)) {
     register(map, source, destination);
   }

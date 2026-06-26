@@ -18,7 +18,8 @@ export default function Header() {
           <SiteImage
             src={siteImages.logo}
             alt="Destiny Home"
-            width={100}
+            width={44}
+            height={44}
             priority
             className="w-11 h-11 rounded-full object-cover ring-2 ring-destiny-gold/30"
           />

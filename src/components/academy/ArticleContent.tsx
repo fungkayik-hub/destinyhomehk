@@ -25,8 +25,11 @@ export function ArticleHero({ image, title }: { image: string | null; title: str
       <img
         src={src}
         alt={title}
+        width={1200}
+        height={675}
         className="w-full h-full object-cover"
         loading="eager"
+        decoding="async"
       />
     </div>
   );

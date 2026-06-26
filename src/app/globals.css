@@ -54,6 +54,8 @@
   .article-prose img {
     @apply rounded-xl my-3 max-w-full h-auto shadow-sm mx-auto;
     display: block;
+    width: 100%;
+    height: auto;
   }
 
   .article-prose span:has(img) {

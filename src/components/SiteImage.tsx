@@ -4,6 +4,7 @@ interface Props {
   src: string;
   alt: string;
   width?: number;
+  height?: number;
   className?: string;
   priority?: boolean;
   fill?: boolean;
@@ -14,11 +15,13 @@ export default function SiteImage({
   src,
   alt,
   width = 1200,
+  height,
   className = "",
   priority = false,
   fill = false,
 }: Props) {
   const url = imageUrl(src, width);
+  const h = height ?? width;
 
   if (fill) {
     return (
@@ -26,8 +29,11 @@ export default function SiteImage({
       <img
         src={url}
         alt={alt}
+        width={width}
+        height={h}
         className={className}
         loading={priority ? "eager" : "lazy"}
+        decoding="async"
       />
     );
   }
@@ -37,8 +43,11 @@ export default function SiteImage({
     <img
       src={url}
       alt={alt}
+      width={width}
+      height={h}
       className={className}
       loading={priority ? "eager" : "lazy"}
+      decoding="async"
     />
   );
 }
