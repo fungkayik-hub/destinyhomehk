@@ -70,7 +70,7 @@ export const pricingPlans = [
     description: "流月詳批，針對特定問題或年份深入分析。",
     price: "HK$1,000",
     whatsappMessage: "你好，我想做流年單項查詢／問事，請問可預約時間？",
-    imageKey: "chart" as const,
+    imageKey: "annualReading" as const,
   },
   {
     id: "feng-shui",
@@ -137,14 +137,14 @@ export const services = [
     description: "輸入雙方出生資料，探測姻緣指數 — 小徒弟贈言免費，深入合婚請預約師傅。",
     price: "免費",
     href: "/compatibility",
-    imageKey: "chart" as const,
+    imageKey: "compatibility" as const,
   },
   {
     title: "每日流日黃曆",
     description: "今日干支、建除、宜忌、吉凶預報 — 每日更新。",
     price: "免費",
     href: "/daily",
-    imageKey: "chart" as const,
+    imageKey: "daily" as const,
   },
   {
     title: "結婚擇日及吉時",
@@ -158,7 +158,7 @@ export const services = [
     description: "流月詳批，針對特定問題或年份。",
     price: "HK$1,000",
     href: "/booking",
-    imageKey: "chart" as const,
+    imageKey: "annualReading" as const,
   },
   {
     title: "風水陽宅",

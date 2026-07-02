@@ -34,6 +34,9 @@ export const siteImages = {
     fullReading: `${S}/sunny_locker1.jpg`,
     /** 紫微排盤封面 — 本地星盤圖 */
     chart: "/images/chart-cover.png",
+    compatibility: "/images/compatibility-cover.png",
+    daily: "/images/daily-cover.png",
+    annualReading: "/images/annual-reading-cover.png",
     chartLegacy: `${S}/sunny_star1.jpg`,
     datePicker: `${S}/sunny_1.jpg`,
     nameNumerology: `${S}/6.jpg`,
