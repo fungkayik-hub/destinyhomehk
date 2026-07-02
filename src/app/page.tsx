@@ -40,15 +40,18 @@ export default function HomePage() {
           <p className="text-sm text-white/65 mb-8 max-w-lg">
             Sunny 師傅親自調校排盤系統 · 結合傳統玄學與現代技術
           </p>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3">
             <Link href="/chart" className="btn-primary text-center shadow-lg">
               免費即時排盤
+            </Link>
+            <Link href="/book" className="btn-primary text-center shadow-lg bg-white/95 text-destiny-purple hover:bg-white">
+              線上預約
             </Link>
             <a
               href={whatsappUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-secondary text-center shadow-lg bg-white text-black hover:text-destiny-purple"
+              className="btn-secondary text-center shadow-lg bg-white text-black hover:text-destiny-purple border-white/80"
             >
               WhatsApp 預約
             </a>

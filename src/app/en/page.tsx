@@ -28,10 +28,12 @@ export default function EnHomePage() {
       <section className="relative min-h-[420px] md:min-h-[480px] overflow-hidden flex items-center">
         <SiteImage
           src={siteImages.homeHero}
-          alt=""
+          alt="Destiny Home Zi Wei Dou Shu"
           width={1920}
+          fill
           priority
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="object-cover object-center"
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-destiny-purple/88 via-destiny-purple/60 to-destiny-purple/20" />
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 py-14 md:py-20">
@@ -48,15 +50,18 @@ export default function EnHomePage() {
           <p className="text-sm text-white/65 mb-8 max-w-lg">
             No subscription · No sign-up · Unlimited charts on this device
           </p>
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3">
             <Link href="/en/chart" className="btn-primary text-center shadow-lg">
               Free chart now
+            </Link>
+            <Link href="/book" className="btn-primary text-center shadow-lg bg-white/95 text-destiny-purple hover:bg-white">
+              Book online
             </Link>
             <a
               href={whatsappUrl("Hi, I'd like to book a reading with Master Sunny.")}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-secondary text-center shadow-lg"
+              className="btn-secondary text-center shadow-lg bg-white text-black hover:text-destiny-purple border-white/80"
             >
               WhatsApp Master Sunny
             </a>
@@ -83,10 +88,10 @@ export default function EnHomePage() {
           </div>
           <div className="card text-center">
             <p className="text-3xl mb-2">🤝</p>
-            <h2 className="font-display font-bold text-lg mb-2">Real master, not AI-only</h2>
+            <h2 className="font-display font-bold text-lg mb-2">Real master, apprentice notes free</h2>
             <p className="text-sm text-destiny-purple/70">
-              AI is a preview. Full readings (HK$2,000) with decade luck cycles — in person with Master
-              Sunny.
+              Entry-level notes from the apprentice are free. Full readings (HK$2,000) with decade luck
+              cycles — in person with Master Sunny.
             </p>
           </div>
         </div>
