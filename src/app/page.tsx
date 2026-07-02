@@ -8,19 +8,23 @@ import FaqSection from "@/components/FaqSection";
 import { faqJsonLd } from "@/components/JsonLd";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { academyCategories, services, siteConfig, whatsappUrl } from "@/lib/site-config";
-import { getCategoryCoverImage, getCategoryPageArticle, getVisibleArticlesByCategory } from "@/lib/articles";
+import { getCategoryCoverImage, getLatestVisibleArticles, getVisibleArticlesByCategory } from "@/lib/articles";
 import { siteImages } from "@/lib/site-images";
 
 export default function HomePage() {
+  const latestArticles = getLatestVisibleArticles(3);
+
   return (
     <>
       <section className="relative min-h-[420px] md:min-h-[520px] overflow-hidden flex items-center">
         <SiteImage
           src={siteImages.homeHero}
-          alt=""
+          alt="Destiny Home 紫微斗數星盤"
           width={1920}
+          fill
           priority
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          className="object-cover object-center"
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-destiny-purple/88 via-destiny-purple/60 to-destiny-purple/20" />
         <div className="relative z-10 w-full max-w-6xl mx-auto px-4 py-14 md:py-20">
@@ -44,7 +48,7 @@ export default function HomePage() {
               href={whatsappUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-secondary text-center shadow-lg"
+              className="btn-secondary text-center shadow-lg bg-white text-black hover:text-destiny-purple"
             >
               WhatsApp 預約
             </a>
@@ -57,7 +61,9 @@ export default function HomePage() {
           src={siteImages.bannerPrimary}
           alt="Destiny Home"
           width={1920}
-          className="absolute inset-0 w-full h-full object-cover object-center"
+          fill
+          className="object-cover object-center"
+          sizes="100vw"
         />
         <div className="absolute inset-0 bg-destiny-purple/55 flex items-center justify-center px-4">
           <p className="font-display text-white text-base sm:text-lg md:text-2xl font-bold tracking-wide text-center leading-snug">
@@ -73,32 +79,76 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto">
           <h2 className="section-title mb-10">服務項目</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {services.map((s) => (
-              <Link
-                key={s.title}
-                href={s.href}
-                className="card hover:shadow-xl transition-shadow group p-0 overflow-hidden"
-              >
-                <div className="relative h-36 overflow-hidden bg-destiny-cream">
-                  <SiteImage
-                    src={siteImages.services[s.imageKey]}
-                    alt={s.title}
-                    width={600}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-destiny-purple/60 to-transparent" />
-                  <span className="absolute bottom-2 right-2 text-xs bg-destiny-gold text-destiny-purple px-2 py-1 rounded-full font-medium">
-                    {s.price}
-                  </span>
+            {services.map((s) => {
+              const hasSecondary = "secondaryHref" in s && s.secondaryHref;
+              const cardBody = (
+                <>
+                  <div className="relative h-36 overflow-hidden bg-destiny-cream">
+                    <SiteImage
+                      src={siteImages.services[s.imageKey]}
+                      alt={s.title}
+                      width={600}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      sizes="(max-width: 640px) 100vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-destiny-purple/60 to-transparent" />
+                    <span className="absolute bottom-2 right-2 text-xs bg-destiny-gold text-destiny-purple px-2 py-1 rounded-full font-medium">
+                      {s.price}
+                    </span>
+                  </div>
+                  <div className="p-5">
+                    <h3 className="font-display font-bold group-hover:text-destiny-gold transition-colors mb-2">
+                      {s.title}
+                    </h3>
+                    <p className="text-sm text-destiny-purple/70">{s.description}</p>
+                  </div>
+                </>
+              );
+
+              return hasSecondary ? (
+                <div key={s.title} className="card hover:shadow-xl transition-shadow group p-0 overflow-hidden flex flex-col">
+                  <Link href={s.href} className="block flex-1">
+                    <div className="relative h-36 overflow-hidden bg-destiny-cream">
+                      <SiteImage
+                        src={siteImages.services[s.imageKey]}
+                        alt={s.title}
+                        width={600}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        sizes="(max-width: 640px) 100vw, 33vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-destiny-purple/60 to-transparent" />
+                      <span className="absolute bottom-2 right-2 text-xs bg-destiny-gold text-destiny-purple px-2 py-1 rounded-full font-medium">
+                        {s.price}
+                      </span>
+                    </div>
+                    <div className="p-5 pb-2">
+                      <h3 className="font-display font-bold group-hover:text-destiny-gold transition-colors mb-2">
+                        {s.title}
+                      </h3>
+                      <p className="text-sm text-destiny-purple/70">{s.description}</p>
+                    </div>
+                  </Link>
+                  <div className="px-5 pb-5">
+                    <Link
+                      href={s.secondaryHref!}
+                      className="text-xs text-destiny-gold hover:underline"
+                    >
+                      {s.secondaryLabel ?? "了解更多"} →
+                    </Link>
+                  </div>
                 </div>
-                <div className="p-5">
-                  <h3 className="font-display font-bold group-hover:text-destiny-gold transition-colors mb-2">
-                    {s.title}
-                  </h3>
-                  <p className="text-sm text-destiny-purple/70">{s.description}</p>
-                </div>
-              </Link>
-            ))}
+              ) : (
+                <Link
+                  key={s.title}
+                  href={s.href}
+                  className="card hover:shadow-xl transition-shadow group p-0 overflow-hidden"
+                >
+                  {cardBody}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -129,7 +179,9 @@ export default function HomePage() {
                         src={cover}
                         alt={cat.title}
                         width={400}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        sizes="(max-width: 640px) 50vw, 25vw"
                       />
                     </div>
                   )}
@@ -150,6 +202,30 @@ export default function HomePage() {
               瀏覽全部學堂
             </Link>
           </div>
+
+          {latestArticles.length > 0 && (
+            <div className="mt-10 pt-8 border-t border-destiny-purple/10">
+              <h3 className="font-display text-lg font-bold text-destiny-purple mb-4 text-center">
+                最新文章
+              </h3>
+              <div className="space-y-3">
+                {latestArticles.map((article) => (
+                  <Link
+                    key={`${article.category}-${article.slug}`}
+                    href={`/academy/${article.category}/${encodeURIComponent(article.slug)}`}
+                    className="block card hover:shadow-md transition-shadow p-4 group"
+                  >
+                    <p className="text-xs text-destiny-gold mb-1">
+                      {academyCategories.find((c) => c.slug === article.category)?.title ?? article.category}
+                    </p>
+                    <p className="font-display font-bold text-sm group-hover:text-destiny-gold transition-colors line-clamp-2">
+                      {article.title}
+                    </p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -172,7 +248,9 @@ export default function HomePage() {
               src={siteImages.heroPortrait}
               alt="Sunny 師傅"
               width={800}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
             />
           </div>
           <div className="text-center md:text-left">

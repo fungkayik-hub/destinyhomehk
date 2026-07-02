@@ -94,15 +94,16 @@ export const pricingPlans = [
 export const navItems = [
   { href: "/", label: "首頁" },
   { href: "/chart", label: "紫微即時排盤及分析" },
-  { href: "/compatibility", label: "夾桃花配對" },
+  { href: "/compatibility", label: "姻緣探測器" },
   { href: "/daily", label: "每日流日" },
   { href: "/booking", label: "收費詳情及預約師傅" },
   {
     label: "紫微斗數學堂",
     children: [
+      { href: "/academy", label: "學堂首頁" },
+      { href: "/academy/feng-shui", label: "Sunny 談風水" },
       { href: "/academy/name-numerology", label: "台灣姓名學總格" },
       { href: "/academy/history", label: "紫微斗數與子平八字的歷史故事" },
-      { href: "/academy/feng-shui", label: "Sunny 談風水" },
       { href: "/academy/stories", label: "Sunny 講故事" },
       { href: "/academy/ding-pan", label: "天地人盤定盤" },
       { href: "/academy/theory", label: "玄學理論" },
@@ -132,8 +133,8 @@ export const services = [
     imageKey: "chart" as const,
   },
   {
-    title: "夾桃花配對",
-    description: "輸入雙方出生資料，用夫妻宮、命宮交叉睇配對分數同相處提示。",
+    title: "姻緣探測器",
+    description: "輸入雙方出生資料，探測姻緣指數 — 小徒弟贈言免費，深入合婚請預約師傅。",
     price: "免費",
     href: "/compatibility",
     imageKey: "chart" as const,
@@ -161,9 +162,12 @@ export const services = [
   },
   {
     title: "風水陽宅",
-    description: "家居風水勘察，按實用面積 HK$11／尺。",
+    description:
+      "最新：家居磁場位羅盤針轉不停｜預約上門勘察 HK$11／尺。",
     price: "HK$11／尺",
-    href: "/booking",
+    href: "/academy/feng-shui/家居羅盤針轉不停-磁場位",
+    secondaryHref: "/booking",
+    secondaryLabel: "預約風水勘察",
     imageKey: "fengShui" as const,
   },
   {

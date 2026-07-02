@@ -76,6 +76,18 @@ export function getAllArticles(): Article[] {
   return articles;
 }
 
+/** 學堂首頁「最新文章」— 按發佈日期，未到期格局文唔計 */
+export function getLatestVisibleArticles(limit = 5): Article[] {
+  return articles
+    .filter((a) => a.slug !== a.category && isArticlePublished(a))
+    .sort((a, b) => {
+      const da = a.publishedAt?.slice(0, 10) ?? "";
+      const db = b.publishedAt?.slice(0, 10) ?? "";
+      return db.localeCompare(da);
+    })
+    .slice(0, limit);
+}
+
 /** 格局文用 publishedAt（香港日期）排期；其他分類一律可見 */
 export function isArticlePublished(
   article: Article,

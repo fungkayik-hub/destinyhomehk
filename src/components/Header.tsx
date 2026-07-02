@@ -28,11 +28,11 @@ export default function Header() {
           </span>
         </Link>
 
-        <nav className="hidden xl:flex items-center gap-5 text-sm">
+        <nav className="hidden xl:flex items-center gap-3 2xl:gap-4 text-[13px] 2xl:text-sm min-w-0">
           {navItems.map((item) =>
             item.children ? (
-              <div key={item.label} className="relative group">
-                <button className="hover:text-destiny-gold transition-colors flex items-center gap-1">
+              <div key={item.label} className="relative group shrink-0">
+                <button className="hover:text-destiny-gold transition-colors flex items-center gap-1 whitespace-nowrap">
                   {item.label}
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -103,13 +103,11 @@ export default function Header() {
             item.children ? (
               <div key={item.label}>
                 <button
-                  className="w-full text-left py-3 font-medium flex justify-between items-center min-h-[44px]"
+                  className="w-full text-left py-3 font-medium flex justify-between items-center min-h-[44px] gap-3"
                   onClick={() => setAcademyOpen(!academyOpen)}
                 >
-                  <span className={item.label === "紫微斗數學堂" ? "text-sm leading-tight" : ""}>
-                    {item.label}
-                  </span>
-                  <span>{academyOpen ? "−" : "+"}</span>
+                  <span className="text-sm whitespace-nowrap">{item.label}</span>
+                  <span className="shrink-0">{academyOpen ? "−" : "+"}</span>
                 </button>
                 {academyOpen && (
                   <div className="pl-4 pb-2 space-y-1">
