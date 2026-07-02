@@ -70,21 +70,16 @@ export default function Header() {
           >
             Instagram
           </a>
-          <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm py-2 px-4">
-            立即預約
-          </a>
+          <Link href="/book" className="btn-primary text-sm py-2 px-4">
+            網上預約
+          </Link>
         </div>
 
         <div className="flex items-center gap-2 xl:hidden shrink-0">
           <LangSwitch />
-          <a
-            href={whatsappUrl()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary text-xs py-2 px-3.5 min-h-[44px]"
-          >
+          <Link href="/book" className="btn-primary text-xs py-2 px-3.5 min-h-[44px]">
             預約
-          </a>
+          </Link>
           <button
             type="button"
             className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-destiny-purple/5"
@@ -111,7 +106,9 @@ export default function Header() {
                   className="w-full text-left py-3 font-medium flex justify-between items-center min-h-[44px]"
                   onClick={() => setAcademyOpen(!academyOpen)}
                 >
-                  {item.label}
+                  <span className={item.label === "紫微斗數學堂" ? "text-sm leading-tight" : ""}>
+                    {item.label}
+                  </span>
                   <span>{academyOpen ? "−" : "+"}</span>
                 </button>
                 {academyOpen && (
