@@ -36,6 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${site}/wan-chai-ziwei`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${site}/hong-kong-fortune-telling`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${site}/booking`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${site}/book`, lastModified: now, changeFrequency: "monthly", priority: 0.92 },
     { url: `${site}/en`, lastModified: now, changeFrequency: "weekly", priority: 0.85 },
     { url: `${site}/en/chart`, lastModified: now, changeFrequency: "monthly", priority: 0.88 },
     { url: `${site}/en/booking`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
@@ -43,11 +44,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${site}/academy`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
   ];
 
+  const HIGH_PRIORITY_CATEGORIES = new Set(["name-numerology", "ding-pan"]);
+
   const categoryPages: MetadataRoute.Sitemap = academyCategories.map((cat) => ({
     url: `${site}/academy/${cat.slug}`,
     lastModified: now,
     changeFrequency: "weekly" as const,
-    priority: 0.7,
+    priority: HIGH_PRIORITY_CATEGORIES.has(cat.slug) ? 0.9 : 0.7,
   }));
 
   const articlePages: MetadataRoute.Sitemap = getAllArticleParams().map(

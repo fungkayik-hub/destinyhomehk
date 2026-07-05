@@ -4,14 +4,14 @@ const TOOLS = [
   {
     href: "/chart",
     title: "紫微即時排盤",
-    desc: "輸入出生資料，十二宮 AI 分析",
+    desc: "輸入出生資料，十二宮小徒弟贈言",
     tag: "免費",
     keywords: "紫微排盤",
   },
   {
     href: "/compatibility",
-    title: "夾桃花配對",
-    desc: "雙人夫妻宮交叉睇配對分數",
+    title: "姻緣探測器",
+    desc: "雙人夫妻宮交叉探測緣分指數",
     tag: "免費",
     keywords: "合婚、配對",
   },
@@ -28,6 +28,20 @@ const TOOLS = [
     desc: "上頭、過大禮、出門吉時",
     tag: "HK$800",
     keywords: "結婚擇日香港",
+  },
+  {
+    href: "/academy/name-numerology",
+    title: "姓名學總格筆劃",
+    desc: "五格剖象 1–81 吉凶對照表",
+    tag: "學堂",
+    keywords: "姓名學總格",
+  },
+  {
+    href: "/academy/ding-pan",
+    title: "天地人盤定盤",
+    desc: "時辰唔準？中洲派三盤定盤方法",
+    tag: "學堂",
+    keywords: "天地人盤",
   },
   {
     href: "/academy/2026-zodiac",
