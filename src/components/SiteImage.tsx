@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { imageUrl } from "@/lib/site-images";
 
 interface Props {
@@ -8,9 +9,9 @@ interface Props {
   className?: string;
   priority?: boolean;
   fill?: boolean;
+  sizes?: string;
 }
 
-/** 原站 CDN 圖片 — 避免 Next Image 域名限制 */
 export default function SiteImage({
   src,
   alt,
@@ -19,35 +20,33 @@ export default function SiteImage({
   className = "",
   priority = false,
   fill = false,
+  sizes,
 }: Props) {
   const url = imageUrl(src, width);
   const h = height ?? width;
 
   if (fill) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
+      <Image
         src={url}
         alt={alt}
-        width={width}
-        height={h}
+        fill
+        priority={priority}
+        sizes={sizes ?? "100vw"}
         className={className}
-        loading={priority ? "eager" : "lazy"}
-        decoding="async"
       />
     );
   }
 
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
+    <Image
       src={url}
       alt={alt}
       width={width}
       height={h}
+      priority={priority}
+      sizes={sizes ?? `(max-width: 768px) 100vw, ${width}px`}
       className={className}
-      loading={priority ? "eager" : "lazy"}
-      decoding="async"
     />
   );
 }
@@ -83,7 +82,8 @@ export function PageBanner({
         width={1920}
         fill
         priority
-        className="absolute inset-0 w-full h-full object-cover object-center"
+        className="object-cover object-center"
+        sizes="100vw"
       />
       <div className={`absolute inset-0 ${overlayClass}`} />
       <div className="relative z-10 h-full max-w-6xl mx-auto px-4 flex flex-col justify-end pb-8 md:pb-10">

@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   serverExternalPackages: ["iztro", "lunar-lite", "lunar-typescript"],
   images: {
-    remotePatterns: [],
+    formats: ["image/avif", "image/webp"],
   },
   async redirects() {
     return [
