@@ -1,8 +1,9 @@
 {
-  "title": "文章標題（例：夏至流日 — 陽氣最盛點樣養生）",
-  "category": "daily-insights",
+  "title": "文章標題（例：濱景花園玉環帶腰風水 — 沙田馬場對開嘅城門河玉帶環腰格局）",
+  "category": "feng-shui",
   "slug": "可選-唔填就自動由標題生成",
-  "publishedAt": "2026-06-22",
-  "content": "第一段文字。\n\n第二段文字。每日你俾我嘅文章就咁貼入 content 欄位就得。\n\n支援用 \\n\\n 分段。",
-  "image": null
+  "publishedAt": "2026-07-07",
+  "image": "/images/site/sunny_door1.jpg",
+  "contentHtml": "建議用 contentHtml 寫 HTML。最少 1,500 字，要包含：概念解釋、2 段以上例子／故事（師傅個案、歷史地理）、Google Maps 或實用指引、FAQ 至少 3 條、師傅一句。詳見 .cursor/rules/academy-article-style.mdc",
+  "content": "若用 content 欄位，用 \\n\\n 分段；匯入後會轉 <p>。長文建議直接用 contentHtml。"
 }

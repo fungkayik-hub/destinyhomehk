@@ -1,0 +1,46 @@
+---
+description: 學堂 SEO 長文寫作標準 — 字數、例子、故事、更新流程
+globs: content/inbox/**/*.json,src/data/articles.json
+alwaysApply: false
+---
+
+# 學堂 SEO 文章寫作標準
+
+撰寫或修改 `content/inbox/article.json` 及 `src/data/articles.json` 內學堂文章時，必須遵守：
+
+## 字數
+
+- **最少 1,500 字**（繁體中文），風水／格局類目標 **1,800–2,500 字**
+- 用戶話「太短」時，至少加 **500 字** 有內容嘅段落，唔係灌水
+
+## 必須包含
+
+1. **開場** — 點解讀者要睇、關鍵地名／關鍵詞
+2. **概念解釋** — 淺白定義（可連結相關舊文）
+3. **例子或故事** — 至少 **2 段**：
+   - 師傅見過嘅客人個案（匿名、合理細節）
+   - 歷史／地理小故事（例如城門河造新市鎮、北角漁村）
+4. **實用指引** — Google Maps／點樣自己檢查／預約 CTA
+5. **常見問題** — 至少 3 條 Q&A（利 SEO 摘要）
+6. **師傅一句** — 收束金句
+
+## 語氣
+
+- 廣東話書面語，同現有學堂文一致
+- 用 `<strong>` 標重點詞，唔好過度加粗
+- 內鏈：`/booking`、`/chart`、`/academy/feng-shui/...`
+
+## 更新流程（每次改文必做）
+
+改完內容後 **全部同步更新**：
+
+1. `src/data/articles.json` — 正式資料
+2. `content/inbox/done/YYYY-MM-DD-{slug}.json` — 備份（有則改，無則建）
+3. 執行 `npm run import-article` 若從 inbox 匯入；或直接改 `articles.json`
+4. commit + push 先算「出咗」
+
+## 唔好
+
+- 只有定義清單、冇故事嘅短文
+- 只改 inbox 唔改 `articles.json`
+- 虛構具體姓名、電話、單位號
