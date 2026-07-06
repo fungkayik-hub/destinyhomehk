@@ -1,4 +1,5 @@
 import { astro } from "iztro";
+import { buildDecadalTimeline } from "./chart-decadal";
 import type { BirthInput, PalaceInfo, StarPlacement, ZiWeiChart } from "./types";
 import { hourMinuteToTimeIndex, formatSolarDate } from "./time";
 import { applyTrueSolarTime } from "./true-solar-time";
@@ -181,6 +182,7 @@ export function generateChart(input: BirthInput): ZiWeiChart {
     shenPalaceBranch: astrolabe.earthlyBranchOfBodyPalace,
     fiveElement: astrolabe.fiveElementsClass,
     palaces: orderedPalaces,
+    decadalTimeline: buildDecadalTimeline(astrolabe.palaces),
     summary: buildSummary({
       fiveElementsClass: astrolabe.fiveElementsClass,
       earthlyBranchOfSoulPalace: astrolabe.earthlyBranchOfSoulPalace,

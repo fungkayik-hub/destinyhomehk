@@ -10,6 +10,11 @@ out/
 # production
 build/
 
+# local booking store (dev without Postgres)
+data/bookings.json
+data/palace-reports.json
+data/fortune-stick-draws.json
+
 # misc
 .DS_Store
 *.pem
@@ -22,3 +27,12 @@ npm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local booking store (dev only)
+data/bookings.json
+
+# pulled production env for local diagnosis only
+.env.production.test
+
+.vercel
+.env*

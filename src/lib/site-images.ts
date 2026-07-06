@@ -13,7 +13,7 @@ export function imageUrl(url: string, _width?: number): string {
 const S = "/images/site";
 
 export const siteImages = {
-  logo: `${S}/Adobe_Express_-_file.png`,
+  logo: `${S}/logo.svg`,
   heroPortrait: `${S}/WhatsApp_Image_2022-07-22_at_2.39.31_PM.webp`,
   /** 師傅專業照 */
   sunnyStudio: `${S}/10.18CharlotteSunny6242QP.jpg`,

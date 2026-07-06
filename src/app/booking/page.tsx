@@ -126,8 +126,20 @@ export default async function BookingPage({ searchParams }: Props) {
           </Link>
         </div>
 
+        <div className="max-w-3xl mx-auto card text-center border-2 border-destiny-gold/40 bg-gradient-to-b from-destiny-gold/5 to-transparent mb-6">
+          <h2 className="font-display text-xl font-bold text-destiny-purple mb-2">
+            網上預約
+          </h2>
+          <p className="text-sm text-destiny-purple/70 mb-4">
+            日歷揀日期同時間，留姓名電話即可 — 星期一至六 12:00–20:00，每日最多 4 個。
+          </p>
+          <Link href="/book" className="btn-primary">
+            立即網上預約
+          </Link>
+        </div>
+
         <div className="max-w-3xl mx-auto card text-center">
-          <h2 className="font-display text-lg font-bold mb-3">預約方式</h2>
+          <h2 className="font-display text-lg font-bold mb-3">或 WhatsApp 預約</h2>
           <p className="text-sm text-destiny-purple/70 mb-2">
             WhatsApp{" "}
             <a href={`tel:${siteConfig.phone.replace(/\s/g, "")}`} className="text-destiny-gold">

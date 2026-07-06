@@ -4,9 +4,9 @@ export const siteConfig = {
   description:
     "灣仔 Destiny Home｜紫微斗數全批 HK$2,000、免費排盤、結婚擇日、台灣姓名學總格改名。過千 Google 好評，WhatsApp 預約 Sunny 師傅親批。",
   announcement:
-    "可能係最體貼嘅紫微斗數師傅 🤍🤍🤍 已達過千客人真實好評‼️請到 IG 查詢好評，不斷更新",
-  announcementShort: "過千真實好評 ⭐ 4.9 · ViuTV · 企業風水講座",
-  logo: "/images/site/Adobe_Express_-_file.png",
+    "可能係最體貼嘅紫微斗數師傅 🤍🤍🤍 已達過千客人真實好評‼️ IG 同 Google 都有評價，不斷更新",
+  announcementShort: "過千真實好評 ⭐ 4.9 · IG + Google · ViuTV",
+  logo: "/images/site/logo.svg",
   heroImage:
     "/images/site/10.18CharlotteSunny6242QP.jpg",
   instagram: "https://www.instagram.com/destiny_home_/",
@@ -50,6 +50,7 @@ export const pricingPlans = [
     description:
       "個人運程、婚姻、身心靈、事業、財運、父母、子女、兄弟、田宅、人緣、移民、健康等；含大限十年及流年分析。",
     price: "HK$2,000",
+    onlinePayment: false,
     whatsappMessage: "你好，我想預約全批，請問可預約時間同需要咩資料？",
     imageKey: "fullReading" as const,
     highlight: true,
@@ -60,6 +61,7 @@ export const pricingPlans = [
     duration: "需時 15–30 分鐘",
     description: "上頭、過大禮、出門、入門等結婚吉時擇日。",
     price: "HK$800",
+    onlinePayment: false,
     whatsappMessage: "你好，我想預約擇日及吉時（結婚），請問收費同需要咩資料？",
     imageKey: "datePicker" as const,
   },
@@ -69,6 +71,7 @@ export const pricingPlans = [
     duration: "需時 30–45 分鐘",
     description: "流月詳批，針對特定問題或年份深入分析。",
     price: "HK$1,000",
+    onlinePayment: false,
     whatsappMessage: "你好，我想做流年單項查詢／問事，請問可預約時間？",
     imageKey: "annualReading" as const,
   },
@@ -78,6 +81,7 @@ export const pricingPlans = [
     description: "家居風水勘察及佈局建議，按實用面積計算。",
     price: "HK$11／尺",
     priceNote: "（實用尺）",
+    onlinePayment: false,
     whatsappMessage: "你好，我想預約風水陽宅，請問點計費同需要咩資料？",
     imageKey: "fengShui" as const,
   },
@@ -86,34 +90,178 @@ export const pricingPlans = [
     title: "擇日擇時生孩／改名",
     description: "包括 8 個名字建議及 15–30 分鐘電話講解。",
     price: "HK$3,800",
+    onlinePayment: false,
     whatsappMessage: "你好，我想預約擇日擇時生孩／改名，請問流程同需要咩資料？",
     imageKey: "nameNumerology" as const,
   },
 ] as const;
 
-export const navItems = [
-  { href: "/", label: "首頁" },
-  { href: "/chart", label: "紫微即時排盤及分析" },
-  { href: "/compatibility", label: "姻緣探測器" },
-  { href: "/daily", label: "每日流日" },
-  { href: "/booking", label: "收費詳情及預約師傅" },
+/** 學堂分類群組 — 導航、學堂首頁、頁尾共用 */
+export const academyCategoryGroups = [
+  { id: "ziwei", label: "紫微斗數" },
+  { id: "life", label: "風水 · 姓名 · 流年" },
+  { id: "sharing", label: "師傅分享" },
+] as const;
+
+export type AcademyGroupId = (typeof academyCategoryGroups)[number]["id"];
+
+export interface AcademyCategory {
+  slug: string;
+  group: AcademyGroupId;
+  title: string;
+  /** 導航／頁尾用短標題；省略則用 title */
+  navLabel?: string;
+  description: string;
+  /** 首頁學堂區塊展示 */
+  featured?: boolean;
+}
+
+export const academyCategories: AcademyCategory[] = [
   {
-    label: "紫微斗數學堂",
-    children: [
-      { href: "/academy", label: "學堂首頁" },
-      { href: "/academy/feng-shui", label: "Sunny 談風水" },
-      { href: "/academy/name-numerology", label: "台灣姓名學總格" },
-      { href: "/academy/history", label: "紫微斗數與子平八字的歷史故事" },
-      { href: "/academy/stories", label: "Sunny 講故事" },
-      { href: "/academy/ding-pan", label: "天地人盤定盤" },
-      { href: "/academy/theory", label: "玄學理論" },
-      { href: "/academy/2026-zodiac", label: "2026 十二生肖流年" },
-      { href: "/academy/stars", label: "十四主星專題" },
-      { href: "/academy/geju", label: "紫微格局（吉格凶格）" },
-      { href: "/academy/instagram", label: "Sunny IG 精選" },
-      { href: "/academy/daily-insights", label: "流日點撥文章" },
-    ],
+    slug: "stars",
+    group: "ziwei",
+    title: "十四主星專題",
+    description: "紫微斗數十四主星逐一解析。",
+    featured: true,
   },
+  {
+    slug: "geju",
+    group: "ziwei",
+    title: "紫微格局（吉格凶格）",
+    navLabel: "紫微格局",
+    description:
+      "極向離明、君臣慶會、日月反背等吉格凶格逐一解析 — 配合免費排盤了解你命盤。",
+    featured: true,
+  },
+  {
+    slug: "ding-pan",
+    group: "ziwei",
+    title: "天地人盤定盤",
+    description:
+      "中洲派天地人三盤定盤方法 — 時辰唔準點算？Sunny 師傅灣仔全批定盤 HK$2,000，配合免費紫微排盤試用。",
+    featured: true,
+  },
+  {
+    slug: "theory",
+    group: "ziwei",
+    title: "玄學理論",
+    description: "統計學與玄學、顏色論等核心理論。",
+  },
+  {
+    slug: "history",
+    group: "ziwei",
+    title: "紫微斗數與子平八字的歷史故事",
+    navLabel: "命理歷史故事",
+    description: "探索兩大命理体系的歷史淵源與發展。",
+  },
+  {
+    slug: "feng-shui",
+    group: "life",
+    title: "Sunny 談風水",
+    description: "家居風水、玄關佈局、九宮飛星等實用風水知識。",
+    featured: true,
+  },
+  {
+    slug: "name-numerology",
+    group: "life",
+    title: "台灣姓名學總格",
+    navLabel: "姓名學總格",
+    description:
+      "台灣姓名學五格剖象：天格、人格、地格、外格、總格筆劃吉凶對照。Destiny Home Sunny 師傅提供香港改名諮詢（HK$3,800）。",
+    featured: true,
+  },
+  {
+    slug: "2026-zodiac",
+    group: "life",
+    title: "2026 十二生肖流年",
+    navLabel: "2026 生肖流年",
+    description: "2026 年各生肖流年運勢分析。",
+    featured: true,
+  },
+  {
+    slug: "stories",
+    group: "sharing",
+    title: "Sunny 講故事",
+    description: "命理故事、人生感悟，以淺白方式分享玄學智慧。",
+    featured: true,
+  },
+  {
+    slug: "daily-insights",
+    group: "sharing",
+    title: "流日點撥文章",
+    description: "Sunny 師傅每日流日解讀、黃曆宜忌延伸文章。",
+    featured: true,
+  },
+  {
+    slug: "instagram",
+    group: "sharing",
+    title: "Sunny IG 精選",
+    description: "Destiny Home Instagram 最新命理、風水、流年分享 — 同步網站方便搜尋。",
+  },
+];
+
+export function getAcademyNavLabel(cat: AcademyCategory) {
+  return cat.navLabel ?? cat.title;
+}
+
+export function getAcademyCategoriesByGroup(group: AcademyGroupId) {
+  return academyCategories.filter((c) => c.group === group);
+}
+
+export function getFeaturedAcademyCategories() {
+  return academyCategories.filter((c) => c.featured);
+}
+
+const toolNavChildren = [
+  { href: "/chart", label: "紫微排盤" },
+  { href: "/compatibility", label: "姻緣探測器" },
+  { href: "/qiu-qian", label: "線上求籤" },
+  { href: "/daily", label: "每日流日" },
+  { href: "/wedding-date", label: "結婚擇日" },
+] as const;
+
+export const academyNavChildren = [
+  { href: "/academy", label: "學堂首頁" },
+  ...academyCategories.map((cat) => ({
+    href: `/academy/${cat.slug}`,
+    label: getAcademyNavLabel(cat),
+  })),
+];
+
+export const academyNavSections = [
+  {
+    label: "總覽",
+    items: [{ href: "/academy", label: "學堂首頁" }],
+  },
+  ...academyCategoryGroups.map((group) => ({
+    label: group.label,
+    items: getAcademyCategoriesByGroup(group.id).map((cat) => ({
+      href: `/academy/${cat.slug}`,
+      label: getAcademyNavLabel(cat),
+    })),
+  })),
+];
+
+export interface NavLink {
+  href: string;
+  label: string;
+}
+
+export interface NavSection {
+  label: string;
+  items: NavLink[];
+}
+
+export type NavItem =
+  | { href: string; label: string }
+  | { label: string; children: NavLink[] }
+  | { label: string; sections: NavSection[] };
+
+export const navItems: NavItem[] = [
+  { href: "/", label: "首頁" },
+  { label: "免費工具", children: [...toolNavChildren] },
+  { label: "學堂", sections: academyNavSections },
+  { href: "/booking", label: "收費預約" },
   { href: "/about", label: "關於師傅" },
 ];
 
@@ -131,6 +279,13 @@ export const services = [
     price: "免費",
     href: "/chart",
     imageKey: "chart" as const,
+  },
+  {
+    title: "線上求籤",
+    description: "一事一問觀音靈籤 — 免費睇籤詩，HK$38 小徒弟 AI 解讀，深入問事請預約師傅。",
+    price: "免費起",
+    href: "/qiu-qian",
+    imageKey: "daily" as const,
   },
   {
     title: "姻緣探測器",
@@ -188,67 +343,6 @@ export const youtubeVideos = [
   {
     id: "XiedYrcA9DU",
     title: "【Sunny 笑住講】EP01 - 玄學與顏色（5 分鐘幫你找出人生方向）",
-  },
-];
-
-export const academyCategories = [
-  {
-    slug: "name-numerology",
-    title: "台灣姓名學總格／總筆劃吉凶",
-    description:
-      "台灣姓名學五格剖象：天格、人格、地格、外格、總格筆劃吉凶對照。Destiny Home Sunny 師傅提供香港改名諮詢（HK$3,800）。",
-  },
-  {
-    slug: "history",
-    title: "紫微斗數與子平八字的歷史故事",
-    description: "探索兩大命理体系的歷史淵源與發展。",
-  },
-  {
-    slug: "feng-shui",
-    title: "Sunny 談風水",
-    description: "家居風水、玄關佈局、九宮飛星等實用風水知識。",
-  },
-  {
-    slug: "stories",
-    title: "Sunny 講故事",
-    description: "命理故事、人生感悟，以淺白方式分享玄學智慧。",
-  },
-  {
-    slug: "ding-pan",
-    title: "紫微斗數天地人盤定盤",
-    description:
-      "中洲派天地人三盤定盤方法 — 時辰唔準點算？Sunny 師傅灣仔全批定盤 HK$2,000，配合免費紫微排盤試用。",
-  },
-  {
-    slug: "theory",
-    title: "玄學理論",
-    description: "統計學與玄學、顏色論等核心理論。",
-  },
-  {
-    slug: "2026-zodiac",
-    title: "2026 十二生肖流年",
-    description: "2026 年各生肖流年運勢分析。",
-  },
-  {
-    slug: "stars",
-    title: "十四主星專題",
-    description: "紫微斗數十四主星逐一解析。",
-  },
-  {
-    slug: "instagram",
-    title: "Sunny IG 精選",
-    description: "Destiny Home Instagram 最新命理、風水、流年分享 — 同步網站方便搜尋。",
-  },
-  {
-    slug: "daily-insights",
-    title: "流日點撥文章",
-    description: "Sunny 師傅每日流日解讀、黃曆宜忌延伸文章。",
-  },
-  {
-    slug: "geju",
-    title: "紫微斗數格局（吉格凶格）",
-    description:
-      "極向離明、君臣慶會、日月反背等吉格凶格逐一解析 — 配合免費排盤了解你命盤。",
   },
 ];
 

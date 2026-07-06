@@ -58,3 +58,19 @@ export function birthInputFromSearchParams(
 
   return { submitted: true, input };
 }
+
+/** 出生資料 → chart URL query（付款成功跳返排盤用） */
+export function birthInputToSearchParams(input: BirthInput): URLSearchParams {
+  const params = new URLSearchParams();
+  params.set("year", String(input.year));
+  params.set("month", String(input.month));
+  params.set("day", String(input.day));
+  params.set("hour", String(input.hour));
+  params.set("minute", String(input.minute));
+  params.set("gender", input.gender);
+  params.set("calendarType", input.calendarType);
+  if (input.isLeapMonth) params.set("isLeapMonth", "1");
+  if (input.birthPlaceId) params.set("birthPlaceId", input.birthPlaceId);
+  if (input.useTrueSolarTime === false) params.set("useTrueSolarTime", "0");
+  return params;
+}

@@ -1,4 +1,5 @@
 import type { PalaceScore } from "@/lib/ai/types";
+import { getApprenticeCopy } from "@/lib/apprentice-copy";
 import { SCORE_LABEL_TEXT } from "@/lib/palace-score-styles";
 
 interface Props {
@@ -29,10 +30,11 @@ export default function PalaceScoreBadge({ score, variant = "inline" }: Props) {
   );
 }
 
-export function PalaceScoresLegend() {
+export function PalaceScoresLegend({ locale = "zh" }: { locale?: "zh" | "en" }) {
+  const copy = getApprenticeCopy(locale);
   return (
     <p className="text-xs text-destiny-muted text-center">
-      評分僅供參考（AI 估算），非師傅親批。
+      {copy.scoreLegend}
     </p>
   );
 }

@@ -28,18 +28,24 @@ interface ChatMessage {
 export async function chatComplete(
   messages: ChatMessage[],
   maxTokens: number,
+  options?: { temperature?: number },
 ): Promise<{ text: string; provider: AiProvider }> {
   const provider = getAiProvider();
+  const temperature = options?.temperature ?? 0.7;
 
   if (provider === "azure") {
-    return { text: await callAzureOpenAI(messages, maxTokens), provider: "azure" };
+    return {
+      text: await callAzureOpenAI(messages, maxTokens, temperature),
+      provider: "azure",
+    };
   }
-  return { text: await callOpenAI(messages, maxTokens), provider: "openai" };
+  return { text: await callOpenAI(messages, maxTokens, temperature), provider: "openai" };
 }
 
 async function callAzureOpenAI(
   messages: ChatMessage[],
   maxTokens: number,
+  temperature: number,
 ): Promise<string> {
   const endpoint = process.env.AZURE_OPENAI_ENDPOINT!.replace(/\/$/, "");
   const apiKey = process.env.AZURE_OPENAI_API_KEY!;
@@ -59,7 +65,7 @@ async function callAzureOpenAI(
     body: JSON.stringify({
       messages,
       max_tokens: maxTokens,
-      temperature: 0.7,
+      temperature,
     }),
     signal: AbortSignal.timeout(60_000),
   });
@@ -75,6 +81,7 @@ async function callAzureOpenAI(
 async function callOpenAI(
   messages: ChatMessage[],
   maxTokens: number,
+  temperature: number,
 ): Promise<string> {
   const apiKey = process.env.OPENAI_API_KEY!;
   const model = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
@@ -89,7 +96,7 @@ async function callOpenAI(
       model,
       messages,
       max_tokens: maxTokens,
-      temperature: 0.7,
+      temperature,
     }),
     signal: AbortSignal.timeout(60_000),
   });

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ZiWeiChart } from "@/lib/ziwei";
 import type { PalaceScore } from "@/lib/ai/types";
+import { apprenticeCopy } from "@/lib/apprentice-copy";
 import { SCORE_LABEL_TEXT } from "@/lib/palace-score-styles";
 import { PalaceStars, PalaceTags, type PalaceLayoutProps } from "./palace-shared";
 
@@ -56,7 +57,7 @@ export default function ChartPalacesRanked({
                 </div>
                 <PalaceStars palace={palace} />
                 <p className="text-xs text-destiny-gold mt-1">
-                  {selected ? "↓ 分析在下方" : "點擊睇 AI 分析 →"}
+                  {selected ? "↓ 贈言在下方" : apprenticeCopy.clickForAnalysis}
                 </p>
               </div>
             </div>

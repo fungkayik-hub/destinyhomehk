@@ -1,6 +1,6 @@
 export type CompatibilityLabel =
-  | "超夾"
-  | "幾夾"
+  | "緣分深厚"
+  | "相處順遂"
   | "尚可"
   | "要多溝通"
   | "要用心經營";

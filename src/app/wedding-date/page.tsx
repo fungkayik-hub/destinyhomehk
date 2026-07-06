@@ -114,7 +114,7 @@ export default function WeddingDatePage() {
             </Link>
             <span className="text-destiny-purple/30">·</span>
             <Link href="/compatibility" className="text-destiny-gold hover:underline">
-              夾桃花配對
+              姻緣探測器
             </Link>
             <span className="text-destiny-purple/30">·</span>
             <Link href="/booking" className="text-destiny-gold hover:underline">

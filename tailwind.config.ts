@@ -26,8 +26,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ["var(--font-noto-serif)", "Noto Serif TC", "Songti TC", "PMingLiU", "serif"],
         sans: ["var(--font-noto-sans)", "Noto Sans TC", "PingFang TC", "Helvetica Neue", "sans-serif"],
+        serif: ["var(--font-lxgw-wenkai)", "LXGW WenKai TC", "KaiTi", "serif"],
+        display: ["var(--font-noto-serif)", "Noto Serif TC", "Songti TC", "PMingLiU", "serif"],
       },
     },
   },

@@ -29,7 +29,7 @@ export async function getCachedCompatibilityResults(personA: BirthInput, personB
       const result = await analyzeCompatibility(chartA, chartB);
       return { chartA, chartB, result };
     },
-    ["compatibility-v1", key],
+    ["compatibility-v2", key],
     { revalidate: 86400 },
   )();
 }

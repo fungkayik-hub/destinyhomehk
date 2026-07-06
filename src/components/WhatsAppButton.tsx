@@ -1,4 +1,7 @@
+"use client";
+
 import { siteConfig, whatsappUrl } from "@/lib/site-config";
+import { trackEvent } from "@/components/GoogleAnalytics";
 
 export default function WhatsAppButton() {
   return (
@@ -6,6 +9,7 @@ export default function WhatsAppButton() {
       href={whatsappUrl()}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => trackEvent("whatsapp_click", { location: "floating_button" })}
       className="fixed bottom-5 right-4 sm:bottom-6 sm:right-6 z-50 flex items-center gap-2 bg-[#25D366] text-white pl-4 pr-5 py-3 rounded-full shadow-lg hover:scale-105 transition-transform mb-[env(safe-area-inset-bottom)]"
       aria-label={siteConfig.whatsapp.label}
     >

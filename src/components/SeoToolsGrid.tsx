@@ -2,6 +2,13 @@ import Link from "next/link";
 
 const TOOLS = [
   {
+    href: "/qiu-qian",
+    title: "線上求籤",
+    desc: "一事一問 · 免費睇籤詩 · HK$38 AI 解籤",
+    tag: "新",
+    keywords: "觀音靈籤、求籤",
+  },
+  {
     href: "/chart",
     title: "紫微即時排盤",
     desc: "輸入出生資料，十二宮小徒弟贈言",

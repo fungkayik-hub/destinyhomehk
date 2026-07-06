@@ -1,5 +1,6 @@
 import type { ZiWeiChart } from "@/lib/ziwei";
 import type { PalaceScore } from "@/lib/ai/types";
+import { apprenticeCopy } from "@/lib/apprentice-copy";
 import { PalaceCard, type PalaceLayoutProps } from "./palace-shared";
 
 interface Props extends PalaceLayoutProps {
@@ -63,7 +64,7 @@ export default function ChartPalacesClassic({
             <br />
             身宮 · {chart.shenPalaceBranch}
           </p>
-          <p className="text-white/55 text-xs mt-2">點擊外圍宮位睇 AI 分析</p>
+          <p className="text-white/55 text-xs mt-2">{apprenticeCopy.clickPalaceHint}</p>
         </div>
       </div>
     </div>

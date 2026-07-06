@@ -1,12 +1,13 @@
 import type { ZiWeiChart } from "@/lib/ziwei";
 import type { PalaceAnalysis } from "@/lib/ai/types";
+import { apprenticeCopy } from "@/lib/apprentice-copy";
 
 interface Props {
   chart: ZiWeiChart;
   focusPalace: PalaceAnalysis;
 }
 
-/** 當前選中宮位的 AI 分析（服務端預生成） */
+/** 當前選中宮位的小徒弟贈言（服務端預生成） */
 export default function ChartPalaceAnalysis({ chart, focusPalace }: Props) {
   const palace = chart.palaces.find((p) => p.name === focusPalace.palace);
   const stars =
@@ -20,10 +21,10 @@ export default function ChartPalaceAnalysis({ chart, focusPalace }: Props) {
       <div className="card border-l-4 border-l-destiny-gold bg-gradient-to-r from-destiny-gold/8 to-transparent">
         <div className="flex flex-wrap items-center gap-2 mb-3">
           <span className="text-xs font-medium bg-destiny-gold text-destiny-purple px-2 py-0.5 rounded">
-            AI Sunny 師傅
+            {apprenticeCopy.shortBadge}
           </span>
           <h3 className="font-display text-lg font-bold">{focusPalace.palace}分析</h3>
-          <span className="text-xs text-destiny-purple/40 ml-auto">約 200 字 · 免費</span>
+          <span className="text-xs text-destiny-purple/40 ml-auto">入門贈言 · 免費</span>
         </div>
 
         {palace && (
@@ -35,9 +36,10 @@ export default function ChartPalaceAnalysis({ chart, focusPalace }: Props) {
         <p className="text-destiny-purple/85 leading-relaxed text-base">{focusPalace.text}</p>
 
         <p className="text-xs text-destiny-purple/45 mt-4 leading-relaxed">
-          以上為 AI 按命盤自動生成，模仿 Sunny 師傅語氣，僅供參考。
-          <strong className="text-destiny-purple/60"> 非師傅親批</strong>，定盤請 WhatsApp 預約。
-          可按上面其他宮位睇唔同分析。
+          {apprenticeCopy.analysisDisclaimer}
+          <strong className="text-destiny-purple/60"> {apprenticeCopy.notMasterNote}</strong>，
+          {apprenticeCopy.dingPanNote}。
+          可按上面其他宮位睇唔同贈言。
         </p>
       </div>
     </section>

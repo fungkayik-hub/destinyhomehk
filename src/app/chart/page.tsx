@@ -6,15 +6,21 @@ import FaqSection from "@/components/FaqSection";
 import { faqJsonLd } from "@/components/JsonLd";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { getCachedChartResults } from "@/lib/chart-analysis-cache";
+import { buildChartKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
 import { parseChartLayout, parseFocusPalace } from "@/lib/chart-layout";
+import {
+  getReportContentsForChart,
+  getUnlockedPalaces,
+} from "@/lib/palace-report/store";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
+import type { PalaceName } from "@/lib/ziwei/types";
 
 export const metadata: Metadata = buildPageMetadata({
   title: "紫微斗數天地人盤排盤 — 免費即時十二宮",
   description:
-    "免費香港紫微斗數天地人盤排盤 — 無限次、真太陽時校正、中洲派十二宮 AI 分析。時辰唔準可參考定盤或預約 Sunny 師傅全批。",
+    "免費香港紫微斗數天地人盤排盤 — 無限次、真太陽時校正、中洲派十二宮小徒弟贈言。時辰唔準可參考定盤或預約 Sunny 師傅全批。",
   path: "/chart",
   image: siteImages.services.chart,
   keywords: [
@@ -56,6 +62,15 @@ export default async function ChartPage({
     ? parseFocusPalace(sp, chart.palaces.find((p) => p.isSoulPalace)?.name ?? "命宮")
     : parseFocusPalace(sp);
 
+  let unlockedPalaces: PalaceName[] = [];
+  let reportTexts: Partial<Record<PalaceName, string>> = {};
+  if (parsed.submitted && !parsed.error) {
+    const chartKey = buildChartKey(parsed.input);
+    unlockedPalaces = await getUnlockedPalaces(chartKey);
+    const contents = await getReportContentsForChart(chartKey);
+    reportTexts = Object.fromEntries(contents.map((c) => [c.palace, c.text]));
+  }
+
   return (
     <>
       <PageBanner
@@ -76,6 +91,8 @@ export default async function ChartPage({
               focusPalace={focusPalace}
               layout={layout}
               searchParams={sp}
+              unlockedPalaces={unlockedPalaces}
+              reportTexts={reportTexts}
               locale="zh"
             />
           </div>

@@ -1,5 +1,6 @@
 import type { BirthInput } from "@/lib/ziwei";
 import { getShichenLabel, hourMinuteToTimeIndex } from "@/lib/ziwei";
+import { apprenticeCopy, apprenticeCopyEn } from "@/lib/apprentice-copy";
 import BirthPlaceFields from "./BirthPlaceFields";
 
 interface Props {
@@ -15,7 +16,7 @@ export default function ChartBirthForm({ input, error, locale = "zh", action = "
   const isEn = locale === "en";
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-5xl mx-auto font-sans">
       <div className="flex flex-wrap gap-2 mb-4">
         <span className="text-xs px-2.5 py-1 rounded-full bg-destiny-green/15 text-destiny-purple border border-destiny-green/30">
           {isEn ? "Free forever" : "永久免費"}
@@ -148,9 +149,7 @@ export default function ChartBirthForm({ input, error, locale = "zh", action = "
         </button>
 
         <p className="text-xs text-destiny-purple/45 mt-3">
-          {isEn
-            ? "First AI analysis may take 10–20s; layout changes are instant. Zhong Zhou school method."
-            : "首次起盤約需 10–20 秒（AI 分析）；換排版唔使再等。採用《紫微斗數全書》三合派安星法。"}
+          {isEn ? apprenticeCopyEn.loadingHint : apprenticeCopy.loadingHint}
         </p>
 
         {error && <p className="text-sm text-destiny-red mt-4">{error}</p>}

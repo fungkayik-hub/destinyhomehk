@@ -3,6 +3,7 @@ import type { PalaceName } from "@/lib/ziwei/types";
 import type { PalaceAnalysesResponse, PalaceScoresResponse } from "@/lib/ai/types";
 import { buildChartHref, type ChartLayoutId } from "@/lib/chart-layout";
 import { chartWhatsAppUrl } from "@/lib/chart-whatsapp";
+import { getApprenticeCopy } from "@/lib/apprentice-copy";
 import { formatClock } from "@/lib/ziwei/true-solar-time";
 import MasterReadingCta from "@/components/MasterReadingCta";
 import ChartSavedHistory from "./ChartSavedHistory";
@@ -16,6 +17,8 @@ interface Props {
   focusPalace: PalaceName;
   layout: ChartLayoutId;
   searchParams: Record<string, string | string[] | undefined>;
+  unlockedPalaces: PalaceName[];
+  reportTexts: Partial<Record<PalaceName, string>>;
   locale?: "zh" | "en";
 }
 
@@ -26,8 +29,11 @@ export default function ChartDisplay({
   focusPalace,
   layout,
   searchParams,
+  unlockedPalaces,
+  reportTexts,
   locale = "zh",
 }: Props) {
+  const copy = getApprenticeCopy(locale);
   const waUrl = chartWhatsAppUrl(chart);
   const scoreByPalace = new Map(palaceScores.scores.map((s) => [s.palace, s]));
   const analysisByPalace = new Map(palaceAnalyses.analyses.map((a) => [a.palace, a]));
@@ -39,7 +45,7 @@ export default function ChartDisplay({
   const layoutProps = { focusPalace, buildFocusHref };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 font-sans">
       <ChartSavedHistory current={chart.input} locale={locale} />
 
       {chart.trueSolarTime?.applied && (
@@ -87,7 +93,7 @@ export default function ChartDisplay({
       <section id="palaces">
         <h2 className="font-display text-lg font-bold text-destiny-purple mb-1">十二宮位</h2>
         <p className="text-xs text-destiny-purple/45 mb-4">
-          左右滑動揀宮 · 每宮都有 Sunny 師傅 AI 分析，越睇越清楚
+          {copy.chartSectionHint}
         </p>
 
         {focusAnalysis && (
@@ -95,12 +101,16 @@ export default function ChartDisplay({
             chart={chart}
             scoreByPalace={scoreByPalace}
             focusAnalysis={focusAnalysis}
+            unlockedPalaces={unlockedPalaces}
+            reportTexts={reportTexts}
+            layoutId={layout}
+            locale={locale}
             {...layoutProps}
           />
         )}
 
         <div className="mt-4">
-          <PalaceScoresLegend />
+          <PalaceScoresLegend locale={locale} />
         </div>
       </section>
 

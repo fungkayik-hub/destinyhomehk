@@ -76,8 +76,8 @@ function crossScore(wants: PalaceInfo | undefined, partnerSoul: PalaceInfo | und
 }
 
 export function scoreToCompatibilityLabel(score: number): CompatibilityLabel {
-  if (score >= 85) return "超夾";
-  if (score >= 72) return "幾夾";
+  if (score >= 85) return "緣分深厚";
+  if (score >= 72) return "相處順遂";
   if (score >= 58) return "尚可";
   if (score >= 45) return "要多溝通";
   return "要用心經營";
@@ -136,50 +136,63 @@ export function fallbackCompatibilityText(
   const soulA = chartA.palaces.find((p) => p.isSoulPalace);
   const soulB = chartB.palaces.find((p) => p.isSoulPalace);
 
-  const aSpouseStars = majorNames(spouseA).join("、") || "空宮借星";
-  const bSpouseStars = majorNames(spouseB).join("、") || "空宮借星";
-  const aSoulStars = majorNames(soulA).join("、") || "空宮借星";
-  const bSoulStars = majorNames(soulB).join("、") || "空宮借星";
-
   const summary =
     score >= 72
-      ? `整體夾度 ${score} 分（${label}）。你哋夫妻宮同命宮有互相呼應嘅位，感情有火花，值得慢慢培養。`
+      ? `徒弟先講兩句 — 姻緣指數 ${score}（${label}）。你哋有互相吸引嘅位，相處起嚟應該幾有火花。邊段大限最適合談婚論嫁、邊年感情要特別留心，徒弟睇唔到時間軸，要師傅合婚先拆到。`
       : score >= 58
-        ? `夾度 ${score} 分（${label}）。有吸引亦有磨合位，用心溝通會愈嚟愈順。`
-        : `夾度 ${score} 分（${label}）。命盤顯示要更多耐性同理解，唔代表唔夾，係要學點樣相處。`;
+        ? `徒弟探測到姻緣指數 ${score}（${label}）。有吸引亦有磨合位，用心溝通會愈嚟愈順。你哋邊方面最易拗撬、點樣補足，要師傅對盤先準。`
+        : `姻緣指數 ${score}（${label}）。命盤顯示要更多耐性同理解，唔代表唔適合，係要學點樣相處。邊段大限感情壓力較大，師傅親批會講清楚。`;
 
   const strengths = [
-    `你嘅夫妻宮主星：${aSpouseStars}，反映你心目中另一半嘅輪廓。`,
-    `對方夫妻宮主星：${bSpouseStars}，睇佢點樣諗感情。`,
-    `你命宮 ${aSoulStars} 同對方命宮 ${bSoulStars} 一齊睇，可以睇到性格點樣互補。`,
+    `你喺感情裡面想要嘅類型，同對方本色有呼應 — 呢個係你哋嘅化學反應來源。`,
+    `你哋開心時應該幾夾，但累嘅時候點樣相處，就要睇福德宮同大限。`,
+    `夫妻宮同命宮交叉睇，你哋性格有互補位，亦有要磨合嘅位 — 唔係完美但係有料。`,
   ];
 
   const tips =
     score >= 72
       ? [
-          "多留低開心嘅相處時刻，感情會愈穩。",
-          "尊重彼此節奏，唔好急住要對方改變。",
-          "有分歧時先聽再講，比拗贏更重要。",
+          "多留低開心嘅相處時刻，感情會愈穩 — 尤其係你哋都忙嘅時候。",
+          "尊重彼此節奏，唔好急住要對方一次過改晒。",
+          "有分歧時先聽再講；你哋命盤顯示「嘴硬心軟」都可能出現。",
         ]
       : [
           "先了解對方表達愛嘅方式，唔好用自己標準量度。",
           "有火氣時停一停，唔好喺情緒高位做決定。",
-          "可以約定固定傾計時間，減少誤會。",
+          "可以約定固定傾計時間；你哋呢對需要「講清楚」多過「估」。",
         ];
 
-  const chemistry =
-    factorsCrossHint(spouseA, soulB) +
-    " " +
-    factorsCrossHint(spouseB, soulA);
+  const chemistry = buildChemistryNarrative(spouseA, soulB, spouseB, soulA);
 
   return { summary, strengths, tips, chemistry };
 }
 
-function factorsCrossHint(
-  spouse: PalaceInfo | undefined,
-  partnerSoul: PalaceInfo | undefined,
+function buildChemistryNarrative(
+  spouseA: PalaceInfo | undefined,
+  soulB: PalaceInfo | undefined,
+  spouseB: PalaceInfo | undefined,
+  soulA: PalaceInfo | undefined,
 ): string {
-  const s = majorNames(spouse).join("、") || "借星";
-  const p = majorNames(partnerSoul).join("、") || "借星";
-  return `一方想要嘅（夫妻宮 ${s}）對上另一方本色（命宮 ${p}），係感情化學反應嘅關鍵。`;
+  const aWant = majorNames(spouseA)[0];
+  const bNature = majorNames(soulB)[0];
+  const bWant = majorNames(spouseB)[0];
+  const aNature = majorNames(soulA)[0];
+
+  const parts: string[] = [];
+
+  if (aWant && bNature) {
+    parts.push(
+      `你想要嘅感情味（夫妻宮帶${aWant}）對上對方本色（命宮帶${bNature}）— 呢個係你哋之間嘅火花來源。`,
+    );
+  }
+  if (bWant && aNature) {
+    parts.push(
+      `對方想要嘅（${bWant}）對上你本色（${aNature}）— 互相滿足到幾多，就要師傅合婚先拆得深。`,
+    );
+  }
+
+  return (
+    parts.join(" ") ||
+    "雙方夫妻宮同命宮有交叉呼應，有緣份基礎；深入合婚要師傅睇大限同四化。"
+  );
 }

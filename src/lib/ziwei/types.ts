@@ -60,6 +60,15 @@ export interface PalaceInfo {
   isSoulPalace?: boolean;
 }
 
+/** 十年大限 — 大限走邊個宮、虛歲幾到幾 */
+export interface DecadalPeriod {
+  palace: PalaceName;
+  ageStart: number;
+  ageEnd: number;
+  heavenlyStem: string;
+  earthlyBranch: string;
+}
+
 export interface ZiWeiChart {
   input: BirthInput;
   trueSolarTime?: TrueSolarTimeResult;
@@ -75,6 +84,8 @@ export interface ZiWeiChart {
   shenPalaceBranch: string;
   fiveElement: string;
   palaces: PalaceInfo[];
+  /** 十年大限時間軸（虛歲，由 iztro 計算） */
+  decadalTimeline: DecadalPeriod[];
   summary: string;
 }
 

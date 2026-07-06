@@ -3,10 +3,16 @@ import { PageBanner } from "@/components/SiteImage";
 import ChartBirthForm from "@/components/chart/ChartBirthForm";
 import ChartDisplay from "@/components/chart/ChartDisplay";
 import { getCachedChartResults } from "@/lib/chart-analysis-cache";
+import { buildChartKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
 import { parseChartLayout, parseFocusPalace } from "@/lib/chart-layout";
+import {
+  getReportContentsForChart,
+  getUnlockedPalaces,
+} from "@/lib/palace-report/store";
 import { siteImages } from "@/lib/site-images";
 import { getSiteUrl } from "@/lib/site-url";
+import type { PalaceName } from "@/lib/ziwei/types";
 
 export const metadata: Metadata = {
   title: "Free Zi Wei Chart | True Solar Time",
@@ -54,6 +60,15 @@ export default async function EnChartPage({
     ? parseFocusPalace(sp, chart.palaces.find((p) => p.isSoulPalace)?.name ?? "命宮")
     : parseFocusPalace(sp);
 
+  let unlockedPalaces: PalaceName[] = [];
+  let reportTexts: Partial<Record<PalaceName, string>> = {};
+  if (parsed.submitted && !parsed.error) {
+    const chartKey = buildChartKey(parsed.input);
+    unlockedPalaces = await getUnlockedPalaces(chartKey);
+    const contents = await getReportContentsForChart(chartKey);
+    reportTexts = Object.fromEntries(contents.map((c) => [c.palace, c.text]));
+  }
+
   return (
     <>
       <PageBanner
@@ -74,6 +89,8 @@ export default async function EnChartPage({
               focusPalace={focusPalace}
               layout={layout}
               searchParams={sp}
+              unlockedPalaces={unlockedPalaces}
+              reportTexts={reportTexts}
               locale="en"
             />
           </div>

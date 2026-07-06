@@ -1,17 +1,41 @@
 [
   {
+    "author": "Daniel Law",
+    "text": "師傅對事業同財運分析好深入，講清楚發展方向，幫我明白應該點樣行前。",
+    "rating": 5,
+    "source": "google",
+    "dateLabel": "2 小時前"
+  },
+  {
     "author": "客人 A",
     "text": "Sunny 師傅解盤好仔細，大限流年講得好清楚，預約全批值得。",
-    "rating": 5
+    "rating": 5,
+    "source": "instagram"
+  },
+  {
+    "author": "Ho Yin Yan",
+    "text": "強烈推薦 Sunny 師傅！第二次嚟睇，師傅好有耐性，過往講過嘅嘢都好準，又鼓勵我發問，俾到好實際嘅建議。",
+    "rating": 5,
+    "source": "google",
+    "dateLabel": "6 日前"
   },
   {
     "author": "客人 B",
     "text": "結婚擇日準時又貼心，父母都好滿意個吉時。",
-    "rating": 5
+    "rating": 5,
+    "source": "instagram"
+  },
+  {
+    "author": "KA HO YIP",
+    "text": "真係神準！分析好詳細、好到位，令我安心好多，亦知道點樣規劃下一步。",
+    "rating": 5,
+    "source": "google",
+    "dateLabel": "1 星期前"
   },
   {
     "author": "客人 C",
     "text": "灣仔工作室好方便，師傅好有耐性解答問題。",
-    "rating": 5
+    "rating": 5,
+    "source": "instagram"
   }
 ]

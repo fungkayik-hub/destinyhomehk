@@ -7,7 +7,7 @@ import SeoToolsGrid from "@/components/SeoToolsGrid";
 import FaqSection from "@/components/FaqSection";
 import { faqJsonLd } from "@/components/JsonLd";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
-import { academyCategories, services, siteConfig, whatsappUrl } from "@/lib/site-config";
+import { academyCategories, getFeaturedAcademyCategories, services, siteConfig, whatsappUrl } from "@/lib/site-config";
 import { getCategoryCoverImage, getLatestVisibleArticles, getVisibleArticlesByCategory } from "@/lib/articles";
 import { siteImages } from "@/lib/site-images";
 
@@ -167,7 +167,7 @@ export default function HomePage() {
             風水、主星、命理故事 — 持續更新
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {academyCategories.slice(0, 8).map((cat) => {
+            {getFeaturedAcademyCategories().map((cat) => {
               const count = getVisibleArticlesByCategory(cat.slug).length;
               const cover = getCategoryCoverImage(cat.slug);
               return (

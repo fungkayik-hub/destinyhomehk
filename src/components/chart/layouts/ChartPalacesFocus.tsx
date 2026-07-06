@@ -1,23 +1,38 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import type { ZiWeiChart } from "@/lib/ziwei";
+import type { PalaceName } from "@/lib/ziwei/types";
 import type { PalaceAnalysis, PalaceScore } from "@/lib/ai/types";
+import { getApprenticeCopy } from "@/lib/apprentice-copy";
+import { buildChartFortuneSummary } from "@/lib/chart-fortune-summary";
 import { SCORE_LABEL_BG } from "@/lib/palace-score-styles";
 import { PalaceStars, PalaceTags, type PalaceLayoutProps } from "./palace-shared";
+import PalaceReportSection from "../PalaceReportSection";
+import ChartFortuneSummary from "../ChartFortuneSummary";
 
 interface Props extends PalaceLayoutProps {
   chart: ZiWeiChart;
   scoreByPalace: Map<string, PalaceScore>;
   focusAnalysis: PalaceAnalysis;
+  unlockedPalaces: PalaceName[];
+  reportTexts: Partial<Record<PalaceName, string>>;
+  layoutId: string;
+  locale?: "zh" | "en";
 }
 
-/** 版本 5（推薦）：橫向揀宮 + 下方整合星曜與 AI 分析 */
+/** 版本 5（推薦）：橫向揀宮 + 下方整合星曜與小徒弟贈言 */
 export default function ChartPalacesFocus({
   chart,
   scoreByPalace,
   focusPalace,
   focusAnalysis,
   buildFocusHref,
+  unlockedPalaces,
+  reportTexts,
+  layoutId,
+  locale = "zh",
 }: Props) {
+  const copy = getApprenticeCopy(locale);
   const palace = chart.palaces.find((p) => p.name === focusPalace);
   const rating = scoreByPalace.get(focusPalace);
   const stars =
@@ -25,6 +40,11 @@ export default function ChartPalacesFocus({
       .filter((s) => s.type !== "minor")
       .map((s) => s.name)
       .join("、") || "空宮";
+
+  const fortuneSummary = buildChartFortuneSummary(
+    chart,
+    Array.from(scoreByPalace.values()),
+  );
 
   return (
     <div className="space-y-4">
@@ -61,7 +81,13 @@ export default function ChartPalacesFocus({
         })}
       </div>
 
-      {/* 整合詳情 + AI */}
+      <ChartFortuneSummary
+        data={fortuneSummary}
+        focusPalace={focusPalace}
+        locale={locale}
+      />
+
+      {/* 整合詳情 + 小徒弟贈言 */}
       <div
         id="analysis"
         className="scroll-mt-20 rounded-2xl border border-destiny-purple/10 bg-white shadow-sm overflow-hidden"
@@ -69,7 +95,9 @@ export default function ChartPalacesFocus({
         <div className="bg-gradient-to-r from-destiny-purple to-destiny-purple-light text-white px-5 py-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-destiny-gold text-xs font-medium mb-1">AI Sunny 師傅 · 免費分析</p>
+              <p className="text-destiny-gold text-xs font-medium mb-1">
+                {copy.badge} · {copy.tagline}
+              </p>
               <h3 className="font-display text-xl font-bold">{focusPalace}</h3>
               {palace && (
                 <p className="text-white/70 text-sm mt-1">
@@ -104,10 +132,26 @@ export default function ChartPalacesFocus({
         <div className="px-5 py-5">
           <p className="text-destiny-purple/85 leading-relaxed text-base">{focusAnalysis.text}</p>
           <p className="text-xs text-destiny-purple/45 mt-4 leading-relaxed">
-            以上為 AI 按命盤自動生成，模仿 Sunny 師傅語氣，僅供參考。
-            <strong className="text-destiny-purple/60"> 非師傅親批</strong>，定盤請 WhatsApp 預約。
-            左右滑動揀其他宮位。
+            {copy.analysisDisclaimer}{" "}
+            <strong className="text-destiny-purple/60">{copy.notMasterNote}</strong>
+            {locale === "en" ? ". " : "，"}
+            {copy.dingPanNote}
+            {locale === "en" ? ". " : "。"}
+            {copy.swipeHint}
           </p>
+
+          <Suspense fallback={null}>
+            <PalaceReportSection
+              chart={chart}
+              focusPalace={focusPalace}
+              unlockedPalaces={unlockedPalaces}
+              initialReports={Object.entries(reportTexts)
+                .filter((entry): entry is [PalaceName, string] => Boolean(entry[1]))
+                .map(([palace, text]) => ({ palace, text }))}
+              layout={layoutId}
+              locale={locale}
+            />
+          </Suspense>
         </div>
       </div>
     </div>

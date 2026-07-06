@@ -8,11 +8,16 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  body {
+    @apply leading-[1.85] tracking-[0.01em];
+  }
+
   /* 防止 iOS 聚焦表單時自動放大 */
   input,
   select,
   textarea {
     font-size: 16px;
+    @apply font-sans;
   }
 
   @media (min-width: 640px) {
@@ -39,7 +44,7 @@
   }
 
   .section-title {
-    @apply font-display text-2xl sm:text-3xl md:text-4xl font-bold text-destiny-purple text-center;
+    @apply font-display text-2xl sm:text-3xl md:text-4xl font-bold text-destiny-purple text-center tracking-wide;
   }
 
   .card {
@@ -48,7 +53,7 @@
 
   /* 學堂文章排版 — 從 Shopify 匯入的 HTML */
   .article-prose {
-    @apply text-destiny-purple/80 leading-relaxed text-base;
+    @apply font-serif text-destiny-purple/80 leading-[1.9] text-base;
   }
 
   .article-prose img {
@@ -128,5 +133,32 @@
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+
+  @keyframes stick-shake {
+    0%,
+    100% {
+      transform: rotate(0deg) translateY(0);
+    }
+    15% {
+      transform: rotate(-8deg) translateY(-2px);
+    }
+    30% {
+      transform: rotate(7deg) translateY(1px);
+    }
+    45% {
+      transform: rotate(-6deg) translateY(-3px);
+    }
+    60% {
+      transform: rotate(5deg) translateY(2px);
+    }
+    75% {
+      transform: rotate(-4deg) translateY(-1px);
+    }
+  }
+
+  .animate-stick-shake {
+    animation: stick-shake 0.55s ease-in-out infinite;
+    transform-origin: bottom center;
   }
 }

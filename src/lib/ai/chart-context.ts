@@ -1,4 +1,9 @@
 import type { ZiWeiChart } from "@/lib/ziwei/types";
+import {
+  computeChartInsights,
+  formatInsightsBlock,
+  type ChartInsights,
+} from "./chart-insights";
 
 function formatStarLabel(star: {
   name: string;
@@ -11,8 +16,12 @@ function formatStarLabel(star: {
   return parts.length > 1 ? `${parts[0]}(${parts.slice(1).join("·")})` : star.name;
 }
 
-/** 將命盤整理成 AI prompt 用的文字摘要 */
-export function chartToContext(chart: ZiWeiChart): string {
+/** 將命盤整理成 AI prompt 用的文字摘要（含程式預算格局摘要） */
+export function chartToContext(
+  chart: ZiWeiChart,
+  insights?: ChartInsights,
+): string {
+  const resolved = insights ?? computeChartInsights(chart);
   const gender = chart.input.gender === "male" ? "男" : "女";
   const palaceLines = chart.palaces.map((p) => {
     const majors = p.stars
@@ -69,6 +78,8 @@ export function chartToContext(chart: ZiWeiChart): string {
     `命主：${chart.soulStar}`,
     `身主：${chart.bodyStar}`,
     ...(patternHints.length > 0 ? ["", "格局參考（中洲派）：", ...patternHints] : []),
+    "",
+    formatInsightsBlock(resolved),
     "",
     "十二宮：",
     ...palaceLines,

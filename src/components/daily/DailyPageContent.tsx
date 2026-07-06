@@ -65,7 +65,7 @@ export default function DailyPageContent({ data, faq, showBreadcrumb = false }: 
           </Link>
           <span className="text-destiny-purple/30">·</span>
           <Link href="/compatibility" className="text-destiny-gold hover:underline">
-            夾桃花
+            姻緣探測器
           </Link>
           <span className="text-destiny-purple/30">·</span>
           <Link href="/wedding-date" className="text-destiny-gold hover:underline">

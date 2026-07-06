@@ -30,7 +30,7 @@ function soulPalaceLine(chart: ZiWeiChart, label: string): string {
   return `${label}命宮（${soul.heavenlyStem}${soul.earthlyBranch}）：${majors || "空宮"}`;
 }
 
-/** 雙人命盤 — 夾桃花分析用 */
+/** 雙人命盤 — 姻緣探測器分析用 */
 export function compatibilityChartsContext(
   chartA: ZiWeiChart,
   chartB: ZiWeiChart,
@@ -38,8 +38,8 @@ export function compatibilityChartsContext(
   ruleLabel: string,
 ): string {
   return [
-    "【配對參考分（系統估算）】",
-    `夾度：${ruleScore} 分（${ruleLabel}）`,
+    "【姻緣指數參考（系統估算）】",
+    `指數：${ruleScore}（${ruleLabel}）`,
     "",
     "【甲方 — 你】",
     chartToContext(chartA),

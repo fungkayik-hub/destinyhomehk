@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { navItems, siteConfig, whatsappUrl } from "@/lib/site-config";
+import { academyNavChildren, siteConfig, whatsappUrl } from "@/lib/site-config";
 import GbpCta from "@/components/GbpCta";
 import { gbpMapsUrl } from "@/lib/gbp-links";
 
 export default function Footer() {
-  const academyLinks = navItems.find((n) => n.children)?.children ?? [];
+  const academyLinks = academyNavChildren.slice(1, 4);
 
   return (
     <footer className="bg-destiny-purple text-white/80 mt-auto">
@@ -21,7 +21,7 @@ export default function Footer() {
           <h4 className="font-medium text-white mb-3">免費工具</h4>
           <ul className="space-y-2 text-sm">
             <li><Link href="/chart" className="hover:text-destiny-gold">紫微即時排盤</Link></li>
-            <li><Link href="/compatibility" className="hover:text-destiny-gold">夾桃花配對</Link></li>
+            <li><Link href="/compatibility" className="hover:text-destiny-gold">姻緣探測器</Link></li>
             <li><Link href="/daily" className="hover:text-destiny-gold">每日流日黃曆</Link></li>
             <li><Link href="/wedding-date" className="hover:text-destiny-gold">結婚擇日</Link></li>
           </ul>

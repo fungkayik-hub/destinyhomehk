@@ -4,6 +4,7 @@ import CompatibilityForm from "@/components/compatibility/CompatibilityForm";
 import CompatibilityResult from "@/components/compatibility/CompatibilityResult";
 import FaqSection from "@/components/FaqSection";
 import { faqJsonLd } from "@/components/JsonLd";
+import { apprenticeCopy } from "@/lib/apprentice-copy";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { getCachedCompatibilityResults } from "@/lib/compatibility-cache";
 import { compatibilityInputFromSearchParams } from "@/lib/compatibility-parse-params";
@@ -11,12 +12,12 @@ import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "夾桃花 — 紫微斗數配對",
+  title: "姻緣探測器 — 紫微斗數雙人配對",
   description:
-    "免費紫微斗數夾桃花 — 輸入雙方出生年月日時，用夫妻宮、命宮交叉睇配對分數同相處提示。Destiny Home Sunny 師傅。",
+    "免費姻緣探測器 — 輸入雙方出生資料，用夫妻宮、命宮交叉探測緣分指數同相處贈言。Destiny Home Sunny 師傅門下小徒弟整理，深入合婚請預約。",
   path: "/compatibility",
-  image: siteImages.services.chart,
-  keywords: ["夾桃花", "紫微配對", "合婚", "夫妻宮", "感情配對"],
+  image: siteImages.services.compatibility,
+  keywords: ["姻緣探測器", "夾桃花", "紫微配對", "合婚", "夫妻宮", "感情配對"],
 });
 
 export default async function CompatibilityPage({
@@ -26,6 +27,7 @@ export default async function CompatibilityPage({
 }) {
   const sp = await searchParams;
   const parsed = compatibilityInputFromSearchParams(sp);
+  const copy = apprenticeCopy;
 
   let chartA = null;
   let chartB = null;
@@ -39,16 +41,16 @@ export default async function CompatibilityPage({
       chartB = data.chartB;
       result = data.result;
     } catch {
-      pageError = "配對分析失敗，請檢查輸入資料";
+      pageError = "姻緣探測失敗，請檢查輸入資料";
     }
   }
 
   return (
     <>
       <PageBanner
-        src={siteImages.services.chart}
-        title="夾桃花"
-        subtitle="紫微斗數雙人配對 · 睇夾唔夾"
+        src={siteImages.services.compatibility}
+        title={copy.detectorName}
+        subtitle={copy.detectorSubtitle}
         overlay="subtle"
       />
       <div className="py-10 px-4">

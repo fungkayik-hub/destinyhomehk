@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { PalaceInfo, PalaceName } from "@/lib/ziwei";
 import type { PalaceScore } from "@/lib/ai/types";
+import { apprenticeCopy } from "@/lib/apprentice-copy";
 import PalaceScoreBadge from "../PalaceScoreBadge";
 
 export function PalaceStars({ palace }: { palace: PalaceInfo }) {
@@ -88,7 +89,7 @@ export function PalaceCard({
       </div>
       <PalaceStars palace={palace} />
       {href && !selected && (
-        <p className="text-[10px] text-destiny-gold/80 mt-2">點擊睇 AI 分析 →</p>
+        <p className="text-[10px] text-destiny-gold/80 mt-2">{apprenticeCopy.clickForAnalysis}</p>
       )}
       {selected && (
         <p className="text-[10px] text-destiny-purple/50 mt-2">↓ 分析在下方</p>

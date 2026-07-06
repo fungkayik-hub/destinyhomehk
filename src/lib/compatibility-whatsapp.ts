@@ -24,17 +24,17 @@ export function buildCompatibilityWhatsAppMessage(
   result: CompatibilityResult,
 ): string {
   const lines = [
-    "你好，我用 Destiny Home 夾桃花睇咗配對，想請 Sunny 師傅幫手深入睇睇 🙏",
+    "你好，我用 Destiny Home 姻緣探測器睇咗雙人配對，想請 Sunny 師傅幫手深入合婚 🙏",
     "",
     birthLine("你", personA, chartA),
     "",
     birthLine("對方", personB, chartB),
     "",
-    "【夾桃花結果】",
-    `夾度：${result.score} 分（${result.label}）`,
+    "【姻緣探測結果】",
+    `姻緣指數：${result.score}（${result.label}）`,
     result.summary,
     "",
-    "想請師傅幫手睇感情同合婚，謝謝！",
+    "想請師傅幫手睇合婚、結婚時機同大限感情，謝謝！",
   ];
 
   return lines.join("\n");

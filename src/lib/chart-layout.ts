@@ -9,7 +9,7 @@ export const CHART_LAYOUTS: {
   desc: string;
   recommended?: boolean;
 }[] = [
-  { id: "5", name: "焦點詳解", desc: "推薦 · 揀宮 + AI 一屏睇晒", recommended: true },
+  { id: "5", name: "焦點詳解", desc: "推薦 · 揀宮 + 小徒弟贈言一屏睇晒", recommended: true },
   { id: "1", name: "卡片網格", desc: "2–4 欄卡片總覽" },
   { id: "3", name: "清單列表", desc: "逐宮橫列 · 易於掃讀" },
   { id: "2", name: "傳統方盤", desc: "四方形命盤 · 中宮總覽" },

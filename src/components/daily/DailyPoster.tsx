@@ -27,7 +27,7 @@ export default function DailyPoster({ data }: Props) {
             src={siteImages.logo}
             alt={siteConfig.name}
             width={40}
-            className="rounded-full w-10 h-10 object-cover"
+            className="rounded-full w-10 h-10 object-contain bg-destiny-purple"
           />
           <span className="font-display text-lg text-destiny-gold">Destiny Home</span>
         </div>

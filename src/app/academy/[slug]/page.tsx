@@ -11,7 +11,7 @@ import {
 } from "@/lib/articles";
 import type { Metadata } from "next";
 import { buildPageMetadata } from "@/lib/seo";
-import { siteConfig } from "@/lib/site-config";
+import { academyCategories, siteConfig } from "@/lib/site-config";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -21,18 +21,7 @@ interface Props {
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  return [
-    { slug: "name-numerology" },
-    { slug: "history" },
-    { slug: "feng-shui" },
-    { slug: "stories" },
-    { slug: "ding-pan" },
-    { slug: "theory" },
-    { slug: "2026-zodiac" },
-    { slug: "stars" },
-    { slug: "instagram" },
-    { slug: "geju" },
-  ];
+  return academyCategories.map((cat) => ({ slug: cat.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

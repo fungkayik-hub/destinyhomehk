@@ -3,8 +3,9 @@ import AnnouncementBar from "@/components/AnnouncementBar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
+import SiteAnalytics from "@/components/SiteAnalytics";
 import JsonLd from "@/components/JsonLd";
-import { notoSansTC, notoSerifTC } from "@/lib/fonts";
+import { lxgwWenkaiTC, notoSansTC, notoSerifTC } from "@/lib/fonts";
 import { siteConfig } from "@/lib/site-config";
 import { LOCAL_SEO_KEYWORDS } from "@/lib/seo";
 import { getSiteUrl } from "@/lib/site-url";
@@ -72,14 +73,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-HK" className={`${notoSansTC.variable} ${notoSerifTC.variable}`}>
-      <body className={`${notoSansTC.className} antialiased bg-destiny-cream text-destiny-ink min-h-screen flex flex-col`}>
+    <html
+      lang="zh-HK"
+      className={`${lxgwWenkaiTC.variable} ${notoSansTC.variable} ${notoSerifTC.variable}`}
+    >
+      <body className={`${lxgwWenkaiTC.className} antialiased bg-destiny-cream text-destiny-ink min-h-screen flex flex-col`}>
         <JsonLd />
         <AnnouncementBar />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
         <WhatsAppButton />
+        <SiteAnalytics />
       </body>
     </html>
   );
