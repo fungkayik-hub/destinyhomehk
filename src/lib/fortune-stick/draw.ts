@@ -1,5 +1,9 @@
 import { createHash, randomUUID } from "crypto";
 import { getLotByNumber, lotCount } from "@/lib/fortune-stick/lots";
+import {
+  detectQuestionTheme,
+  gradeSummaryForQuestion,
+} from "@/lib/fortune-stick/question-theme";
 import type { DrawResult, GuanyinLot } from "@/lib/fortune-stick/types";
 
 function hashSeed(input: string): number {
@@ -13,17 +17,18 @@ export function drawLotNumber(question: string, drawId: string): number {
   return (seed % lotCount()) + 1;
 }
 
-export function buildTeaser(lot: GuanyinLot): string {
+export function buildTeaser(question: string, lot: GuanyinLot): string {
+  const theme = detectQuestionTheme(question);
   const lines = lot.poem.split("\n").filter(Boolean);
   const firstLine = lines[0] ?? lot.poem;
-  const gradeHint =
-    lot.grade.includes("凶") || lot.grade.includes("末")
-      ? "此籤帶有提醒之意，細節要睇完整解讀。"
-      : lot.grade.includes("吉")
-        ? "此籤帶有順遂之意，但要結合你嘅問題先至準。"
-        : "籤意要配合你嘅具體問題先至有用。";
+  const themeHint = gradeSummaryForQuestion(lot.grade, theme);
 
-  return `第 ${lot.number} 籤 · ${lot.grade}。籤詩首句「${firstLine}」— ${gradeHint}`;
+  return [
+    `你問嘅係「${theme}」。`,
+    `第 ${lot.number} 籤 · ${lot.grade}。籤詩首句「${firstLine}」。`,
+    themeHint,
+    "解鎖完整解讀後，小徒弟會按你條問題同籤文寫詳細分析。",
+  ].join("");
 }
 
 export function createDrawResult(question: string, drawId?: string): DrawResult {
@@ -36,6 +41,6 @@ export function createDrawResult(question: string, drawId?: string): DrawResult 
   return {
     drawId: id,
     lot,
-    teaser: buildTeaser(lot),
+    teaser: buildTeaser(question, lot),
   };
 }

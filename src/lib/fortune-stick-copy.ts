@@ -12,7 +12,7 @@ export const fortuneStickCopy = {
   teaserLabel: "小徒弟一句",
   unlockTitle: "解鎖完整解籤",
   unlockDesc:
-    "付費後由小徒弟按籤詩、典故同你嘅問題寫 800+ 字分析（非師傅親批）。",
+    "付費後由小徒弟按你條問題、籤詩同典故寫 800+ 字分析 — 開頭會直接回應你問嘅事（非師傅親批）。",
   unlockButton: "HK$38 解鎖完整解讀",
   unlockLoading: "前往付款…",
   generating: "小徒弟解籤中…",

@@ -3,7 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import MasterReadingCta from "@/components/MasterReadingCta";
+import FortuneStickGradeGuide from "@/components/fortune-stick/FortuneStickGradeGuide";
 import ShakeLotAnimation from "@/components/fortune-stick/ShakeLotAnimation";
+import { detectQuestionTheme } from "@/lib/fortune-stick/question-theme";
 import { fortuneStickCopy } from "@/lib/fortune-stick-copy";
 import { fortuneStickWhatsAppUrl } from "@/lib/fortune-stick/whatsapp";
 
@@ -224,7 +226,8 @@ export default function FortuneStickExperience() {
       <p className="text-center text-xs text-destiny-gold">{copy.badge}</p>
 
       {phase === "form" && (
-        <form onSubmit={handleSubmit} className="card space-y-4">
+        <>
+          <form onSubmit={handleSubmit} className="card space-y-4">
           <p className="text-sm text-destiny-purple/70">{copy.formHint}</p>
           <label className="block">
             <span className="text-sm font-medium text-destiny-purple mb-1.5 block">
@@ -248,6 +251,8 @@ export default function FortuneStickExperience() {
             {copy.submit}
           </button>
         </form>
+          <FortuneStickGradeGuide />
+        </>
       )}
 
       {phase === "shaking" && (
@@ -259,6 +264,18 @@ export default function FortuneStickExperience() {
 
       {phase === "result" && draw && (
         <>
+          {question.trim() && (
+            <div className="card bg-destiny-cream/50 border-destiny-gold/20 py-4">
+              <p className="text-xs text-destiny-gold mb-1">你的問題</p>
+              <p className="text-sm text-destiny-purple leading-relaxed">
+                {question.trim()}
+              </p>
+              <p className="text-xs text-destiny-purple/50 mt-2">
+                主題：{detectQuestionTheme(question)}
+              </p>
+            </div>
+          )}
+
           <div className="card text-center space-y-4">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-destiny-gold/20 text-destiny-purple font-display text-2xl font-bold">
               {draw.lot.number}
@@ -334,6 +351,8 @@ export default function FortuneStickExperience() {
               再求一籤
             </button>
           </div>
+
+          <FortuneStickGradeGuide />
         </>
       )}
 

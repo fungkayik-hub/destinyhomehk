@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       question: draw.question,
       lotNumber: draw.lotNumber,
       lot: { number: lot.number, grade: lot.grade, poem: lot.poem },
-      teaser: buildTeaser(lot),
+      teaser: buildTeaser(draw.question, lot),
       interpretation: draw.interpretationText,
       provider: draw.interpretationProvider,
     };
