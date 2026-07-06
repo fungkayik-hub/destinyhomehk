@@ -32,7 +32,7 @@ export default function DailyStoryPoster({ data }: Props) {
             height={80}
             className="rounded-full w-20 h-20 object-contain bg-destiny-purple"
           />
-          <span className="font-display text-4xl text-destiny-gold">Destiny Home</span>
+          <span className="font-display text-4xl text-destiny-gold">{siteConfig.name}</span>
         </div>
         <h2 className="font-display text-5xl font-bold text-destiny-gold-light mb-4">
           每日流日吉凶預報

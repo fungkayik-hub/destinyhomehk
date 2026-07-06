@@ -1,12 +1,13 @@
 export const siteConfig = {
-  name: "Destiny Home",
-  tagline: "香港紫微斗數 · 風水擇日 · Master Sunny",
+  name: "馮命居",
+  nameEn: "Destiny Home",
+  tagline: "香港紫微斗數 · 風水擇日 · Sunny 師傅",
   description:
-    "灣仔 Destiny Home｜紫微斗數全批 HK$2,000、免費排盤、結婚擇日、台灣姓名學總格改名。過千 Google 好評，WhatsApp 預約 Sunny 師傅親批。",
+    "灣仔馮命居｜紫微斗數全批 HK$2,000、免費排盤、結婚擇日、台灣姓名學總格改名。過千 Google 好評，WhatsApp 預約 Sunny 師傅親批。",
   announcement:
     "可能係最體貼嘅紫微斗數師傅 🤍🤍🤍 已達過千客人真實好評‼️ IG 同 Google 都有評價，不斷更新",
   announcementShort: "過千真實好評 ⭐ 4.9 · IG + Google · ViuTV",
-  logo: "/images/site/logo.svg",
+  logo: "/images/site/logo.png",
   heroImage:
     "/images/site/10.18CharlotteSunny6242QP.jpg",
   instagram: "https://www.instagram.com/destiny_home_/",
@@ -24,7 +25,7 @@ export const siteConfig = {
   },
   googleMapsUrl:
     "https://www.google.com/maps/search/?api=1&query=" +
-    encodeURIComponent("灣仔駱克道382號1807室 Destiny Home"),
+    encodeURIComponent("灣仔駱克道382號1807室 馮命居"),
   /** 喺 Google Business Profile 拎「分享」連結，填入 .env NEXT_PUBLIC_GOOGLE_BUSINESS_URL */
   googleBusinessUrl:
     process.env.NEXT_PUBLIC_GOOGLE_BUSINESS_URL?.trim() || "",

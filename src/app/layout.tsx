@@ -21,8 +21,8 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: "Destiny Home | 香港紫微斗數 | 風水擇日 | Master Sunny",
-    template: "%s | Destiny Home",
+    default: "馮命居 | 香港紫微斗數 | 風水擇日 | Sunny 師傅",
+    template: "%s | 馮命居",
   },
   description: siteConfig.description,
   keywords: [
@@ -46,17 +46,17 @@ export const metadata: Metadata = {
     ? { verification: { google: googleVerification } }
     : {}),
   openGraph: {
-    siteName: "Destiny Home",
+    siteName: siteConfig.name,
     locale: "zh_HK",
     type: "website",
     url: getSiteUrl(),
-    title: "Destiny Home | 香港紫微斗數 | Master Sunny",
+    title: "馮命居 | 香港紫微斗數 | Sunny 師傅",
     description: siteConfig.description,
     images: [{ url: siteConfig.heroImage, width: 1200, height: 630, alt: "Master Sunny" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Destiny Home | 香港紫微斗數",
+    title: "馮命居 | 香港紫微斗數",
     description: siteConfig.description,
     images: [siteConfig.heroImage],
   },

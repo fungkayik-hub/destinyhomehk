@@ -29,7 +29,7 @@ export default function DailyPoster({ data }: Props) {
             width={40}
             className="rounded-full w-10 h-10 object-contain bg-destiny-purple"
           />
-          <span className="font-display text-lg text-destiny-gold">Destiny Home</span>
+          <span className="font-display text-lg text-destiny-gold">{siteConfig.name}</span>
         </div>
         <h2 className="font-display text-xl font-bold text-destiny-gold-light">
           每日流日吉凶預報

@@ -10,7 +10,7 @@ export default function Footer() {
     <footer className="bg-destiny-purple text-white/80 mt-auto">
       <div className="max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-4 gap-8">
         <div className="md:col-span-1">
-          <h3 className="font-display text-lg font-bold text-white mb-3">Destiny Home</h3>
+          <h3 className="font-display text-lg font-bold text-white mb-3">{siteConfig.name}</h3>
           <p className="text-sm leading-relaxed mb-3 line-clamp-4 sm:line-clamp-none">{siteConfig.description}</p>
           <p className="text-sm">
             ⭐ {siteConfig.rating.score} / 5 · 過千好評

@@ -1,11 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import SiteImage from "@/components/SiteImage";
+import LogoMark from "@/components/LogoMark";
 import LangSwitch from "@/components/LangSwitch";
 import { useState } from "react";
 import { navItems, siteConfig, whatsappUrl, type NavItem } from "@/lib/site-config";
-import { siteImages } from "@/lib/site-images";
 
 function isNavLink(item: NavItem): item is { href: string; label: string } {
   return "href" in item;
@@ -153,16 +152,12 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-destiny-cream/95 backdrop-blur-md text-destiny-ink shadow-sm border-b border-destiny-purple/10">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
         <Link href="/" className="flex items-center gap-2.5 shrink-0 min-w-0">
-          <SiteImage
-            src={siteImages.logo}
-            alt="Destiny Home"
-            width={44}
-            height={44}
-            priority
-            className="w-11 h-11 rounded-full object-contain ring-2 ring-destiny-gold/30 bg-destiny-purple"
+          <LogoMark
+            className="w-11 h-11 shrink-0 rounded-full ring-2 ring-destiny-gold/30"
+            title={siteConfig.name}
           />
-          <span className="font-display text-base sm:text-lg font-bold truncate hidden 2xl:inline">
-            Destiny Home
+          <span className="font-display text-lg sm:text-xl font-bold truncate">
+            {siteConfig.name}
           </span>
         </Link>
 

@@ -43,7 +43,7 @@ export default function JsonLd() {
         "@type": "LocalBusiness",
         "@id": businessId,
         name: siteConfig.name,
-        alternateName: "Destiny Home 紫微斗數",
+        alternateName: [`${siteConfig.nameEn} 紫微斗數`, siteConfig.nameEn],
         description: siteConfig.description,
         url: site,
         image: [absoluteUrl(site, siteConfig.heroImage), absoluteUrl(site, siteConfig.logo)],
@@ -87,7 +87,7 @@ export default function JsonLd() {
       {
         "@type": "WebSite",
         "@id": websiteId,
-        name: "Destiny Home | Master Sunny",
+        name: `${siteConfig.name} | Sunny 師傅`,
         url: site,
         inLanguage: "zh-HK",
         publisher: { "@id": organization["@id"] },
