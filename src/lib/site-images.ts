@@ -31,16 +31,16 @@ export const siteImages = {
     `${S}/WhatsApp_Image_2022-06-29_at_1.06.38_AM.jpg`,
   ],
   services: {
-    fullReading: `${S}/sunny_locker1.jpg`,
+    fullReading: "/images/full-reading-cover.png",
     /** 紫微排盤封面 — 本地星盤圖 */
     chart: "/images/chart-cover.png",
     compatibility: "/images/compatibility-cover.png",
     daily: "/images/daily-cover.png",
     annualReading: "/images/annual-reading-cover.png",
     chartLegacy: `${S}/sunny_star1.jpg`,
-    datePicker: `${S}/sunny_1.jpg`,
-    nameNumerology: `${S}/6.jpg`,
-    fengShui: `${S}/sunny_door1.jpg`,
+    datePicker: "/images/date-picker-cover.png",
+    nameNumerology: "/images/name-numerology-cover.png",
+    fengShui: "/images/feng-shui-cover.png",
   },
   gallery: [
     `${S}/10.18CharlotteSunny6242QP.jpg`,
