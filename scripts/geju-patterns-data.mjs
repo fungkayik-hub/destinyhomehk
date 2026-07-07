@@ -1,4 +1,11 @@
-/** 紫微斗數吉格／凶格 — 條件同備註（參考傳統格局表） */
+/**
+ * 紫微斗數吉格／凶格 — 條件同備註（參考傳統格局表）
+ *
+ * 新增格局：只需加 { slug, type, condition, note }
+ * 然後跑 npm run seed-geju-articles
+ * 文章會自動生成 ≥500 字（星情、例子、FAQ）
+ * 個別格局想加專屬故事：喺 geju-content-builder.mjs 的 GEJU_CONTENT_OVERRIDES 加 story / example
+ */
 export const GEJU_PATTERNS = [
   // —— 吉格 ——
   { slug: "極向離明格", type: "吉", condition: "紫微在午宮坐命。", note: "紫微為北極，午宮屬離卦位，故名極向離明。此為貴格，天生具管理統御之氣。" },

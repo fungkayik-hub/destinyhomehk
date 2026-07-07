@@ -6,6 +6,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { GEJU_PATTERNS } from "./geju-patterns-data.mjs";
+import { buildGejuHtml } from "./geju-content-builder.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUT = path.join(__dirname, "../src/data/articles.json");
@@ -65,31 +66,9 @@ function buildDayOverride(p1, p2) {
   };
 }
 
+/** 每篇 ≥500 字，含星情拆解、例子、FAQ — 見 geju-content-builder.mjs */
 function buildHtml(p) {
-  const badge = p.type === "吉" ? "吉格" : "凶格";
-  const tone =
-    p.type === "吉"
-      ? "傳統論命視為有利格局，但吉中亦可帶凶，仍要睇三方四正、大限流年先至知點樣發揮。"
-      : "凶格並非「一定不好」，有時係提醒你要留意嘅方向；配合師傅解讀同後天調整，仍可減輕影響。";
-
-  const intro =
-    p.type === "吉" && p.slug === "極向離明格"
-      ? "命宮<strong>紫微坐午宮</strong>，就係出名嘅極向離明格。紫微為斗數主星，午宮屬離卦、正午陽光最盛 — 有如北極星高照，天生具<strong>管理統御</strong>之氣，傳統稱「皇帝命」格局，領導力同格局感較強。"
-      : `紫微斗數<strong>${badge}【${p.slug}】</strong> — 若你命盤符合條件，代表命盤上有一個值得留意的格局標記。`;
-
-  return `<p>${intro}</p>
-
-<h2>入格條件</h2>
-<p>${p.condition}</p>
-
-<h2>格局義理</h2>
-<p>${p.note}</p>
-<p>${tone}</p>
-<p>命盤中格局雖然存在，仍須配合宮位星象之吉凶指數判斷：吉星多則好格易發揮，甚至凶格可逢凶化吉；若宮位星象偏弱，好格亦難盡展。</p>
-
-<h2>點樣知道自己有冇入格？</h2>
-<p>用 Destiny Home <a href="/chart">免費紫微排盤</a>，睇命宮主星、三方四正同輔星分布。時辰唔肯定可先參考<a href="/academy/ding-pan">天地人盤定盤</a>。</p>
-<p>想師傅逐格對照你個人經歷同大限？<a href="/booking">預約全批 HK$2,000</a> · 灣仔<a href="/wan-chai-ziwei">工作室</a> · 更多<a href="/academy/geju">格局文章</a>。</p>`;
+  return buildGejuHtml(p);
 }
 
 function main() {
