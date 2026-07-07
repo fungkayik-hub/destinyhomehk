@@ -18,10 +18,34 @@ function pagePath(pathname: string, searchParams: URLSearchParams | null): strin
   return query ? `${pathname}?${query}` : pathname;
 }
 
+function whenGtagReady(run: () => void): () => void {
+  if (typeof window.gtag === "function") {
+    run();
+    return () => {};
+  }
+
+  const interval = window.setInterval(() => {
+    if (typeof window.gtag === "function") {
+      window.clearInterval(interval);
+      run();
+    }
+  }, 50);
+
+  const timeout = window.setTimeout(() => window.clearInterval(interval), 10_000);
+
+  return () => {
+    window.clearInterval(interval);
+    window.clearTimeout(timeout);
+  };
+}
+
 /** Fire GA4 page_view (initial load + client-side route changes). */
 export function trackPageView(path: string): void {
   if (!GA_ID || typeof window.gtag !== "function") return;
-  window.gtag("event", "page_view", { page_path: path });
+  window.gtag("config", GA_ID, {
+    page_path: path,
+    page_location: window.location.href,
+  });
 }
 
 /** Fire GA4 conversion events when measurement ID is configured. */
@@ -39,7 +63,8 @@ function GoogleAnalyticsPageView() {
 
   useEffect(() => {
     if (!pathname) return;
-    trackPageView(pagePath(pathname, searchParams));
+    const path = pagePath(pathname, searchParams);
+    return whenGtagReady(() => trackPageView(path));
   }, [pathname, searchParams]);
 
   return null;
