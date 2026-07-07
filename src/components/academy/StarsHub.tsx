@@ -3,20 +3,20 @@ import { getArticlesByCategory } from "@/lib/articles";
 
 /** 十四主星 SEO 導航 — 連結至學堂文章 */
 export const MAJOR_STARS = [
-  { name: "紫微星", keyword: "帝王星", slug: null },
+  { name: "紫微星", keyword: "帝王星", slug: "談紫微星-紫微斗數14主星" },
   { name: "天機星", keyword: "謀略", slug: "談天機星-紫微斗數14主星" },
   { name: "太陽星", keyword: "博愛", slug: "談太陽星-紫微斗數14主星" },
-  { name: "武曲星", keyword: "財星", slug: null },
+  { name: "武曲星", keyword: "財星", slug: "談武曲星-紫微斗數14主星" },
   { name: "天同星", keyword: "福星", slug: "談天同星-紫微斗數14主星" },
-  { name: "廉貞星", keyword: "桃花", slug: null },
+  { name: "廉貞星", keyword: "次桃花", slug: "談廉貞星-紫微斗數14主星" },
   { name: "天府星", keyword: "財庫", slug: "談天府星紫微斗數14主星" },
-  { name: "太陰星", keyword: "財富", slug: "談太陰星-紫微斗數14主星" },
-  { name: "貪狼星", keyword: "欲望", slug: null },
+  { name: "太陰星", keyword: "田宅母星", slug: "談太陰星-紫微斗數14主星" },
+  { name: "貪狼星", keyword: "慾望與才藝", slug: "談貪狼星-紫微斗數14主星" },
   { name: "巨門星", keyword: "口才", slug: "談巨門星-紫微斗數14主星" },
   { name: "天相星", keyword: "印星", slug: "談天相星紫微斗數14主星" },
   { name: "天梁星", keyword: "蔭星", slug: "談天梁星-紫微斗數14主星" },
   { name: "七殺星", keyword: "將軍", slug: "談七殺星" },
-  { name: "破軍星", keyword: "先破後立", slug: null },
+  { name: "破軍星", keyword: "先破後立", slug: "談破軍星-紫微斗數14主星" },
 ] as const;
 
 export default function StarsHub() {
