@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { trackEvent } from "@/lib/ga";
 import { pricingPlans } from "@/lib/site-config";
+import TrackedWhatsAppLink from "@/components/TrackedWhatsAppLink";
 
 interface Props {
   whatsappHref: string;
@@ -28,17 +28,15 @@ export default function MasterReadingCta({
           studio — 60–90 min, decade luck cycles, and your real questions answered.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <a
+          <TrackedWhatsAppLink
+            location={`master_cta_en_${variant}`}
             href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary inline-flex justify-center"
-            onClick={() =>
-              trackEvent("whatsapp_click", { location: `master_cta_en_${variant}` })
-            }
           >
             WhatsApp Master Sunny
-          </a>
+          </TrackedWhatsAppLink>
           <Link href="/en/booking" className="btn-secondary inline-flex justify-center">
             Services & pricing
           </Link>
@@ -81,21 +79,19 @@ export default function MasterReadingCta({
         同行賣月費訂閱 · 你哋係真人師傅 + 過千好評
       </p>
       <div className="flex flex-col sm:flex-row gap-3 justify-center">
-        <a
+        <TrackedWhatsAppLink
+          location={`master_cta_${variant}`}
           href={whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
           className="btn-primary inline-flex justify-center"
-          onClick={() =>
-            trackEvent("whatsapp_click", { location: `master_cta_${variant}` })
-          }
         >
           {variant === "compatibility"
             ? "WhatsApp 請師傅合婚"
             : variant === "fortune-stick"
               ? "WhatsApp 請師傅問事"
               : "WhatsApp 請師傅解盤"}
-        </a>
+        </TrackedWhatsAppLink>
         <Link href="/booking" className="btn-secondary inline-flex justify-center">
           收費及預約
         </Link>
