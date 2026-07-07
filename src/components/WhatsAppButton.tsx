@@ -1,7 +1,7 @@
 "use client";
 
 import { siteConfig, whatsappUrl } from "@/lib/site-config";
-import { trackEvent } from "@/components/GoogleAnalytics";
+import { trackEvent } from "@/lib/ga";
 
 export default function WhatsAppButton() {
   return (

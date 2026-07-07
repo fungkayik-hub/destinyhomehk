@@ -6,7 +6,7 @@ import { pricingPlans, siteConfig, whatsappUrl } from "@/lib/site-config";
 import { BOOKING_CONFIG } from "@/lib/booking/config";
 import type { SlotAvailability } from "@/lib/booking/types";
 import TurnstileWidget from "@/components/booking/TurnstileWidget";
-import { trackEvent } from "@/components/GoogleAnalytics";
+import { trackEvent } from "@/lib/ga";
 import { isOnlinePayablePlan } from "@/lib/stripe/plans";
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
