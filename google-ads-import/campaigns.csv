@@ -1,0 +1,5 @@
+Campaign,Campaign state,Campaign type,Networks,Budget,Budget type,Bid strategy type,Location,Language
+DH-Brand,Enabled,Search,Google search,5,Daily,Manual CPC,Hong Kong,Chinese (Traditional)
+DH-FullReading,Enabled,Search,Google search,15,Daily,Manual CPC,Hong Kong,Chinese (Traditional)
+DH-DateNameFeng,Enabled,Search,Google search,7,Daily,Manual CPC,Hong Kong,Chinese (Traditional)
+DH-Tools,Enabled,Search,Google search,3,Daily,Manual CPC,Hong Kong,Chinese (Traditional)

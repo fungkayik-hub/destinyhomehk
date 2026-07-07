@@ -3,7 +3,7 @@ import Link from "next/link";
 const TOOLS = [
   {
     href: "/qiu-qian",
-    title: "線上求籤",
+    title: "一事一問(觀音100靈籤)",
     desc: "一事一問 · 免費睇籤詩 · HK$38 AI 解籤",
     tag: "新",
     keywords: "觀音靈籤、求籤",
@@ -28,6 +28,13 @@ const TOOLS = [
     desc: "黃曆宜忌、建除、生肖提示",
     tag: "每日更新",
     keywords: "黃曆、流日",
+  },
+  {
+    href: "/date-picker",
+    title: "結婚吉日篩選",
+    desc: "10 種儀式 · 黃曆宜忌 + 避冲生肖",
+    tag: "免費",
+    keywords: "結婚吉日、擇日",
   },
   {
     href: "/wedding-date",

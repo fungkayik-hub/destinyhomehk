@@ -8,14 +8,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
   },
   async redirects() {
-    return [
-      {
-        source: "/date-picker",
-        destination: "/wedding-date",
-        permanent: true,
-      },
-      ...shopifyRedirects(),
-    ];
+    return [...shopifyRedirects()];
   },
 };
 

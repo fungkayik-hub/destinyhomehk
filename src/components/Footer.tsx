@@ -18,11 +18,12 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="font-medium text-white mb-3">免費工具</h4>
+          <h4 className="font-medium text-white mb-3">小師傳(AI)</h4>
           <ul className="space-y-2 text-sm">
             <li><Link href="/chart" className="hover:text-destiny-gold">紫微即時排盤</Link></li>
             <li><Link href="/compatibility" className="hover:text-destiny-gold">姻緣探測器</Link></li>
             <li><Link href="/daily" className="hover:text-destiny-gold">每日流日黃曆</Link></li>
+            <li><Link href="/date-picker" className="hover:text-destiny-gold">結婚吉日篩選</Link></li>
             <li><Link href="/wedding-date" className="hover:text-destiny-gold">結婚擇日</Link></li>
           </ul>
         </div>
@@ -33,6 +34,8 @@ export default function Footer() {
             <li><Link href="/booking" className="hover:text-destiny-gold">收費及預約</Link></li>
             <li><Link href="/wan-chai-ziwei" className="hover:text-destiny-gold">灣仔紫微斗數</Link></li>
             <li><Link href="/hong-kong-fortune-telling" className="hover:text-destiny-gold">香港算命師傅</Link></li>
+            <li><Link href="/ai-faq" className="hover:text-destiny-gold">AI 算命 FAQ</Link></li>
+            <li><Link href="/ai-monitoring" className="hover:text-destiny-gold">AI 每月監測清單</Link></li>
             <li><Link href="/about" className="hover:text-destiny-gold">關於師傅</Link></li>
             {academyLinks.slice(0, 3).map((link) => (
               <li key={link.href}>

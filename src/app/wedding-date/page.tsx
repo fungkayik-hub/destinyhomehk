@@ -109,6 +109,10 @@ export default function WeddingDatePage() {
           </div>
 
           <div className="flex flex-wrap gap-3 text-sm mb-4">
+            <Link href="/date-picker" className="text-destiny-gold hover:underline">
+              免費吉日篩選
+            </Link>
+            <span className="text-destiny-purple/30">·</span>
             <Link href="/daily" className="text-destiny-gold hover:underline">
               每日流日黃曆
             </Link>

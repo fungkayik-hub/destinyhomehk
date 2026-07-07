@@ -5,7 +5,7 @@
 1. 複製 `article.sample.json` → `article.json`
 2. 填 `title`、`contentHtml`（建議最少 **1,500 字**，含 **2 段例子／故事**、FAQ、師傅一句）
 3. 本地或 CI 執行：`npm run import-article`
-4. **同步更新** `src/data/articles.json` 同 `content/inbox/done/` 備份（或執行 `node scripts/sync-article.mjs <slug>`）
+4. **同步更新** `src/data/articles.json` 同 `content/inbox/done/` 備份
 5. commit + push → 出現在 `/academy/{category}/{slug}`
 
 寫作標準見 `.cursor/rules/academy-article-style.mdc`。

@@ -27,6 +27,17 @@ export const apprenticeCopy = {
   detectorDisclaimer:
     "以上為小徒弟按雙方命盤整理嘅入門參考，僅供參考。",
   detectorDingPanNote: "深入合婚、結婚時機、大限流年請 WhatsApp 預約師傅",
+  /** 結婚擇日篩選器 */
+  datePickerName: "結婚吉日篩選",
+  datePickerSubtitle: "黃曆宜忌 + 生肖冲煞 · 免費初步參考",
+  datePickerSubmit: "開始篩選吉日",
+  datePickerFormHint:
+    "按儀式類型掃描黃曆宜忌，並避開冲新郎新娘生肖嘅日子 — 入門參考免費，吉時請 WhatsApp 師傅。",
+  datePickerFormFooter:
+    "以上為黃曆同生肖冲煞嘅初步篩選，非師傅親批；正式擇日及吉時（HK$800）請預約 Sunny 師傅。",
+  datePickerDisclaimer:
+    "以上按傳統通勝宜忌同雙方生肖冲煞整理，僅供參考；未含八字、紫微大限流年等師傅級擇日。",
+  datePickerMasterNote: "要師傅按雙方生辰擇上頭、出門、入門吉時？",
   chemistryTitle: "緣分火花",
   strengthsTitle: "徒弟睇到嘅位",
   tipsTitle: "呢對咁相處會順啲",

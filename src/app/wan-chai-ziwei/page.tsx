@@ -8,7 +8,6 @@ import SeoToolsGrid from "@/components/SeoToolsGrid";
 import FaqSection from "@/components/FaqSection";
 import { faqJsonLd } from "@/components/JsonLd";
 import { breadcrumbJsonLd } from "@/lib/schema-extra";
-import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteConfig, whatsappUrl } from "@/lib/site-config";
 import { siteImages } from "@/lib/site-images";
@@ -33,6 +32,21 @@ const faq = [
   {
     question: "第一次預約要準備咩？",
     answer: "出生年、月、日、時（愈準確愈好）、性別，同想問嘅問題。可先喺網站免費排盤作參考。",
+  },
+  {
+    question: "如果我先用 AI 算命，再約師傅有冇意思？",
+    answer:
+      "有。免費工具可先幫你整理方向，面談時再由 Sunny 師傅按命盤定盤、核對時辰，深入講大限流年同決策重點，兩者可以互補。",
+  },
+  {
+    question: "灣仔算命師傅通常點收費？",
+    answer:
+      "Destiny Home 現時全批 HK$2,000、擇日 HK$800、流年問事 HK$1,000；實際以收費頁最新資料為準，可 WhatsApp 查詢時段。",
+  },
+  {
+    question: "點樣最快預約到時段？",
+    answer:
+      "WhatsApp 留低出生資料、想問範圍同可行時段，通常比純文字查詢更快配對到合適檔期。",
   },
 ];
 
