@@ -146,7 +146,8 @@ export const academyCategories: AcademyCategory[] = [
     slug: "theory",
     group: "ziwei",
     title: "玄學理論",
-    description: "統計學與玄學、顏色論等核心理論。",
+    description:
+      "每人皆有天命之色 — 三原色立象、紫微分類，由象入理尋回本命專屬顏色。",
   },
   {
     slug: "history",
