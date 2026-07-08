@@ -44,9 +44,14 @@ export default function StarsHub() {
               (article && article.category === "stars"),
           );
 
-          const href = article
-            ? `/academy/stars/${encodeURIComponent(article.slug)}`
-            : "/chart";
+          // Hard guarantee: if the star has a predefined slug and it exists in data,
+          // always link to it (prevents accidental cross-linking).
+          const href =
+            star.slug && articleSlugs.has(star.slug)
+              ? `/academy/stars/${encodeURIComponent(star.slug)}`
+              : article
+                ? `/academy/stars/${encodeURIComponent(article.slug)}`
+                : "/chart";
 
           return (
             <Link
