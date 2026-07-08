@@ -31,13 +31,17 @@ export default function StarsHub() {
       </p>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
         {MAJOR_STARS.map((star) => {
-          const hasArticle =
-            star.slug &&
-            (articleSlugs.has(star.slug) ||
-              articles.some((a) => a.slug.includes(star.name.replace("星", ""))));
+          const talkPrefix = `談${star.name}`;
 
-          const article = articles.find(
-            (a) => a.slug === star.slug || a.title.includes(star.name.replace("星", "")),
+          // Prefer exact slug mapping (most reliable). Avoid fuzzy title matching like "紫微"
+          // because every "紫微斗數14主星" title contains "紫微".
+          const article =
+            (star.slug ? articles.find((a) => a.slug === star.slug) : undefined) ??
+            articles.find((a) => a.slug.startsWith(talkPrefix) || a.title.startsWith(talkPrefix));
+
+          const hasArticle = Boolean(
+            (star.slug && articleSlugs.has(star.slug)) ||
+              (article && article.category === "stars"),
           );
 
           const href = article
