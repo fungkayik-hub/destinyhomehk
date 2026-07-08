@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { PageBanner } from "@/components/SiteImage";
 import CompatibilityForm from "@/components/compatibility/CompatibilityForm";
 import CompatibilityResult from "@/components/compatibility/CompatibilityResult";
+import ToolUsageBeacon from "@/components/ToolUsageBeacon";
 import FaqSection from "@/components/FaqSection";
 import { faqJsonLd } from "@/components/JsonLd";
 import { apprenticeCopy } from "@/lib/apprentice-copy";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { getCachedCompatibilityResults } from "@/lib/compatibility-cache";
 import { compatibilityInputFromSearchParams } from "@/lib/compatibility-parse-params";
+import { logToolUsage } from "@/lib/usage/log";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
 
@@ -45,6 +47,10 @@ export default async function CompatibilityPage({
     }
   }
 
+  if (chartA && chartB && result) {
+    await logToolUsage("compatibility");
+  }
+
   return (
     <>
       <PageBanner
@@ -61,13 +67,16 @@ export default async function CompatibilityPage({
         />
 
         {chartA && chartB && result && (
-          <CompatibilityResult
+          <>
+            <ToolUsageBeacon event="tool_submit" params={{ tool: "compatibility" }} />
+            <CompatibilityResult
             personA={parsed.personA}
             personB={parsed.personB}
             chartA={chartA}
             chartB={chartB}
             result={result}
           />
+          </>
         )}
       </div>
       <div className="px-4 pb-12">

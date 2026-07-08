@@ -48,7 +48,7 @@ function parseBirthInput(body: Record<string, unknown>): BirthInput | null {
 export async function POST(request: NextRequest) {
   if (!stripePaymentsEnabled()) {
     return NextResponse.json(
-      { error: "網上付款暫未開通，請 WhatsApp 查詢小師傅命書" },
+      { error: "網上付款暫未開通，請 WhatsApp 查詢網上小師傅命書" },
       { status: 503 },
     );
   }

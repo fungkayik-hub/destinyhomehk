@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageBanner } from "@/components/SiteImage";
 import ChartBirthForm from "@/components/chart/ChartBirthForm";
 import ChartDisplay from "@/components/chart/ChartDisplay";
+import ToolUsageBeacon from "@/components/ToolUsageBeacon";
 import FaqSection from "@/components/FaqSection";
 import { faqJsonLd } from "@/components/JsonLd";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
@@ -9,6 +10,7 @@ import { getCachedChartResults } from "@/lib/chart-analysis-cache";
 import { buildChartKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
 import { parseChartLayout, parseFocusPalace } from "@/lib/chart-layout";
+import { logToolUsage } from "@/lib/usage/log";
 import {
   getReportContentsForChart,
   getUnlockedPalaces,
@@ -71,6 +73,10 @@ export default async function ChartPage({
     reportTexts = Object.fromEntries(contents.map((c) => [c.palace, c.text]));
   }
 
+  if (chart && palaceScores && palaceAnalyses) {
+    await logToolUsage("chart");
+  }
+
   return (
     <>
       <PageBanner
@@ -84,6 +90,7 @@ export default async function ChartPage({
 
         {chart && palaceScores && palaceAnalyses && (
           <div id="chart-results" className="max-w-4xl mx-auto scroll-mt-20 mt-6">
+            <ToolUsageBeacon event="tool_submit" params={{ tool: "chart" }} />
             <ChartDisplay
               chart={chart}
               palaceScores={palaceScores}

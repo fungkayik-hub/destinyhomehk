@@ -6,6 +6,8 @@ import { getCachedChartResults } from "@/lib/chart-analysis-cache";
 import { buildChartKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
 import { parseChartLayout, parseFocusPalace } from "@/lib/chart-layout";
+import { logToolUsage } from "@/lib/usage/log";
+import ToolUsageBeacon from "@/components/ToolUsageBeacon";
 import {
   getReportContentsForChart,
   getUnlockedPalaces,
@@ -69,6 +71,10 @@ export default async function EnChartPage({
     reportTexts = Object.fromEntries(contents.map((c) => [c.palace, c.text]));
   }
 
+  if (chart && palaceScores && palaceAnalyses) {
+    await logToolUsage("chart-en", "en");
+  }
+
   return (
     <>
       <PageBanner
@@ -82,6 +88,7 @@ export default async function EnChartPage({
 
         {chart && palaceScores && palaceAnalyses && (
           <div id="chart-results" className="max-w-4xl mx-auto scroll-mt-20 mt-6">
+            <ToolUsageBeacon event="tool_submit" params={{ tool: "chart-en" }} />
             <ChartDisplay
               chart={chart}
               palaceScores={palaceScores}

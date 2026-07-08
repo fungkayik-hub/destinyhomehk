@@ -1,5 +1,5 @@
 /**
- * 試跑完整十二宮小師傅 AI 命書
+ * 試跑完整十二宮網上小師傅命書
  * node scripts/test-full-palace-report.mjs
  */
 import { readFileSync, writeFileSync, mkdirSync } from "fs";
@@ -56,7 +56,7 @@ const chart = generateChart(input);
 const soul = chart.palaces.find((p) => p.isSoulPalace);
 const body = chart.palaces.find((p) => p.isBodyPalace);
 
-console.log(`\n=== 完整十二宮小師傅 AI 命書試跑 ===`);
+console.log(`\n=== 完整十二宮網上小師傅命書試跑 ===`);
 console.log(`出生：1993-2-1 10:45 男`);
 console.log(`陽曆：${chart.solarDate} | 農曆：${chart.lunarDateText}`);
 console.log(`四柱：${chart.chineseDate} | ${chart.fiveElement}`);
@@ -86,7 +86,7 @@ mkdirSync(outDir, { recursive: true });
 const outPath = resolve(outDir, "full-report-1993-02-01-1045-male.txt");
 
 const fileBody = [
-  "Destiny Home · 小師傅 AI 命書（完整十二宮）",
+  "Destiny Home · 網上小師傅命書（完整十二宮）",
   "AI 整理參考，非 Sunny 師傅親批",
   "",
   `出生：1993年2月1日 10:45 男`,

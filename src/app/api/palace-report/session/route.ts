@@ -137,7 +137,7 @@ export async function GET(request: NextRequest) {
   if (stillPending.length > 0) {
     return NextResponse.json({
       status: "generating",
-      message: "小師傅整理緊…",
+      message: "網上小師傅整理緊…",
       chartKey,
       unlockedPalaces: await getUnlockedPalaces(chartKey),
       reports: allReports.map((r) => ({ palace: r.palace, text: r.text })),

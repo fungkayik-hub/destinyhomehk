@@ -1,19 +1,19 @@
 export const PALACE_REPORT_PRODUCTS = {
   single: {
     id: "palace-report-single",
-    title: "單宮小師傅 AI 命書",
+    title: "單宮網上小師傅命書",
     priceCents: 8_800,
     maxPalaces: 1,
   },
   bundle3: {
     id: "palace-report-bundle-3",
-    title: "三宮小師傅 AI 命書套裝",
+    title: "三宮網上小師傅命書套裝",
     priceCents: 19_800,
     maxPalaces: 3,
   },
   full: {
     id: "palace-report-full",
-    title: "十二宮小師傅 AI 命書全集",
+    title: "十二宮網上小師傅命書全集",
     priceCents: 68_800,
     maxPalaces: 12,
   },

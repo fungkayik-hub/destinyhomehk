@@ -8,6 +8,7 @@ import ShakeLotAnimation from "@/components/fortune-stick/ShakeLotAnimation";
 import { detectQuestionTheme } from "@/lib/fortune-stick/question-theme";
 import { fortuneStickCopy } from "@/lib/fortune-stick-copy";
 import { fortuneStickWhatsAppUrl } from "@/lib/fortune-stick/whatsapp";
+import { trackEvent } from "@/lib/ga";
 
 const STRIPE_ENABLED = Boolean(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.trim(),
@@ -168,6 +169,7 @@ export default function FortuneStickExperience() {
         lot: data.lot,
         teaser: data.teaser,
       });
+      trackEvent("tool_submit", { tool: "fortune-stick" });
       setPhase("result");
       router.replace(`/qiu-qian?draw=${encodeURIComponent(data.drawId)}`, {
         scroll: false,

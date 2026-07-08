@@ -351,7 +351,7 @@ export default function PalaceReportSection({
           </div>
         ) : (
           <a
-            href={whatsappUrl("你好，想了解小師傅 AI 命書網上購買。")}
+            href={whatsappUrl("你好，想了解網上小師傅命書購買。")}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary w-full inline-flex justify-center text-sm"

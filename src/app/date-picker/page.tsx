@@ -3,11 +3,13 @@ import Link from "next/link";
 import { PageBanner } from "@/components/SiteImage";
 import DatePickerForm from "@/components/date-picker/DatePickerForm";
 import DatePickerResults from "@/components/date-picker/DatePickerResults";
+import ToolUsageBeacon from "@/components/ToolUsageBeacon";
 import FaqSection from "@/components/FaqSection";
 import { faqJsonLd } from "@/components/JsonLd";
 import { apprenticeCopy } from "@/lib/apprentice-copy";
 import { computeWeddingDates } from "@/lib/date-picker";
 import { datePickerInputFromSearchParams } from "@/lib/date-picker-parse-params";
+import { logToolUsage } from "@/lib/usage/log";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
@@ -55,6 +57,10 @@ export default async function DatePickerPage({
     }
   }
 
+  if (result) {
+    await logToolUsage("date-picker");
+  }
+
   return (
     <>
       <script
@@ -79,7 +85,12 @@ export default async function DatePickerPage({
           error={pageError}
         />
 
-        {result && <DatePickerResults result={result} />}
+        {result && (
+          <>
+            <ToolUsageBeacon event="tool_submit" params={{ tool: "date-picker" }} />
+            <DatePickerResults result={result} />
+          </>
+        )}
 
         <div className="max-w-5xl mx-auto mt-8 flex flex-wrap gap-3 text-sm justify-center">
           <Link href="/daily" className="text-destiny-gold hover:underline">

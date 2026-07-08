@@ -44,7 +44,7 @@ ${STAR_TRAIT_HINTS}
 
 ${ZHONGZHOU_PATTERNS_HINT}
 
-【任務 — 小師傅 AI 命書（付費詳批）】
+【任務 — 網上小師傅命書（付費詳批）】
 - 只寫指定單一宮位，**800–1200 字**
 - 必須引用「排盤摘要」「此宮三方四正」「十年大限」
 - 十年大限要用虛歲段（如 23–32 虛歲），唔好估公曆年
@@ -105,7 +105,7 @@ function buildPalaceReportPrompt(
   const theme = PALACE_THEMES[palace];
 
   return [
-    `請為以下命盤撰寫【${palace}】小師傅 AI 命書。`,
+    `請為以下命盤撰寫【${palace}】網上小師傅命書。`,
     `此宮主題：${theme}`,
     `字數：800–1200 字。必須引用排盤摘要、此宮三方四正、十年大限虛歲段，唔好寫到其他宮。`,
     palace === "官祿宮"
@@ -167,9 +167,9 @@ function fallbackPalaceReport(chart: ZiWeiChart, palace: PalaceName): string {
     : "";
 
   return [
-    `【${palace}小師傅命書】`,
+    `【${palace}網上小師傅命書】`,
     "",
-    `小師傅先幫你整理${palace} — 此宮管${theme}。${stars}。${patternNote}${bodyNote}${decadalNote}`,
+    `網上小師傅先幫你整理${palace} — 此宮管${theme}。${stars}。${patternNote}${bodyNote}${decadalNote}`,
     "",
     "【三方四正】",
     ...sanfangLines.map((l) => `- ${l}`),
