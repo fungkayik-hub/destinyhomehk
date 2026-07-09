@@ -2,7 +2,6 @@ import type { ChartInsights } from "@/lib/ai/chart-insights";
 import type { ZiWeiChart } from "@/lib/ziwei";
 import type { PalaceName } from "@/lib/ziwei/types";
 import type { PalaceAnalysesResponse, PalaceScoresResponse } from "@/lib/ai/types";
-import ChartPersonalInsights from "./ChartPersonalInsights";
 import { buildChartHref, type ChartLayoutId } from "@/lib/chart-layout";
 import { chartWhatsAppUrl } from "@/lib/chart-whatsapp";
 import { getApprenticeCopy } from "@/lib/apprentice-copy";
@@ -94,8 +93,6 @@ export default function ChartDisplay({
         </div>
       </div>
 
-      <ChartPersonalInsights insights={insights} locale={locale} />
-
       <section id="palaces">
         <h2 className="font-display text-lg font-bold text-destiny-purple mb-1">十二宮位</h2>
         <p className="text-xs text-destiny-purple/45 mb-4">
@@ -105,6 +102,7 @@ export default function ChartDisplay({
         {focusAnalysis && (
           <ChartPalacesFocus
             chart={chart}
+            insights={insights}
             scoreByPalace={scoreByPalace}
             focusAnalysis={focusAnalysis}
             unlockedPalaces={unlockedPalaces}

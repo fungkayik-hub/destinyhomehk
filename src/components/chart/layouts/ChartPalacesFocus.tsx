@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import type { ChartInsights } from "@/lib/ai/chart-insights";
 import type { ZiWeiChart } from "@/lib/ziwei";
 import type { PalaceName } from "@/lib/ziwei/types";
 import type { PalaceAnalysis, PalaceScore } from "@/lib/ai/types";
@@ -9,9 +10,11 @@ import { SCORE_LABEL_BG } from "@/lib/palace-score-styles";
 import { PalaceStars, PalaceTags, type PalaceLayoutProps } from "./palace-shared";
 import PalaceReportSection from "../PalaceReportSection";
 import ChartFortuneSummary from "../ChartFortuneSummary";
+import ChartPersonalInsights from "../ChartPersonalInsights";
 
 interface Props extends PalaceLayoutProps {
   chart: ZiWeiChart;
+  insights: ChartInsights;
   scoreByPalace: Map<string, PalaceScore>;
   focusAnalysis: PalaceAnalysis;
   unlockedPalaces: PalaceName[];
@@ -23,6 +26,7 @@ interface Props extends PalaceLayoutProps {
 /** 版本 5（推薦）：橫向揀宮 + 下方整合星曜與小徒弟贈言 */
 export default function ChartPalacesFocus({
   chart,
+  insights,
   scoreByPalace,
   focusPalace,
   focusAnalysis,
@@ -80,6 +84,8 @@ export default function ChartPalacesFocus({
           );
         })}
       </div>
+
+      <ChartPersonalInsights insights={insights} locale={locale} />
 
       <ChartFortuneSummary
         data={fortuneSummary}
