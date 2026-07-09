@@ -1,5 +1,5 @@
 /**
- * 匯入紫微斗數吉格／凶格學堂文章 + 每日流日 override（每日 2 篇）
+ * 匯入紫微斗數吉格／凶格學堂文章 + 每日流日 override（每日 5 篇）
  * 執行：npm run seed-geju-articles
  */
 import fs from "fs";
@@ -13,7 +13,7 @@ const OUT = path.join(__dirname, "../src/data/articles.json");
 const OVERRIDES = path.join(__dirname, "../src/data/daily-overrides.json");
 const CATEGORY = "geju";
 const START_DATE = "2026-06-25";
-const ARTICLES_PER_DAY = 2;
+const ARTICLES_PER_DAY = 5;
 /** 保留非格局嘅手動 override */
 const PINNED_OVERRIDE_DATES = ["2026-06-23", "2026-06-24"];
 

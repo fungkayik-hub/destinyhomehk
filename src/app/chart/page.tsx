@@ -6,6 +6,7 @@ import ToolUsageBeacon from "@/components/ToolUsageBeacon";
 import FaqSection from "@/components/FaqSection";
 import { faqJsonLd } from "@/components/JsonLd";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
+import { computeChartInsights } from "@/lib/ai/chart-insights";
 import { getCachedChartResults } from "@/lib/chart-analysis-cache";
 import { buildChartKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
@@ -93,6 +94,7 @@ export default async function ChartPage({
             <ToolUsageBeacon event="tool_submit" params={{ tool: "chart" }} />
             <ChartDisplay
               chart={chart}
+              insights={computeChartInsights(chart)}
               palaceScores={palaceScores}
               palaceAnalyses={palaceAnalyses}
               focusPalace={focusPalace}

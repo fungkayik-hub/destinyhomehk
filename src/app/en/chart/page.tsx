@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PageBanner } from "@/components/SiteImage";
 import ChartBirthForm from "@/components/chart/ChartBirthForm";
 import ChartDisplay from "@/components/chart/ChartDisplay";
+import { computeChartInsights } from "@/lib/ai/chart-insights";
 import { getCachedChartResults } from "@/lib/chart-analysis-cache";
 import { buildChartKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
@@ -91,6 +92,7 @@ export default async function EnChartPage({
             <ToolUsageBeacon event="tool_submit" params={{ tool: "chart-en" }} />
             <ChartDisplay
               chart={chart}
+              insights={computeChartInsights(chart)}
               palaceScores={palaceScores}
               palaceAnalyses={palaceAnalyses}
               focusPalace={focusPalace}
