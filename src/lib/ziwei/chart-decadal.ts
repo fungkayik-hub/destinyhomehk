@@ -69,7 +69,7 @@ export function displayDecadalRange(
 
 export function formatDisplayDecadalRange(d: DecadalPeriod, offset: number): string {
   const { start, end } = displayDecadalRange(d, offset);
-  return `${start}–${end}`;
+  return `${start}〜${end}`;
 }
 
 function formatPalaceBrief(p: PalaceInfo | undefined): string {

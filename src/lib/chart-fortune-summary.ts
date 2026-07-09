@@ -25,6 +25,7 @@ export interface DecadalTrendPoint {
   label: string;
   palace: PalaceName;
   score: number;
+  gradeLevel: number;
   isCurrent: boolean;
   heavenlyStem: string;
   earthlyBranch: string;
@@ -83,16 +84,20 @@ const DIMENSION_PALACES: Record<
   },
 };
 
-/** 數值 → 八級運（1級最好，8級最弱） */
+/** 數值 → 八級（8級最好，1級最弱） */
+export function scoreToEightGradeLevel(score: number): number {
+  if (score >= 90) return 8;
+  if (score >= 84) return 7;
+  if (score >= 78) return 6;
+  if (score >= 72) return 5;
+  if (score >= 66) return 4;
+  if (score >= 60) return 3;
+  if (score >= 52) return 2;
+  return 1;
+}
+
 export function scoreToEightGrade(score: number): string {
-  if (score >= 90) return "1級";
-  if (score >= 84) return "2級";
-  if (score >= 78) return "3級";
-  if (score >= 72) return "4級";
-  if (score >= 66) return "5級";
-  if (score >= 60) return "6級";
-  if (score >= 52) return "7級";
-  return "8級";
+  return `${scoreToEightGradeLevel(score)}級`;
 }
 
 /** @deprecated 用 scoreToEightGrade */
@@ -101,14 +106,14 @@ export function scoreToLetterGrade(score: number): string {
 }
 
 const GRADE_COLORS: Record<string, string> = {
-  "1級": "bg-destiny-gold/25 text-destiny-gold border-destiny-gold/40",
-  "2級": "bg-destiny-gold/20 text-destiny-gold border-destiny-gold/35",
-  "3級": "bg-destiny-purple/10 text-destiny-purple border-destiny-purple/20",
-  "4級": "bg-destiny-purple/10 text-destiny-purple border-destiny-purple/15",
-  "5級": "bg-destiny-blue/10 text-destiny-blue border-destiny-blue/20",
-  "6級": "bg-destiny-muted/15 text-destiny-muted border-destiny-muted/25",
-  "7級": "bg-destiny-amber/12 text-destiny-amber border-destiny-amber/25",
-  "8級": "bg-destiny-red/10 text-destiny-red border-destiny-red/25",
+  "8級": "bg-destiny-gold/25 text-destiny-gold border-destiny-gold/40",
+  "7級": "bg-destiny-gold/20 text-destiny-gold border-destiny-gold/35",
+  "6級": "bg-destiny-purple/10 text-destiny-purple border-destiny-purple/20",
+  "5級": "bg-destiny-purple/10 text-destiny-purple border-destiny-purple/15",
+  "4級": "bg-destiny-blue/10 text-destiny-blue border-destiny-blue/20",
+  "3級": "bg-destiny-muted/15 text-destiny-muted border-destiny-muted/25",
+  "2級": "bg-destiny-amber/12 text-destiny-amber border-destiny-amber/25",
+  "1級": "bg-destiny-red/10 text-destiny-red border-destiny-red/25",
 };
 
 export function letterGradeStyle(grade: string): string {
@@ -164,13 +169,15 @@ export function buildChartFortuneSummary(
   const decadalTrend: DecadalTrendPoint[] = timeline.map((d) => {
     const displayStart = d.ageStart - offset;
     const displayEnd = d.ageEnd - offset;
+    const palaceScore = scoreForPalace(scoreMap, d.palace);
     return {
       ageStart: displayStart,
       ageEnd: displayEnd,
       ageMid: Math.round((displayStart + displayEnd) / 2),
-      label: `${displayStart}–${displayEnd}`,
+      label: `${displayStart}〜${displayEnd}`,
       palace: d.palace,
-      score: scoreForPalace(scoreMap, d.palace),
+      score: palaceScore,
+      gradeLevel: scoreToEightGradeLevel(palaceScore),
       isCurrent: current?.palace === d.palace,
       heavenlyStem: d.heavenlyStem,
       earthlyBranch: d.earthlyBranch,
@@ -179,8 +186,9 @@ export function buildChartFortuneSummary(
 
   const radarData = dimensions.map((d) => ({
     subject: d.label,
-    score: d.score,
+    score: scoreToEightGradeLevel(d.score) * 12.5,
     fullMark: 100,
+    grade: d.grade,
   }));
 
   return {

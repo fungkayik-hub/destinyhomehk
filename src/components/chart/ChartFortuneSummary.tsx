@@ -18,7 +18,6 @@ import type { PalaceName } from "@/lib/ziwei/types";
 import {
   type ChartFortuneSummaryData,
   letterGradeStyle,
-  scoreToEightGrade,
   sliceDecadalTrendForChart,
 } from "@/lib/chart-fortune-summary";
 import { formatDisplayDecadalRange } from "@/lib/ziwei/chart-decadal";
@@ -94,7 +93,7 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
       {/* 五維評級 pill */}
       <div className="px-4 py-4 border-b border-destiny-purple/8">
         <p className="text-xs text-destiny-purple/50 mb-3">
-          {isEn ? "Five-dimension overview (8-grade scale)" : "命盤五維評估（八級運）"}
+          {isEn ? "Five-dimension overview (8 = best)" : "命盤五維評估（八級運 · 8級最好）"}
         </p>
         <div className="flex flex-wrap gap-2">
           {data.dimensions.map((d) => {
@@ -149,7 +148,10 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
                   border: `1px solid ${GOLD}`,
                   fontSize: 12,
                 }}
-                formatter={(value) => [`${value ?? ""}`, isEn ? "Score" : "指數"]}
+                formatter={(value, _name, item) => {
+                  const p = item.payload as { grade?: string };
+                  return [p.grade ?? value, isEn ? "Grade" : "級數"];
+                }}
               />
             </RadarChart>
           </ResponsiveContainer>
@@ -157,27 +159,32 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
 
         <div className="px-2 py-4 md:px-4 bg-white border-t md:border-t-0 border-destiny-purple/8">
           <p className="text-xs text-destiny-purple/50 text-center mb-2">
-            {isEn ? "Decade trend (8 periods · 8-grade energy)" : "十年大限走勢（八段 · 八級能量）"}
+            {isEn ? "Decade trend (8 periods · grade 1–8)" : "十年大限走勢（八段 · 縱軸八級）"}
           </p>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={lineData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={MUTED} strokeOpacity={0.25} />
               <XAxis
                 dataKey="label"
-                tick={{ fill: MUTED, fontSize: 10 }}
+                tick={{ fill: MUTED, fontSize: 10, fontFamily: "sans-serif" }}
                 interval={0}
-                angle={-25}
+                angle={-20}
                 textAnchor="end"
-                height={48}
+                height={52}
               />
-              <YAxis domain={[30, 100]} tick={{ fill: MUTED, fontSize: 10 }} width={32} />
+              <YAxis
+                domain={[1, 8]}
+                ticks={[1, 2, 3, 4, 5, 6, 7, 8]}
+                tick={{ fill: MUTED, fontSize: 10 }}
+                width={28}
+                tickFormatter={(v) => `${v}級`}
+              />
               <Tooltip
                 contentStyle={{ borderRadius: 8, fontSize: 12 }}
-                formatter={(value, _name, item) => {
+                formatter={(_value, _name, item) => {
                   const p = item.payload as (typeof lineData)[0];
-                  const grade = scoreToEightGrade(Number(value));
                   return [
-                    `${grade} · ${p.palace}`,
+                    `${p.gradeLevel}級 · ${p.palace}`,
                     isEn ? "Decade luck" : "大限宮",
                   ];
                 }}
@@ -195,7 +202,7 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
               )}
               <Line
                 type="monotone"
-                dataKey="score"
+                dataKey="gradeLevel"
                 stroke={PURPLE}
                 strokeWidth={2.5}
                 dot={(props) => {
@@ -221,8 +228,8 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
           </ResponsiveContainer>
           <p className="text-[10px] text-destiny-purple/40 text-center mt-1 px-2">
             {isEn
-              ? "Gold dot = current decade · Unlock report for full palace analysis"
-              : "金點 = 而家大限 · 解鎖命書睇該宮三方四正同大限詳解"}
+              ? "Gold dot = current decade · Y-axis: 8 = best, 1 = weak"
+              : "金點 = 而家大限 · 縱軸 8級最好、1級較弱"}
           </p>
         </div>
       </div>
