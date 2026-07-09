@@ -3,6 +3,7 @@ import { buildDecadalTimeline } from "./chart-decadal";
 import type { BirthInput, PalaceInfo, StarPlacement, ZiWeiChart } from "./types";
 import { hourMinuteToTimeIndex, formatSolarDate } from "./time";
 import { applyTrueSolarTime } from "./true-solar-time";
+import { normalizeStarName } from "../star-names";
 
 const PALACE_NAME_MAP: Record<string, string> = {
   命宫: "命宮",
@@ -129,19 +130,19 @@ export function generateChart(input: BirthInput): ZiWeiChart {
     : astro.bySolar(solarDate, timeIndex, gender);
 
   const soulPalace = astrolabe.palaces.find((p) => p.name === "命宫");
-  const majorStarNames = soulPalace?.majorStars.map((s) => s.name) ?? [];
+  const majorStarNames = soulPalace?.majorStars.map((s) => normalizeStarName(s.name)) ?? [];
 
   const palaces: PalaceInfo[] = astrolabe.palaces.map((palace) => {
     const stars: StarPlacement[] = [
       ...palace.majorStars.map((star) => ({
-        name: star.name,
+        name: normalizeStarName(star.name),
         palace: (PALACE_NAME_MAP[palace.name] ?? palace.name) as PalaceInfo["name"],
         brightness: mapBrightness(star.brightness),
         mutagen: mapMutagen(star.mutagen as string | undefined),
         type: "major" as const,
       })),
       ...palace.minorStars.map((star) => ({
-        name: star.name,
+        name: normalizeStarName(star.name),
         palace: (PALACE_NAME_MAP[palace.name] ?? palace.name) as PalaceInfo["name"],
         mutagen: mapMutagen(star.mutagen as string | undefined),
         type: "minor" as const,
