@@ -18,8 +18,10 @@ import type { PalaceName } from "@/lib/ziwei/types";
 import {
   type ChartFortuneSummaryData,
   letterGradeStyle,
+  scoreToEightGrade,
   sliceDecadalTrendForChart,
 } from "@/lib/chart-fortune-summary";
+import { formatDisplayDecadalRange } from "@/lib/ziwei/chart-decadal";
 
 const PURPLE = "#0F1A33";
 const GOLD = "#C9A96E";
@@ -51,10 +53,15 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
   const highlightKey = dimensionForPalace(focusPalace);
   const lineData = sliceDecadalTrendForChart(data.decadalTrend, data.currentDecadal);
   const currentAge = data.nominalAge;
+  const offset = data.decadalDisplayOffset;
+  const currentDisplayRange = data.currentDecadal
+    ? formatDisplayDecadalRange(data.currentDecadal, offset)
+    : null;
+  const currentLinePoint = lineData.find((p) => p.isCurrent);
 
   const decadalExplain = isEn
-    ? "Each decade (大限) shifts which palace leads your life theme — turning points often cluster here."
-    : "大限掌管每十年能量走向，人生轉捌位多數喺大限轉換前後出現。";
+    ? "Each decade (大限) shifts which palace leads your life theme — chart ages start from 0 nominal years."
+    : "大限掌管每十年能量走向；圖表由 0 虛歲起計（對應本命五行局起運）。";
 
   return (
     <div className="rounded-2xl border border-destiny-purple/10 bg-white shadow-sm overflow-hidden">
@@ -66,9 +73,9 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
           </p>
           <p className="text-sm font-medium text-destiny-purple">
             <span className="text-destiny-gold font-bold tabular-nums">
-              {data.currentDecadal.ageStart}–{data.currentDecadal.ageEnd}
+              {currentDisplayRange}
             </span>
-            {isEn ? " nominal yrs · " : " 虛歲 · 大限走 "}
+            {isEn ? " nominal yrs (from 0) · " : " 虛歲 · 大限走 "}
             <strong>【{data.currentDecadal.palace}】</strong>
             {data.currentDecadal.heavenlyStem}
             {data.currentDecadal.earthlyBranch}
@@ -76,6 +83,7 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
             {!isEn && (
               <span className="text-destiny-purple/70">
                 你而家約 {currentAge} 虛歲
+                {offset > 0 ? `（起運 ${offset} 虛歲）` : ""}
               </span>
             )}
           </p>
@@ -86,7 +94,7 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
       {/* 五維評級 pill */}
       <div className="px-4 py-4 border-b border-destiny-purple/8">
         <p className="text-xs text-destiny-purple/50 mb-3">
-          {isEn ? "Five-dimension overview (from your chart)" : "命盤五維評估"}
+          {isEn ? "Five-dimension overview (8-grade scale)" : "命盤五維評估（八級運）"}
         </p>
         <div className="flex flex-wrap gap-2">
           {data.dimensions.map((d) => {
@@ -149,7 +157,7 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
 
         <div className="px-2 py-4 md:px-4 bg-white border-t md:border-t-0 border-destiny-purple/8">
           <p className="text-xs text-destiny-purple/50 text-center mb-2">
-            {isEn ? "Decade trend (大限 palace score)" : "十年大限走勢（大限宮能量）"}
+            {isEn ? "Decade trend (8 periods · 8-grade energy)" : "十年大限走勢（八段 · 八級能量）"}
           </p>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={lineData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
@@ -167,18 +175,19 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
                 contentStyle={{ borderRadius: 8, fontSize: 12 }}
                 formatter={(value, _name, item) => {
                   const p = item.payload as (typeof lineData)[0];
+                  const grade = scoreToEightGrade(Number(value));
                   return [
-                    `${value ?? ""} · ${p.palace}`,
-                    isEn ? "Palace energy" : "大限宮",
+                    `${grade} · ${p.palace}`,
+                    isEn ? "Decade luck" : "大限宮",
                   ];
                 }}
                 labelFormatter={(label) =>
                   isEn ? `Ages ${label}` : `${label} 虛歲`
                 }
               />
-              {data.currentDecadal && (
+              {currentLinePoint && (
                 <ReferenceLine
-                  x={`${data.currentDecadal.ageStart}–${data.currentDecadal.ageEnd}`}
+                  x={currentLinePoint.label}
                   stroke={GOLD_LIGHT}
                   strokeDasharray="4 4"
                   strokeWidth={1.5}
