@@ -6,7 +6,6 @@ import { buildChartHref, getChartLayoutHint, type ChartLayoutId } from "@/lib/ch
 import { buildChartFortuneSummary } from "@/lib/chart-fortune-summary";
 import { chartWhatsAppUrl } from "@/lib/chart-whatsapp";
 import { formatClock } from "@/lib/ziwei/true-solar-time";
-import { getPlateMeta } from "@/lib/ziwei/zhongzhou-plates";
 import MasterReadingCta from "@/components/MasterReadingCta";
 import ChartSavedHistory from "./ChartSavedHistory";
 import { PalaceScoresLegend } from "./PalaceScoreBadge";
@@ -57,7 +56,6 @@ export default function ChartDisplay({
   locale = "zh",
 }: Props) {
   const waUrl = chartWhatsAppUrl(chart);
-  const plateMeta = getPlateMeta(plate);
   const scoreByPalace = new Map(palaceScores.scores.map((s) => [s.palace, s]));
   const analysisByPalace = new Map(palaceAnalyses.analyses.map((a) => [a.palace, a]));
   const focusAnalysis = analysisByPalace.get(focusPalace) ?? palaceAnalyses.analyses[0];
@@ -85,35 +83,15 @@ export default function ChartDisplay({
         </p>
       )}
 
-      <section id="plates" className="space-y-3">
-        <h2 className="font-display text-lg font-bold text-destiny-purple">
-          {locale === "en" ? "Heaven · Earth · Human plates" : "中洲派天地人盤"}
-        </h2>
+      <div id="chart-summary" className="rounded-xl bg-destiny-purple text-white px-4 py-4 sm:px-6 sm:py-5 space-y-4">
         <ChartPlatePicker
           current={plate}
           suggested={suggestedPlate}
           searchParams={searchParams}
           locale={locale}
+          variant="bar"
         />
-        <ChartPlateCompare plates={threePlates} activePlate={plate} locale={locale} />
-        <ChartDingPanQuiz
-          birthKey={birthKey}
-          threePlates={threePlates}
-          suggestedPlate={suggestedPlate}
-          activePlate={plate}
-          searchParams={searchParams}
-          locale={locale}
-        />
-      </section>
-
-      <div className="rounded-xl bg-destiny-purple text-white px-4 py-4 sm:px-6 sm:py-5">
-        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-x-4 gap-y-2.5 text-sm">
-          <span className="col-span-2 sm:col-span-1">
-            <span className="text-white/50">{locale === "en" ? "Plate " : "盤 "}</span>
-            <strong className="text-destiny-gold">
-              {locale === "en" ? plateMeta.nameEn : plateMeta.name}
-            </strong>
-          </span>
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-x-4 gap-y-2.5 text-sm border-t border-white/10 pt-4">
           <span>
             <span className="text-white/50">陽曆 </span>
             <strong>{chart.solarDate}</strong>
@@ -139,6 +117,18 @@ export default function ChartDisplay({
             <strong>{chart.shenPalaceBranch}</strong>
           </span>
         </div>
+      </div>
+
+      <div className="space-y-3">
+        <ChartPlateCompare plates={threePlates} activePlate={plate} locale={locale} />
+        <ChartDingPanQuiz
+          birthKey={birthKey}
+          threePlates={threePlates}
+          suggestedPlate={suggestedPlate}
+          activePlate={plate}
+          searchParams={searchParams}
+          locale={locale}
+        />
       </div>
 
       <section id="palaces">
