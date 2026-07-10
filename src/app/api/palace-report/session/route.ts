@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCachedPalaceReport } from "@/lib/ai/analyze-palace-report";
-import { buildChartKey } from "@/lib/chart-key";
+import { buildBirthKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
 import {
   createPurchaseFromSession,
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "invalid_birth_data" }, { status: 500 });
   }
 
-  const birthChartKey = buildChartKey(parsed.input);
+  const birthChartKey = buildBirthKey(parsed.input);
   if (birthChartKey !== chartKey) {
     return NextResponse.json({ error: "chart_mismatch" }, { status: 500 });
   }
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "出生資料無效" }, { status: 400 });
   }
 
-  const chartKey = buildChartKey(birthInput);
+  const chartKey = buildBirthKey(birthInput);
   const unlockedPalaces = await getUnlockedPalaces(chartKey);
   const reports: { palace: PalaceName; text: string }[] = [];
 

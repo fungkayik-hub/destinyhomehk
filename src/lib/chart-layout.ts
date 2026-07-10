@@ -1,4 +1,4 @@
-import type { PalaceName } from "@/lib/ziwei/types";
+import type { PalaceName, ChartPlateType } from "@/lib/ziwei/types";
 import { PALACES } from "@/lib/ziwei/types";
 
 export type ChartLayoutId = "1" | "2" | "3" | "4" | "5";
@@ -22,6 +22,14 @@ export function parseChartLayout(raw: string | string[] | undefined): ChartLayou
   return "5";
 }
 
+export function parseChartPlate(
+  raw: string | string[] | undefined,
+): ChartPlateType {
+  const v = typeof raw === "string" ? raw : raw?.[0];
+  if (v === "earth" || v === "human") return v;
+  return "heaven";
+}
+
 function first(sp: Record<string, string | string[] | undefined>, key: string): string | undefined {
   const v = sp[key];
   if (typeof v === "string") return v;
@@ -40,20 +48,29 @@ export function parseFocusPalace(
   return defaultPalace;
 }
 
-/** 保留出生資料同 layout，改 focus / layout 等參數 */
+/** 保留出生資料同 layout，改 focus / layout / plate 等參數 */
 export function buildChartHref(
   sp: Record<string, string | string[] | undefined>,
-  overrides: { layout?: ChartLayoutId; focus?: PalaceName; hash?: string } = {},
+  overrides: {
+    layout?: ChartLayoutId;
+    focus?: PalaceName;
+    plate?: ChartPlateType;
+    hash?: string;
+  } = {},
+  locale: "zh" | "en" = "zh",
 ): string {
+  const base = locale === "en" ? "/en/chart" : "/chart";
   const params = new URLSearchParams();
   for (const [key, val] of Object.entries(sp)) {
-    if (key === "layout" || key === "focus" || val == null) continue;
+    if (key === "layout" || key === "focus" || key === "plate" || val == null) continue;
     if (Array.isArray(val)) val.forEach((v) => params.append(key, v));
     else params.set(key, val);
   }
   if (overrides.layout) params.set("layout", overrides.layout);
   else if (first(sp, "layout")) params.set("layout", first(sp, "layout")!);
   if (overrides.focus) params.set("focus", overrides.focus);
+  if (overrides.plate) params.set("plate", overrides.plate);
+  else if (first(sp, "plate")) params.set("plate", first(sp, "plate")!);
   const hash = overrides.hash ? `#${overrides.hash}` : "";
-  return `/chart?${params.toString()}${hash}`;
+  return `${base}?${params.toString()}${hash}`;
 }

@@ -1,9 +1,11 @@
 import { astro } from "iztro";
 import { buildDecadalTimeline } from "./chart-decadal";
-import type { BirthInput, PalaceInfo, StarPlacement, ZiWeiChart } from "./types";
+import type { BirthInput, ChartPlateType, PalaceInfo, StarPlacement, ZiWeiChart } from "./types";
 import { hourMinuteToTimeIndex, formatSolarDate } from "./time";
 import { applyTrueSolarTime } from "./true-solar-time";
 import { normalizeStarName } from "../star-names";
+
+const ZHONGZHOU_CONFIG = { algorithm: "zhongzhou" as const };
 
 const PALACE_NAME_MAP: Record<string, string> = {
   命宫: "命宮",
@@ -102,34 +104,23 @@ function buildSummary(chart: {
   earthlyBranchOfSoulPalace: string;
   soul: string;
   majorStars: string[];
-}): string {
+}, plateLabel: string): string {
   const stars = chart.majorStars.length > 0 ? chart.majorStars.join("、") : "空宮";
-  return `五行局屬${chart.fiveElementsClass}，命宮在${chart.earthlyBranchOfSoulPalace}，命主${chart.soul}。命宮主星：${stars}。完整解盤請預約 Sunny 師傅親自定盤。`;
+  return `【${plateLabel}】五行局屬${chart.fiveElementsClass}，命宮在${chart.earthlyBranchOfSoulPalace}，命主${chart.soul}。命宮主星：${stars}。完整解盤請預約 Sunny 師傅親自定盤。`;
 }
 
-/**
- * 使用 iztro（《紫微斗數全書》三合派）生成命盤
- * @see https://github.com/SylarLong/iztro
- */
-export function generateChart(input: BirthInput): ZiWeiChart {
-  const trueSolarTime = applyTrueSolarTime(input);
-  const timeIndex = hourMinuteToTimeIndex(
-    trueSolarTime.correctedHour,
-    trueSolarTime.correctedMinute,
+type IztroAstrolabe = ReturnType<typeof astro.withOptions>;
+
+function astrolabeToChart(
+  astrolabe: IztroAstrolabe,
+  input: BirthInput,
+  trueSolarTime: ReturnType<typeof applyTrueSolarTime>,
+  plateType: ChartPlateType,
+  plateLabel: string,
+): ZiWeiChart {
+  const soulPalace = astrolabe.palaces.find(
+    (p) => p.earthlyBranch === astrolabe.earthlyBranchOfSoulPalace,
   );
-  const gender = input.gender === "male" ? "男" : "女";
-  const solarDate = formatSolarDate(input.year, input.month, input.day);
-
-  const astrolabe = input.calendarType === "lunar"
-    ? astro.byLunar(
-        `${input.year}-${input.month}-${input.day}`,
-        timeIndex,
-        gender,
-        input.isLeapMonth ?? false,
-      )
-    : astro.bySolar(solarDate, timeIndex, gender);
-
-  const soulPalace = astrolabe.palaces.find((p) => p.name === "命宫");
   const majorStarNames = soulPalace?.majorStars.map((s) => normalizeStarName(s.name)) ?? [];
 
   const palaces: PalaceInfo[] = astrolabe.palaces.map((palace) => {
@@ -159,7 +150,6 @@ export function generateChart(input: BirthInput): ZiWeiChart {
     };
   });
 
-  // 按命宮起頭的傳統順序排列
   const soulIndex = palaces.findIndex((p) => p.isSoulPalace);
   const orderedPalaces = soulIndex >= 0
     ? [...palaces.slice(soulIndex), ...palaces.slice(0, soulIndex)]
@@ -170,6 +160,7 @@ export function generateChart(input: BirthInput): ZiWeiChart {
 
   return {
     input,
+    plateType,
     trueSolarTime,
     solarDate: astrolabe.solarDate,
     lunarDateText: astrolabe.lunarDate,
@@ -189,6 +180,75 @@ export function generateChart(input: BirthInput): ZiWeiChart {
       earthlyBranchOfSoulPalace: astrolabe.earthlyBranchOfSoulPalace,
       soul: astrolabe.soul,
       majorStars: majorStarNames,
-    }),
+    }, plateLabel),
+  };
+}
+
+function buildAstrolabeOptions(
+  input: BirthInput,
+  timeIndex: number,
+  plateType: ChartPlateType,
+) {
+  const gender = input.gender === "male" ? ("男" as const) : ("女" as const);
+  const base = {
+    timeIndex,
+    gender,
+    fixLeap: true,
+    config: ZHONGZHOU_CONFIG,
+    astroType: plateType,
+  };
+
+  if (input.calendarType === "lunar") {
+    return {
+      ...base,
+      type: "lunar" as const,
+      dateStr: `${input.year}-${input.month}-${input.day}`,
+      isLeapMonth: input.isLeapMonth ?? false,
+    };
+  }
+
+  return {
+    ...base,
+    type: "solar" as const,
+    dateStr: formatSolarDate(input.year, input.month, input.day),
+  };
+}
+
+const PLATE_LABELS: Record<ChartPlateType, string> = {
+  heaven: "天盤",
+  earth: "地盤",
+  human: "人盤",
+};
+
+/**
+ * 中洲派天地人盤排盤（iztro withOptions + zhongzhou algorithm）
+ * @see https://github.com/SylarLong/iztro
+ */
+export function generateChart(
+  input: BirthInput,
+  plateType: ChartPlateType = "heaven",
+): ZiWeiChart {
+  const trueSolarTime = applyTrueSolarTime(input);
+  const timeIndex = hourMinuteToTimeIndex(
+    trueSolarTime.correctedHour,
+    trueSolarTime.correctedMinute,
+  );
+
+  const astrolabe = astro.withOptions(buildAstrolabeOptions(input, timeIndex, plateType));
+  return astrolabeToChart(
+    astrolabe,
+    input,
+    trueSolarTime,
+    plateType,
+    PLATE_LABELS[plateType],
+  );
+}
+
+/** 一次生成天地人三盤（定盤對照用） */
+export function generateThreePlates(input: BirthInput): Record<ChartPlateType, ZiWeiChart> {
+  return {
+    heaven: generateChart(input, "heaven"),
+    earth: generateChart(input, "earth"),
+    human: generateChart(input, "human"),
   };
 }

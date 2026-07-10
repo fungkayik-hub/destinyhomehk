@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildChartKey } from "@/lib/chart-key";
+import { buildBirthKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams, birthInputToSearchParams } from "@/lib/chart-parse-params";
 import { clientIp, checkRateLimit } from "@/lib/rate-limit";
 import {
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
   }
 
   generateChart(birthInput);
-  const chartKey = buildChartKey(birthInput);
+  const chartKey = buildBirthKey(birthInput);
   const product = getPalaceReportProduct(productKeyRaw);
 
   let palaces: PalaceName[];

@@ -1,7 +1,6 @@
-import type { BirthInput } from "@/lib/ziwei/types";
+import type { BirthInput, ChartPlateType } from "@/lib/ziwei/types";
 
-/** 同一出生資料 → 同一 chartKey（排盤 AI 快取、付費命書解鎖共用） */
-export function buildChartKey(input: BirthInput): string {
+function birthParts(input: BirthInput): (string | number | boolean)[] {
   return [
     input.year,
     input.month,
@@ -13,5 +12,15 @@ export function buildChartKey(input: BirthInput): string {
     input.isLeapMonth ?? false,
     input.birthPlaceId ?? "",
     input.useTrueSolarTime ?? true,
-  ].join("-");
+  ];
+}
+
+/** 出生資料 key — 付費命書解鎖、定盤問卷儲存共用 */
+export function buildBirthKey(input: BirthInput): string {
+  return birthParts(input).join("-");
+}
+
+/** 出生資料 + 盤類型 → AI 快取 key */
+export function buildChartKey(input: BirthInput, plate: ChartPlateType): string {
+  return [...birthParts(input), plate].join("-");
 }
