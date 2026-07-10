@@ -47,6 +47,8 @@ const MUTAGEN_MAP: Record<string, string> = {
   權: "化權",
   科: "化科",
   忌: "化忌",
+  禄: "化祿",
+  权: "化權",
 };
 
 function mapMutagen(m?: string): string | undefined {

@@ -3,30 +3,38 @@ import type { PalaceInfo, PalaceName } from "@/lib/ziwei";
 import type { PalaceScore } from "@/lib/ai/types";
 import { apprenticeCopy } from "@/lib/apprentice-copy";
 import PalaceScoreBadge from "../PalaceScoreBadge";
+import MutagenBadge from "../MutagenBadge";
 
-export function PalaceStars({ palace }: { palace: PalaceInfo }) {
+export function PalaceStars({ palace, compact = false }: { palace: PalaceInfo; compact?: boolean }) {
+  const majorStars = palace.stars.filter((s) => s.type !== "minor");
+  const minorStars = palace.stars.filter((s) => s.type === "minor");
+
   return (
-    <ul className="space-y-0.5 mt-1">
-      {palace.stars.filter((s) => s.type !== "minor").length > 0 ? (
-        palace.stars
-          .filter((s) => s.type !== "minor")
-          .map((star) => (
-            <li key={star.name} className="text-destiny-purple/80 text-sm">
+    <ul className={`space-y-0.5 mt-1 ${compact ? "text-xs" : ""}`}>
+      {majorStars.length > 0 ? (
+        majorStars.map((star) => (
+          <li key={star.name} className="text-destiny-purple/80 text-sm flex flex-wrap items-center gap-1">
+            <span>
               {star.name}
               {star.brightness && (
                 <span className="text-destiny-gold text-xs ml-1">({star.brightness})</span>
               )}
-            </li>
-          ))
+            </span>
+            <MutagenBadge mutagen={star.mutagen} />
+          </li>
+        ))
       ) : (
         <li className="text-destiny-purple/30 text-xs">無主星</li>
       )}
-      {palace.stars.filter((s) => s.type === "minor").length > 0 && (
-        <li className="text-destiny-purple/40 text-xs">
-          {palace.stars
-            .filter((s) => s.type === "minor")
-            .map((s) => s.name)
-            .join("、")}
+      {minorStars.length > 0 && (
+        <li className="text-destiny-purple/40 text-xs flex flex-wrap items-center gap-1">
+          {minorStars.map((star, i) => (
+            <span key={star.name} className="inline-flex items-center gap-0.5">
+              {i > 0 && "、"}
+              {star.name}
+              <MutagenBadge mutagen={star.mutagen} />
+            </span>
+          ))}
         </li>
       )}
     </ul>

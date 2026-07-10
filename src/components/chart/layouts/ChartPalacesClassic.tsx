@@ -1,6 +1,11 @@
 import type { ZiWeiChart } from "@/lib/ziwei";
 import type { PalaceScore } from "@/lib/ai/types";
 import { apprenticeCopy } from "@/lib/apprentice-copy";
+import {
+  getBirthYearMutagenTable,
+  getBirthYearStem,
+  MUTAGEN_BADGE_CLASS,
+} from "@/lib/ziwei/mutagen";
 import { PalaceCard, type PalaceLayoutProps } from "./palace-shared";
 
 interface Props extends PalaceLayoutProps {
@@ -29,6 +34,9 @@ export default function ChartPalacesClassic({
   focusPalace,
   buildFocusHref,
 }: Props) {
+  const yearStem = getBirthYearStem(chart);
+  const birthMutagens = getBirthYearMutagenTable(chart);
+
   return (
     <div className="max-w-3xl mx-auto">
       <div
@@ -64,6 +72,21 @@ export default function ChartPalacesClassic({
             <br />
             身宮 · {chart.shenPalaceBranch}
           </p>
+          {birthMutagens.length > 0 && (
+            <div className="mt-2 pt-2 border-t border-white/15">
+              <p className="text-[10px] text-white/45 mb-1.5">{yearStem}年生年四化</p>
+              <div className="flex flex-wrap gap-1">
+                {birthMutagens.map(({ star, label }) => (
+                  <span
+                    key={`${star}-${label}`}
+                    className={`text-[10px] px-1.5 py-0.5 rounded border font-medium ${MUTAGEN_BADGE_CLASS[label]}`}
+                  >
+                    {star}化{label}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
           <p className="text-white/55 text-xs mt-2">{apprenticeCopy.clickPalaceHint}</p>
         </div>
       </div>
