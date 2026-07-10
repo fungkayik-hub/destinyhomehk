@@ -4,7 +4,7 @@ import type { ZiWeiChart } from "@/lib/ziwei";
 import type { PalaceName } from "@/lib/ziwei/types";
 import type { PalaceAnalysis, PalaceScore } from "@/lib/ai/types";
 import { buildChartFortuneSummary } from "@/lib/chart-fortune-summary";
-import type { PalaceLayoutProps } from "./layouts/palace-shared";
+import type { PalaceLayoutProps } from "./palace-shared";
 import ChartFortuneSummary from "../ChartFortuneSummary";
 import ChartPersonalInsights from "../ChartPersonalInsights";
 import ChartPalaceAnalysis from "../ChartPalaceAnalysis";

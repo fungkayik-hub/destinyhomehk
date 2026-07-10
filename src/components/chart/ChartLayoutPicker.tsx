@@ -4,12 +4,15 @@ import { CHART_LAYOUTS, buildChartHref, type ChartLayoutId } from "@/lib/chart-l
 interface Props {
   current: ChartLayoutId;
   searchParams: Record<string, string | string[] | undefined>;
+  locale?: "zh" | "en";
 }
 
-export default function ChartLayoutPicker({ current, searchParams }: Props) {
+export default function ChartLayoutPicker({ current, searchParams, locale = "zh" }: Props) {
   return (
     <div className="w-full rounded-xl border border-destiny-purple/10 bg-white/80 p-3 space-y-2">
-      <p className="text-[11px] text-destiny-purple/45 text-center sm:text-left">顯示方式</p>
+      <p className="text-[11px] text-destiny-purple/45 text-center sm:text-left">
+        {locale === "en" ? "Display mode" : "顯示方式"}
+      </p>
       <div className="flex flex-wrap gap-2">
         {CHART_LAYOUTS.map((layout) => {
           const active = current === layout.id;

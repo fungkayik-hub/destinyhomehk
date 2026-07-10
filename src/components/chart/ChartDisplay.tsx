@@ -151,7 +151,7 @@ export default function ChartDisplay({
               {getChartLayoutHint(layout, locale)}
             </p>
           </div>
-          <ChartLayoutPicker current={layout} searchParams={searchParams} />
+          <ChartLayoutPicker current={layout} searchParams={searchParams} locale={locale} />
         </div>
 
         {layout === "5" && focusAnalysis ? (
