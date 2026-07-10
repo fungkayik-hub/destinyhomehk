@@ -8,32 +8,39 @@ interface Props {
 
 export default function ChartLayoutPicker({ current, searchParams }: Props) {
   return (
-    <details className="group text-center">
-      <summary className="text-xs text-destiny-purple/45 cursor-pointer hover:text-destiny-gold list-none inline-flex items-center gap-1">
-        <span className="group-open:rotate-90 transition-transform">▸</span>
-        換排版顯示
-      </summary>
-      <div className="flex flex-wrap justify-center gap-2 mt-3">
+    <div className="w-full rounded-xl border border-destiny-purple/10 bg-white/80 p-3 space-y-2">
+      <p className="text-[11px] text-destiny-purple/45 text-center sm:text-left">顯示方式</p>
+      <div className="flex flex-wrap gap-2">
         {CHART_LAYOUTS.map((layout) => {
           const active = current === layout.id;
           return (
             <Link
               key={layout.id}
               href={buildChartHref(searchParams, { layout: layout.id, hash: "palaces" })}
-              className={`text-xs px-3 py-1.5 rounded-full border transition-colors ${
+              title={layout.desc}
+              className={`flex-1 min-w-[5.5rem] text-center px-2 py-2 rounded-lg border transition-colors ${
                 active
-                  ? "bg-destiny-purple text-white border-destiny-purple"
-                  : "bg-white text-destiny-purple/70 border-destiny-purple/15 hover:border-destiny-gold"
+                  ? "bg-destiny-purple text-white border-destiny-purple shadow-sm"
+                  : "bg-destiny-cream/50 text-destiny-purple/75 border-destiny-purple/12 hover:border-destiny-gold"
               }`}
             >
-              {layout.name}
-              {layout.recommended && !active && (
-                <span className="ml-1 text-[10px] text-destiny-gold">★</span>
-              )}
+              <span className="block text-xs font-bold leading-tight">
+                {layout.name}
+                {layout.recommended && !active && (
+                  <span className="ml-0.5 text-[10px] text-destiny-gold">★</span>
+                )}
+              </span>
+              <span
+                className={`block text-[10px] mt-0.5 leading-snug ${
+                  active ? "text-white/65" : "text-destiny-purple/40"
+                }`}
+              >
+                {layout.desc}
+              </span>
             </Link>
           );
         })}
       </div>
-    </details>
+    </div>
   );
 }
