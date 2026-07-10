@@ -11,6 +11,7 @@ import FaqSection from "@/components/FaqSection";
 import GbpCta from "@/components/GbpCta";
 import GoogleMapsEmbed from "@/components/GoogleMapsEmbed";
 import ReviewShowcase from "@/components/ReviewShowcase";
+import TrackedWhatsAppLink from "@/components/TrackedWhatsAppLink";
 import { faqJsonLd } from "@/components/JsonLd";
 import { servicesJsonLd } from "@/lib/schema-extra";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
@@ -89,14 +90,15 @@ export default async function BookingPage({ searchParams }: Props) {
                 <p className="text-sm text-destiny-purple/75 leading-relaxed mb-4">
                   {plan.description}
                 </p>
-                <a
+                <TrackedWhatsAppLink
                   href={waHref}
                   target="_blank"
                   rel="noopener noreferrer"
+                  location={`booking_plan_${plan.id}`}
                   className="text-sm font-medium text-destiny-gold hover:underline"
                 >
                   WhatsApp 預約此項 →
-                </a>
+                </TrackedWhatsAppLink>
               </article>
             );
           })}
@@ -156,14 +158,15 @@ export default async function BookingPage({ searchParams }: Props) {
             命理、風水擇日、改運服務屬個人化諮詢，一經提供即屬完成服務。
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <a
+            <TrackedWhatsAppLink
               href={isDateService ? whatsappDatePickerUrl() : whatsappUrl()}
               target="_blank"
               rel="noopener noreferrer"
+              location={isDateService ? "booking_footer_date" : "booking_footer"}
               className="btn-primary"
             >
               WhatsApp 預約
-            </a>
+            </TrackedWhatsAppLink>
             <Link href="/chart" className="btn-secondary">
               先試即時排盤
             </Link>

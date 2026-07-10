@@ -27,6 +27,9 @@ export type PalaceName = (typeof PALACES)[number];
 export type Gender = "male" | "female";
 export type CalendarType = "solar" | "lunar";
 
+/** 中洲派天地人盤 */
+export type ChartPlateType = "heaven" | "earth" | "human";
+
 export interface BirthInput {
   year: number;
   month: number;
@@ -71,6 +74,8 @@ export interface DecadalPeriod {
 
 export interface ZiWeiChart {
   input: BirthInput;
+  /** 天地人盤類型（預設天盤） */
+  plateType?: ChartPlateType;
   trueSolarTime?: TrueSolarTimeResult;
   solarDate: string;
   lunarDateText: string;

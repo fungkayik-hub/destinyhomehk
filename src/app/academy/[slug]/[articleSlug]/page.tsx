@@ -8,8 +8,9 @@ import {
   formatDate,
 } from "@/lib/articles";
 import type { Metadata } from "next";
-import { articleJsonLd } from "@/components/JsonLd";
+import { articleJsonLd, faqJsonLd } from "@/components/JsonLd";
 import { buildPageMetadata, excerpt } from "@/lib/seo";
+import { extractFaqFromArticleHtml } from "@/lib/extract-article-faq";
 import { getSiteUrl } from "@/lib/site-url";
 import { siteConfig } from "@/lib/site-config";
 
@@ -60,6 +61,8 @@ export default async function ArticlePage({ params }: Props) {
     image: article.image,
     datePublished: article.publishedAt,
   });
+  const faqItems = extractFaqFromArticleHtml(article.content);
+  const faqLd = faqItems.length > 0 ? faqJsonLd(faqItems) : null;
 
   return (
     <div className="py-12 px-4">
@@ -67,6 +70,12 @@ export default async function ArticlePage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {faqLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqLd) }}
+        />
+      )}
       <article className="max-w-3xl mx-auto">
         <Link
           href={`/academy/${slug}`}

@@ -12,7 +12,7 @@ export default function GejuHub() {
     <div className="mb-10 space-y-8">
       <p className="text-sm text-destiny-purple/60">
         已發佈 <strong className="text-destiny-gold">{publishedCount}</strong> / {GEJU_LABELS.length}{" "}
-        篇 · 每個曆日（香港時間）自動更新 2 篇
+        篇 · 每個曆日（香港時間）自動更新 5 篇
       </p>
       {(["吉", "凶"] as const).map((type) => {
         const items = GEJU_LABELS.filter((g) => g.type === type);

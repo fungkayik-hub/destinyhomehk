@@ -28,7 +28,7 @@ const DEFAULT_BULLETS_EN = [
 
 const THEMES: Partial<Record<PalaceName, Partial<PalaceReportTheme>>> = {
   命宮: {
-    unlockTitle: "解鎖命宮完整小師傅命書",
+    unlockTitle: "解鎖命宮完整網上小師傅命書",
     unlockTitleEn: "Unlock full Soul Palace report",
     bullets: [
       "命格基調同主星格局深度拆解",
@@ -187,7 +187,7 @@ export function getPalaceReportTheme(
       (locale === "en" ? partial?.unlockTitleEn : partial?.unlockTitle) ??
       (locale === "en"
         ? `Unlock full ${palace} report`
-        : `解鎖【${palace}】完整小師傅命書`),
+        : `解鎖【${palace}】完整網上小師傅命書`),
     unlockTitleEn: partial?.unlockTitleEn ?? `Unlock full ${palace} report`,
     bullets: locale === "en" ? (partial?.bulletsEn ?? DEFAULT_BULLETS_EN) : (partial?.bullets ?? DEFAULT_BULLETS),
     bulletsEn: partial?.bulletsEn ?? DEFAULT_BULLETS_EN,

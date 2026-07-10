@@ -1,6 +1,6 @@
 import type { PalaceScore } from "@/lib/ai/types";
 import type { DecadalPeriod, PalaceName, ZiWeiChart } from "@/lib/ziwei/types";
-import { findDecadalAtAge, nominalAge } from "@/lib/ziwei/chart-decadal";
+import { findDecadalAtAge, nominalAge, decadalDisplayOffset } from "@/lib/ziwei/chart-decadal";
 
 export type FortuneDimensionKey =
   | "career"
@@ -25,6 +25,7 @@ export interface DecadalTrendPoint {
   label: string;
   palace: PalaceName;
   score: number;
+  gradeLevel: number;
   isCurrent: boolean;
   heavenlyStem: string;
   earthlyBranch: string;
@@ -32,6 +33,7 @@ export interface DecadalTrendPoint {
 
 export interface ChartFortuneSummaryData {
   nominalAge: number;
+  decadalDisplayOffset: number;
   currentDecadal: DecadalPeriod | null;
   currentDecadalPalaceScore: number | null;
   dimensions: FortuneDimension[];
@@ -82,35 +84,40 @@ const DIMENSION_PALACES: Record<
   },
 };
 
-/** 數值 → 明明式字母評級 */
+/** 數值 → 八級（8級最好，1級最弱） */
+export function scoreToEightGradeLevel(score: number): number {
+  if (score >= 90) return 8;
+  if (score >= 84) return 7;
+  if (score >= 78) return 6;
+  if (score >= 72) return 5;
+  if (score >= 66) return 4;
+  if (score >= 60) return 3;
+  if (score >= 52) return 2;
+  return 1;
+}
+
+export function scoreToEightGrade(score: number): string {
+  return `${scoreToEightGradeLevel(score)}級`;
+}
+
+/** @deprecated 用 scoreToEightGrade */
 export function scoreToLetterGrade(score: number): string {
-  if (score >= 88) return "A";
-  if (score >= 80) return "A-";
-  if (score >= 74) return "B+";
-  if (score >= 68) return "B";
-  if (score >= 62) return "B-";
-  if (score >= 56) return "C+";
-  if (score >= 50) return "C";
-  if (score >= 44) return "C-";
-  if (score >= 38) return "D+";
-  return "D";
+  return scoreToEightGrade(score);
 }
 
 const GRADE_COLORS: Record<string, string> = {
-  A: "bg-destiny-gold/25 text-destiny-gold border-destiny-gold/40",
-  "A-": "bg-destiny-gold/20 text-destiny-gold border-destiny-gold/35",
-  "B+": "bg-destiny-purple/10 text-destiny-purple border-destiny-purple/20",
-  B: "bg-destiny-purple/10 text-destiny-purple border-destiny-purple/15",
-  "B-": "bg-destiny-blue/10 text-destiny-blue border-destiny-blue/20",
-  "C+": "bg-destiny-muted/15 text-destiny-muted border-destiny-muted/25",
-  C: "bg-destiny-amber/12 text-destiny-amber border-destiny-amber/25",
-  "C-": "bg-destiny-amber/15 text-destiny-amber border-destiny-amber/30",
-  "D+": "bg-destiny-red/8 text-destiny-red border-destiny-red/20",
-  D: "bg-destiny-red/10 text-destiny-red border-destiny-red/25",
+  "8級": "bg-destiny-gold/25 text-destiny-gold border-destiny-gold/40",
+  "7級": "bg-destiny-gold/20 text-destiny-gold border-destiny-gold/35",
+  "6級": "bg-destiny-purple/10 text-destiny-purple border-destiny-purple/20",
+  "5級": "bg-destiny-purple/10 text-destiny-purple border-destiny-purple/15",
+  "4級": "bg-destiny-blue/10 text-destiny-blue border-destiny-blue/20",
+  "3級": "bg-destiny-muted/15 text-destiny-muted border-destiny-muted/25",
+  "2級": "bg-destiny-amber/12 text-destiny-amber border-destiny-amber/25",
+  "1級": "bg-destiny-red/10 text-destiny-red border-destiny-red/25",
 };
 
 export function letterGradeStyle(grade: string): string {
-  return GRADE_COLORS[grade] ?? GRADE_COLORS.C;
+  return GRADE_COLORS[grade] ?? GRADE_COLORS["5級"];
 }
 
 function scoreForPalace(
@@ -141,6 +148,7 @@ export function buildChartFortuneSummary(
   const scoreMap = new Map(scores.map((s) => [s.palace, s]));
   const age = nominalAge(chart.input.year, asOfYear);
   const timeline = chart.decadalTimeline ?? [];
+  const offset = decadalDisplayOffset(timeline);
   const current = timeline.length ? findDecadalAtAge(timeline, age) : null;
 
   const dimensions: FortuneDimension[] = (
@@ -153,31 +161,39 @@ export function buildChartFortuneSummary(
       label: def.label,
       labelEn: def.labelEn,
       score,
-      grade: scoreToLetterGrade(score),
+      grade: scoreToEightGrade(score),
       palace: def.palaces[0].name,
     };
   });
 
-  const decadalTrend: DecadalTrendPoint[] = timeline.map((d) => ({
-    ageStart: d.ageStart,
-    ageEnd: d.ageEnd,
-    ageMid: Math.round((d.ageStart + d.ageEnd) / 2),
-    label: `${d.ageStart}–${d.ageEnd}`,
-    palace: d.palace,
-    score: scoreForPalace(scoreMap, d.palace),
-    isCurrent: current?.palace === d.palace,
-    heavenlyStem: d.heavenlyStem,
-    earthlyBranch: d.earthlyBranch,
-  }));
+  const decadalTrend: DecadalTrendPoint[] = timeline.map((d) => {
+    const displayStart = d.ageStart - offset;
+    const displayEnd = d.ageEnd - offset;
+    const palaceScore = scoreForPalace(scoreMap, d.palace);
+    return {
+      ageStart: displayStart,
+      ageEnd: displayEnd,
+      ageMid: Math.round((displayStart + displayEnd) / 2),
+      label: `${displayStart}〜${displayEnd}`,
+      palace: d.palace,
+      score: palaceScore,
+      gradeLevel: scoreToEightGradeLevel(palaceScore),
+      isCurrent: current?.palace === d.palace,
+      heavenlyStem: d.heavenlyStem,
+      earthlyBranch: d.earthlyBranch,
+    };
+  });
 
   const radarData = dimensions.map((d) => ({
     subject: d.label,
-    score: d.score,
+    score: scoreToEightGradeLevel(d.score) * 12.5,
     fullMark: 100,
+    grade: d.grade,
   }));
 
   return {
     nominalAge: age,
+    decadalDisplayOffset: offset,
     currentDecadal: current ?? null,
     currentDecadalPalaceScore: current
       ? scoreForPalace(scoreMap, current.palace)
@@ -188,18 +204,18 @@ export function buildChartFortuneSummary(
   };
 }
 
-/** 折線圖：以而家為中心，顯示前後各 5 段大限（最多 10 點） */
+/** 折線圖：以而家為中心，顯示前後共 8 段大限 */
 export function sliceDecadalTrendForChart(
   trend: DecadalTrendPoint[],
   current: DecadalPeriod | null,
 ): DecadalTrendPoint[] {
   if (!trend.length) return [];
-  if (!current) return trend.slice(0, 10);
+  if (!current) return trend.slice(0, 8);
 
-  const idx = trend.findIndex((t) => t.palace === current.palace);
-  if (idx < 0) return trend.slice(0, 10);
+  const idx = trend.findIndex((t) => t.isCurrent);
+  if (idx < 0) return trend.slice(0, 8);
 
-  const start = Math.max(0, idx - 2);
-  const end = Math.min(trend.length, start + 6);
+  const start = Math.max(0, idx - 3);
+  const end = Math.min(trend.length, start + 8);
   return trend.slice(start, end);
 }

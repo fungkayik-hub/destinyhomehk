@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { buildChartKey } from "@/lib/chart-key";
+import { buildBirthKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams, birthInputToSearchParams } from "@/lib/chart-parse-params";
 import { clientIp, checkRateLimit } from "@/lib/rate-limit";
 import {
@@ -48,7 +48,7 @@ function parseBirthInput(body: Record<string, unknown>): BirthInput | null {
 export async function POST(request: NextRequest) {
   if (!stripePaymentsEnabled()) {
     return NextResponse.json(
-      { error: "網上付款暫未開通，請 WhatsApp 查詢小師傅命書" },
+      { error: "網上付款暫未開通，請 WhatsApp 查詢網上小師傅命書" },
       { status: 503 },
     );
   }
@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
   }
 
   generateChart(birthInput);
-  const chartKey = buildChartKey(birthInput);
+  const chartKey = buildBirthKey(birthInput);
   const product = getPalaceReportProduct(productKeyRaw);
 
   let palaces: PalaceName[];

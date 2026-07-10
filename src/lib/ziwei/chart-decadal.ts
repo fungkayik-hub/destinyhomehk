@@ -51,6 +51,27 @@ export function findDecadalAtAge(
   return timeline.find((d) => age >= d.ageStart && age <= d.ageEnd);
 }
 
+/** 本命五行局起運虛歲（首段大限 ageStart）— UI 顯示由 0 起計時用作 offset */
+export function decadalDisplayOffset(timeline: DecadalPeriod[]): number {
+  return timeline[0]?.ageStart ?? 0;
+}
+
+export function toDisplayAge(age: number, offset: number): number {
+  return Math.max(0, age - offset);
+}
+
+export function displayDecadalRange(
+  d: DecadalPeriod,
+  offset: number,
+): { start: number; end: number } {
+  return { start: d.ageStart - offset, end: d.ageEnd - offset };
+}
+
+export function formatDisplayDecadalRange(d: DecadalPeriod, offset: number): string {
+  const { start, end } = displayDecadalRange(d, offset);
+  return `${start}〜${end}`;
+}
+
 function formatPalaceBrief(p: PalaceInfo | undefined): string {
   if (!p) return "—";
   const majors =

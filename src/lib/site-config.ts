@@ -146,7 +146,8 @@ export const academyCategories: AcademyCategory[] = [
     slug: "theory",
     group: "ziwei",
     title: "玄學理論",
-    description: "統計學與玄學、顏色論等核心理論。",
+    description:
+      "每人皆有天命之色 — 三原色立象、紫微分類，由象入理尋回本命專屬顏色。",
   },
   {
     slug: "history",
@@ -216,7 +217,7 @@ export function getFeaturedAcademyCategories() {
 const toolNavChildren = [
   { href: "/chart", label: "紫微排盤" },
   { href: "/compatibility", label: "姻緣探測器" },
-  { href: "/qiu-qian", label: "線上求籤" },
+  { href: "/qiu-qian", label: "一事一問(觀音100靈籤)" },
   { href: "/daily", label: "每日流日" },
   { href: "/wedding-date", label: "結婚擇日" },
 ] as const;
@@ -260,7 +261,7 @@ export type NavItem =
 
 export const navItems: NavItem[] = [
   { href: "/", label: "首頁" },
-  { label: "免費工具", children: [...toolNavChildren] },
+  { label: "小師傳(AI)", children: [...toolNavChildren] },
   { label: "學堂", sections: academyNavSections },
   { href: "/booking", label: "收費預約" },
   { href: "/about", label: "關於師傅" },
@@ -282,7 +283,7 @@ export const services = [
     imageKey: "chart" as const,
   },
   {
-    title: "線上求籤",
+    title: "一事一問(觀音100靈籤)",
     description: "一事一問觀音靈籤 — 免費睇籤詩，HK$38 小徒弟 AI 解讀，深入問事請預約師傅。",
     price: "免費起",
     href: "/qiu-qian",
@@ -301,6 +302,13 @@ export const services = [
     price: "免費",
     href: "/daily",
     imageKey: "daily" as const,
+  },
+  {
+    title: "結婚吉日篩選",
+    description: "10 種儀式 · 黃曆宜忌 + 生肖冲煞 · 18 個月內免費篩選。",
+    price: "免費",
+    href: "/date-picker",
+    imageKey: "datePicker" as const,
   },
   {
     title: "結婚擇日及吉時",

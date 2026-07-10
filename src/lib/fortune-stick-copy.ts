@@ -1,6 +1,6 @@
 export const fortuneStickCopy = {
-  badge: "Destiny Home · 師傅小徒弟 · 線上求籤",
-  title: "線上求籤 · 一事一問",
+  badge: "Destiny Home · 師傅小徒弟 · 一事一問(觀音100靈籤)",
+  title: "一事一問(觀音100靈籤)",
   subtitle: "觀音靈籤 · 誠心問一事 · 搖籤見籤詩",
   formHint: "默念你關心嘅一件事，輸入問題後搖籤。免費睇籤號同籤詩，HK$38 解鎖小徒弟 AI 完整解讀。",
   questionLabel: "你想問咩？",

@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import SiteAnalytics from "@/components/SiteAnalytics";
 import JsonLd from "@/components/JsonLd";
+import { GA_ID } from "@/lib/ga";
 import { lxgwWenkaiTC, notoSansTC, notoSerifTC } from "@/lib/fonts";
 import { siteConfig } from "@/lib/site-config";
 import { LOCAL_SEO_KEYWORDS } from "@/lib/seo";
@@ -77,6 +78,24 @@ export default function RootLayout({
       lang="zh-HK"
       className={`${lxgwWenkaiTC.variable} ${notoSansTC.variable} ${notoSerifTC.variable}`}
     >
+      <head>
+        {GA_ID ? (
+          <>
+            {/* Google tag (gtag.js) — native scripts so hits fire before React hydrates */}
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${GA_ID}');
+                `,
+              }}
+            />
+          </>
+        ) : null}
+      </head>
       <body className={`${lxgwWenkaiTC.className} antialiased bg-destiny-cream text-destiny-ink min-h-screen flex flex-col`}>
         <JsonLd />
         <AnnouncementBar />

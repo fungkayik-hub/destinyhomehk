@@ -1,5 +1,5 @@
 /**
- * 試跑小師傅 AI 命書 — node scripts/test-palace-report.mjs [宮位]
+ * 試跑網上小師傅命書 — node scripts/test-palace-report.mjs [宮位]
  * 例：node scripts/test-palace-report.mjs 夫妻宮
  */
 import { readFileSync } from "fs";
@@ -50,7 +50,7 @@ const { analyzePalaceReport } = await import(
   pathToFileURL(resolve(root, "src/lib/ai/analyze-palace-report.ts")).href
 );
 
-console.log(`\n=== 小師傅 AI 命書試跑 ===`);
+console.log(`\n=== 網上小師傅命書試跑 ===`);
 console.log(`出生：${input.year}-${input.month}-${input.day} ${input.hour}:${String(input.minute).padStart(2, "0")} 男`);
 console.log(`宮位：${palace}\n`);
 

@@ -10,7 +10,7 @@ import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "線上求籤 · 一事一問 — 觀音靈籤",
+  title: "一事一問(觀音100靈籤)",
   description:
     "免費線上求籤 — 輸入問題、搖籤得籤詩，HK$38 解鎖小徒弟 AI 完整解讀。Destiny Home 觀音靈籤，深入問事請預約 Sunny 師傅。",
   path: "/qiu-qian",

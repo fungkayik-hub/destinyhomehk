@@ -35,6 +35,7 @@ interface PageMetaOptions {
   keywords?: string[];
   type?: "website" | "article";
   publishedTime?: string;
+  noIndex?: boolean;
 }
 
 /** 統一頁面 SEO / Open Graph / canonical */
@@ -46,6 +47,7 @@ export function buildPageMetadata({
   keywords = [],
   type = "website",
   publishedTime,
+  noIndex = false,
 }: PageMetaOptions): Metadata {
   const site = getSiteUrl();
   const url = path.startsWith("http") ? path : `${site}${path.startsWith("/") ? path : `/${path}`}`;
@@ -56,6 +58,7 @@ export function buildPageMetadata({
     description,
     keywords: [...LOCAL_SEO_KEYWORDS, ...keywords],
     alternates: { canonical: url },
+    ...(noIndex ? { robots: { index: false, follow: false } } : {}),
     openGraph: {
       type,
       locale: "zh_HK",

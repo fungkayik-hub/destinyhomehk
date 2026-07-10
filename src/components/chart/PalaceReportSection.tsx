@@ -8,7 +8,12 @@ import { getPalaceReportCopy } from "@/lib/palace-report-copy";
 import { getPalaceReportTheme } from "@/lib/palace-report-theme-copy";
 import { PALACE_REPORT_PRODUCTS } from "@/lib/palace-report/config";
 import { formatPriceHkd } from "@/lib/stripe/plans";
-import { findDecadalAtAge, nominalAge } from "@/lib/ziwei/chart-decadal";
+import {
+  decadalDisplayOffset,
+  findDecadalAtAge,
+  formatDisplayDecadalRange,
+  nominalAge,
+} from "@/lib/ziwei/chart-decadal";
 import { whatsappUrl } from "@/lib/site-config";
 
 const STRIPE_ENABLED = Boolean(
@@ -82,6 +87,11 @@ export default function PalaceReportSection({
         ? findDecadalAtAge(chart.decadalTimeline, nominalAgeNow)
         : undefined,
     [chart.decadalTimeline, nominalAgeNow],
+  );
+
+  const decadalOffset = useMemo(
+    () => decadalDisplayOffset(chart.decadalTimeline ?? []),
+    [chart.decadalTimeline],
   );
 
   const suggestedBundleAvailable = useMemo(
@@ -255,14 +265,14 @@ export default function PalaceReportSection({
           <p className="text-xs text-destiny-purple/70 bg-white/70 rounded-lg px-3 py-2 mb-3 border border-destiny-purple/8 leading-relaxed">
             {locale === "en" ? (
               <>
-                When nominal ages {focusDecadal.ageStart}–{focusDecadal.ageEnd}, decade luck
+                When ages {formatDisplayDecadalRange(focusDecadal, decadalOffset)} (from 0), decade luck
                 walks <strong>{focusPalace}</strong> ({focusDecadal.heavenlyStem}
                 {focusDecadal.earthlyBranch})
                 {currentDecadal?.palace === focusPalace ? " — you are in this decade now." : "."}
               </>
             ) : (
               <>
-                <strong>{focusDecadal.ageStart}–{focusDecadal.ageEnd} 虛歲</strong>
+                <strong>{formatDisplayDecadalRange(focusDecadal, decadalOffset)} 虛歲</strong>
                 大限走【{focusPalace}】{focusDecadal.heavenlyStem}
                 {focusDecadal.earthlyBranch}
                 {currentDecadal?.palace === focusPalace
@@ -351,7 +361,7 @@ export default function PalaceReportSection({
           </div>
         ) : (
           <a
-            href={whatsappUrl("你好，想了解小師傅 AI 命書網上購買。")}
+            href={whatsappUrl("你好，想了解網上小師傅命書購買。")}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary w-full inline-flex justify-center text-sm"

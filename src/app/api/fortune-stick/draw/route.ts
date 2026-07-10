@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createDrawResult } from "@/lib/fortune-stick/draw";
 import { upsertDrawFromQuestion } from "@/lib/fortune-stick/store";
+import { logToolUsageFromRequest } from "@/lib/usage/log";
 import { clientIp, checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
@@ -30,6 +31,7 @@ export async function POST(request: NextRequest) {
   try {
     const result = createDrawResult(question, drawId);
     await upsertDrawFromQuestion(result.drawId, question);
+    await logToolUsageFromRequest("fortune-stick", request);
 
     return NextResponse.json({
       drawId: result.drawId,

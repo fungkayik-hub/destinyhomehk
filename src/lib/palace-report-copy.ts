@@ -3,11 +3,11 @@ import { formatPriceHkd } from "@/lib/stripe/plans";
 
 const { single, bundle3, full } = PALACE_REPORT_PRODUCTS;
 
-/** 對外文案 — 小師傅 AI 命書（付費；同免費「小徒弟贈言」分開） */
+/** 對外文案 — 網上小師傅命書（付費；同免費「小徒弟贈言」分開） */
 export const palaceReportCopy = {
-  badge: "Destiny Home · 小師傅 AI 命書",
-  shortBadge: "小師傅 AI 命書",
-  sectionTitle: "小師傅 AI 命書",
+  badge: "Destiny Home · 網上小師傅命書",
+  shortBadge: "網上小師傅命書",
+  sectionTitle: "網上小師傅命書",
   sectionHint: "三方四正 · 十年大限虛歲 · 生活場景 · 實操建議（800–1200 字）",
   previewHint: "解鎖後可睇完整命書，含生活場景同實操建議。",
   lockedPreview: "完整命書已鎖定 · 付款後即時整理",
@@ -21,16 +21,16 @@ export const palaceReportCopy = {
   bundleModalTitle: "揀三個宮位",
   bundleModalHint: "已解鎖嘅宮唔計入套裝選擇。",
   bundleModalConfirm: "前往付款",
-  generatingHint: "小師傅整理緊…",
+  generatingHint: "網上小師傅整理緊…",
   paymentProcessingHint: "確認付款中…",
   alreadyUnlocked: "此宮已解鎖",
-  whatsappFallback: "線上付款暫未開通，請 WhatsApp 查詢小師傅命書。",
+  whatsappFallback: "線上付款暫未開通，請 WhatsApp 查詢網上小師傅命書。",
 } as const;
 
 export const palaceReportCopyEn = {
-  badge: "Destiny Home · AI palace report",
-  shortBadge: "AI palace report",
-  sectionTitle: "AI palace report",
+  badge: "Destiny Home · Online palace report",
+  shortBadge: "Online palace report",
+  sectionTitle: "Online palace report",
   sectionHint: "Tri-quadrant view · decade luck · practical advice (800–1200 words)",
   previewHint: "Unlock for the full report with life scenarios and actionable tips.",
   lockedPreview: "Full report locked · generated after payment",

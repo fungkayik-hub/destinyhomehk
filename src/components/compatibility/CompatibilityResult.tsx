@@ -1,8 +1,10 @@
 import type { CompatibilityResult } from "@/lib/compatibility/types";
-import type { BirthInput, ZiWeiChart } from "@/lib/ziwei/types";
+import type { BirthInput, ChartPlateType, ZiWeiChart } from "@/lib/ziwei/types";
 import { apprenticeCopy } from "@/lib/apprentice-copy";
+import { buildCompatibilityHref } from "@/lib/compatibility-layout";
 import { compatibilityWhatsAppUrl } from "@/lib/compatibility-whatsapp";
 import MasterReadingCta from "@/components/MasterReadingCta";
+import ChartPlatePicker from "@/components/chart/ChartPlatePicker";
 import {
   COMPAT_LABEL_BG,
   COMPAT_LABEL_TEXT,
@@ -14,6 +16,10 @@ interface Props {
   chartA: ZiWeiChart;
   chartB: ZiWeiChart;
   result: CompatibilityResult;
+  plate: ChartPlateType;
+  suggestedPlateA: ChartPlateType;
+  suggestedPlateB: ChartPlateType;
+  searchParams: Record<string, string | string[] | undefined>;
 }
 
 const FACTOR_LABELS: {
@@ -69,9 +75,15 @@ export default function CompatibilityResult({
   chartA,
   chartB,
   result,
+  plate,
+  suggestedPlateA,
+  suggestedPlateB,
+  searchParams,
 }: Props) {
   const waUrl = compatibilityWhatsAppUrl(personA, personB, chartA, chartB, result);
   const copy = apprenticeCopy;
+  const buildPlateHref = (p: ChartPlateType) =>
+    buildCompatibilityHref(searchParams, { plate: p, hash: "compat-summary" });
 
   const lowestFactor = FACTOR_LABELS.reduce(
     (min, f) => {
@@ -83,6 +95,44 @@ export default function CompatibilityResult({
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
+      <div
+        id="compat-summary"
+        className="rounded-xl bg-destiny-purple text-white px-4 py-4 sm:px-6 sm:py-5 space-y-4 scroll-mt-20"
+      >
+        <ChartPlatePicker
+          current={plate}
+          suggested={suggestedPlateA}
+          suggestedB={suggestedPlateB}
+          searchParams={searchParams}
+          variant="bar"
+          buildPlateHref={buildPlateHref}
+        />
+        <div className="grid sm:grid-cols-2 gap-4 border-t border-white/10 pt-4 text-sm">
+          <div>
+            <p className="text-xs text-white/45 mb-1">你 · 陽曆 {chartA.solarDate}</p>
+            <p className="text-white/90">
+              命宮 <strong>{chartA.mingPalaceBranch}</strong>
+              <span className="text-white/40 mx-2">·</span>
+              夫妻宮{" "}
+              <strong>
+                {chartA.palaces.find((p) => p.name === "夫妻宮")?.earthlyBranch ?? "—"}
+              </strong>
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-white/45 mb-1">對方 · 陽曆 {chartB.solarDate}</p>
+            <p className="text-white/90">
+              命宮 <strong>{chartB.mingPalaceBranch}</strong>
+              <span className="text-white/40 mx-2">·</span>
+              夫妻宮{" "}
+              <strong>
+                {chartB.palaces.find((p) => p.name === "夫妻宮")?.earthlyBranch ?? "—"}
+              </strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
       <p className="text-center text-xs text-destiny-gold">
         {copy.detectorBadge} · {copy.tagline}
       </p>
