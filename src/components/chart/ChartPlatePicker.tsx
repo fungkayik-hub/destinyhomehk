@@ -6,31 +6,39 @@ import { buildChartHref } from "@/lib/chart-layout";
 interface Props {
   current: ChartPlateType;
   suggested?: ChartPlateType;
+  suggestedB?: ChartPlateType;
   searchParams: Record<string, string | string[] | undefined>;
   locale?: "zh" | "en";
   /** bar = 紫色資料條內；default = 白底獨立區 */
   variant?: "default" | "bar";
+  buildPlateHref?: (plate: ChartPlateType) => string;
 }
 
 export default function ChartPlatePicker({
   current,
   suggested,
+  suggestedB,
   searchParams,
   locale = "zh",
   variant = "default",
+  buildPlateHref,
 }: Props) {
   const zh = locale === "zh";
   const isBar = variant === "bar";
+  const hrefFor = (plate: ChartPlateType) =>
+    buildPlateHref?.(plate) ??
+    buildChartHref(searchParams, { plate, hash: "plates" }, locale);
 
   const buttons = (
     <div className={`flex flex-wrap gap-1.5 ${isBar ? "" : "gap-2"}`}>
       {CHART_PLATES.map((plate) => {
         const active = current === plate.id;
-        const isSuggested = suggested === plate.id && suggested !== current;
+        const isSuggested =
+          (suggested === plate.id || suggestedB === plate.id) && plate.id !== current;
         return (
           <Link
             key={plate.id}
-            href={buildChartHref(searchParams, { plate: plate.id, hash: "plates" }, locale)}
+            href={hrefFor(plate.id)}
             className={
               isBar
                 ? `text-sm px-3 py-1.5 rounded-lg border transition-colors ${
@@ -62,11 +70,15 @@ export default function ChartPlatePicker({
   const desc = CHART_PLATES.find((p) => p.id === current);
   const descText = zh ? desc?.desc : desc?.descEn;
   const suggestNote =
-    suggested && suggested !== current
+    suggested && suggestedB && suggested !== suggestedB
       ? zh
-        ? ` · 依時辰分刻，建議先睇${CHART_PLATES.find((p) => p.id === suggested)?.name}，但仍須定盤確認`
-        : ` · Suggested: ${CHART_PLATES.find((p) => p.id === suggested)?.nameEn} — verify with master`
-      : "";
+        ? ` · 你建議${CHART_PLATES.find((p) => p.id === suggested)?.name}、對方建議${CHART_PLATES.find((p) => p.id === suggestedB)?.name} — 定盤後再合婚最準`
+        : ` · You: ${CHART_PLATES.find((p) => p.id === suggested)?.nameEn}; partner: ${CHART_PLATES.find((p) => p.id === suggestedB)?.nameEn} — verify plates first`
+      : suggested && suggested !== current
+        ? zh
+          ? ` · 依時辰分刻，建議先睇${CHART_PLATES.find((p) => p.id === suggested)?.name}，但仍須定盤確認`
+          : ` · Time slot suggests ${CHART_PLATES.find((p) => p.id === suggested)?.nameEn} plate — verify with master`
+        : "";
 
   if (isBar) {
     return (

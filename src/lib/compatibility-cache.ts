@@ -1,7 +1,7 @@
 import { unstable_cache } from "next/cache";
 import { analyzeCompatibility } from "@/lib/ai/analyze-compatibility";
 import { generateChart } from "@/lib/ziwei/iztro-adapter";
-import type { BirthInput } from "@/lib/ziwei/types";
+import type { BirthInput, ChartPlateType } from "@/lib/ziwei/types";
 
 function inputKey(prefix: string, input: BirthInput): string {
   return [
@@ -19,17 +19,21 @@ function inputKey(prefix: string, input: BirthInput): string {
   ].join("-");
 }
 
-/** 同一對出生資料只 call 一次 AI */
-export async function getCachedCompatibilityResults(personA: BirthInput, personB: BirthInput) {
-  const key = `${inputKey("a", personA)}__${inputKey("b", personB)}`;
+/** 同一對出生資料 + 盤類型只 call 一次 AI */
+export async function getCachedCompatibilityResults(
+  personA: BirthInput,
+  personB: BirthInput,
+  plate: ChartPlateType = "heaven",
+) {
+  const key = `${inputKey("a", personA)}__${inputKey("b", personB)}__${plate}`;
   return unstable_cache(
     async () => {
-      const chartA = generateChart(personA);
-      const chartB = generateChart(personB);
+      const chartA = generateChart(personA, plate);
+      const chartB = generateChart(personB, plate);
       const result = await analyzeCompatibility(chartA, chartB);
       return { chartA, chartB, result };
     },
-    ["compatibility-v2", key],
+    ["compatibility-v3", key],
     { revalidate: 86400 },
   )();
 }
