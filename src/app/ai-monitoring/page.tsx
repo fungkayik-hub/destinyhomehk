@@ -60,13 +60,14 @@ export default function AiMonitoringPage() {
       />
       <div className="py-12 px-4 max-w-4xl mx-auto space-y-8">
         <section className="card bg-destiny-gold/10 border-destiny-gold/30">
-          <h2 className="font-display text-lg font-bold text-destiny-purple mb-2">
-            點用呢頁？
-          </h2>
+          <h2 className="font-display text-lg font-bold text-destiny-purple mb-2">點用呢頁？</h2>
           <p className="text-sm text-destiny-purple/80 leading-relaxed">
-            每月 1 號（或固定一日）跟下面 5 步做一次。建議用 Google Sheet 長期記錄 —
-            3 個月後最容易見到趨勢。呢頁係你嘅內部 playbook，唔使俾客人睇都得，但對 SEO／GEO
-            好有用。
+            每月 1 號（或固定一日）跟下面 5 步做一次。建議用同一份 Google Sheet 長期追蹤 —
+            3 個月後最容易見到趨勢。落緊 Google Ads 嘅話，GSC 關鍵詞對照請用{" "}
+            <Link href="/seo-tracker" className="text-destiny-gold font-medium hover:underline">
+              SEO × 廣告追蹤表
+            </Link>
+            （可下載 CSV）。
           </p>
         </section>
 
@@ -218,6 +219,10 @@ export default function AiMonitoringPage() {
         <section className="card">
           <h2 className="font-display text-lg font-bold text-destiny-purple mb-3">相關頁面</h2>
           <div className="flex flex-wrap gap-3 text-sm">
+            <Link href="/seo-tracker" className="text-destiny-gold hover:underline font-medium">
+              SEO × 廣告追蹤表
+            </Link>
+            <span className="text-destiny-purple/30">·</span>
             <Link href="/ai-faq" className="text-destiny-gold hover:underline">
               AI FAQ 專頁
             </Link>

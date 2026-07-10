@@ -28,3 +28,4 @@
 
 ## SEO / GEO Monitoring
 - https://www.destinyhomehk.com/ai-monitoring | Monthly SEO + GEO checklist (AI citations, GSC keywords, GA4)
+- https://www.destinyhomehk.com/seo-tracker | Internal GSC × Google Ads keyword tracker (CSV download)
