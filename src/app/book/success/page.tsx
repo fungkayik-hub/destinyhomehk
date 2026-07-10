@@ -8,6 +8,7 @@ export const metadata: Metadata = buildPageMetadata({
   title: "預約確認",
   description: "Destiny Home 網上預約付款確認",
   path: "/book/success",
+  noIndex: true,
 });
 
 export default function BookSuccessPage() {

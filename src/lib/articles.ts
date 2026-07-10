@@ -129,15 +129,29 @@ export function getCategoryMeta(slug: string) {
   return academyCategories.find((c) => c.slug === slug);
 }
 
-export function getAllArticleParams(): { slug: string; articleSlug: string }[] {
-  const params: { slug: string; articleSlug: string }[] = [];
+export function getArticleSitemapEntries(): {
+  slug: string;
+  articleSlug: string;
+  publishedAt: string | null;
+}[] {
+  const entries: { slug: string; articleSlug: string; publishedAt: string | null }[] = [];
   for (const cat of academyCategories) {
-    const catArticles = getVisibleArticlesByCategory(cat.slug);
-    for (const a of catArticles) {
-      params.push({ slug: cat.slug, articleSlug: a.slug });
+    for (const a of getVisibleArticlesByCategory(cat.slug)) {
+      entries.push({
+        slug: cat.slug,
+        articleSlug: a.slug,
+        publishedAt: a.publishedAt,
+      });
     }
   }
-  return params;
+  return entries;
+}
+
+export function getAllArticleParams(): { slug: string; articleSlug: string }[] {
+  return getArticleSitemapEntries().map(({ slug, articleSlug }) => ({
+    slug,
+    articleSlug,
+  }));
 }
 
 export function getCategoryCoverImage(category: string): string | null {

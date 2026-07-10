@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { academyCategories } from "@/lib/site-config";
-import { getAllArticleParams } from "@/lib/articles";
+import { getArticleSitemapEntries } from "@/lib/articles";
 import { getHongKongTodayISO } from "@/lib/hong-kong-time";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -34,6 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${site}/compatibility`, lastModified: now, changeFrequency: "monthly", priority: 0.88 },
     { url: `${site}/daily`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${site}/wedding-date`, lastModified: now, changeFrequency: "monthly", priority: 0.88 },
+    { url: `${site}/date-picker`, lastModified: now, changeFrequency: "monthly", priority: 0.88 },
     { url: `${site}/wan-chai-ziwei`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${site}/hong-kong-fortune-telling`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${site}/ai-faq`, lastModified: now, changeFrequency: "monthly", priority: 0.86 },
@@ -56,10 +57,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: HIGH_PRIORITY_CATEGORIES.has(cat.slug) ? 0.9 : 0.7,
   }));
 
-  const articlePages: MetadataRoute.Sitemap = getAllArticleParams().map(
-    ({ slug, articleSlug }) => ({
+  const articlePages: MetadataRoute.Sitemap = getArticleSitemapEntries().map(
+    ({ slug, articleSlug, publishedAt }) => ({
       url: `${site}/academy/${slug}/${encodeURIComponent(articleSlug)}`,
-      lastModified: now,
+      lastModified: publishedAt ? new Date(publishedAt) : now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
     }),
