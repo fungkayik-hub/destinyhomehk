@@ -7,7 +7,7 @@ import { computeChartInsights } from "@/lib/ai/chart-insights";
 import { getCachedChartResults } from "@/lib/chart-analysis-cache";
 import { buildBirthKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
-import { parseChartLayout, parseChartPlate, parseFocusPalace } from "@/lib/chart-layout";
+import { parseChartPlate, parseFocusPalace } from "@/lib/chart-layout";
 import { logToolUsage } from "@/lib/usage/log";
 import { generateThreePlates } from "@/lib/ziwei/iztro-adapter";
 import { suggestPlateFromBirthTime } from "@/lib/ziwei/zhongzhou-plates";
@@ -44,7 +44,6 @@ export default async function EnChartPage({
 }) {
   const sp = await searchParams;
   const parsed = birthInputFromSearchParams(sp);
-  const layout = parseChartLayout(sp.layout);
   const plate = parseChartPlate(sp.plate);
 
   let chart = null;
@@ -122,7 +121,6 @@ export default async function EnChartPage({
               palaceScores={palaceScores!}
               palaceAnalyses={palaceAnalyses!}
               focusPalace={focusPalace}
-              layout={layout}
               searchParams={sp}
               unlockedPalaces={unlockedPalaces}
               reportTexts={reportTexts}

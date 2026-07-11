@@ -2,19 +2,14 @@ import type { ChartInsights } from "@/lib/ai/chart-insights";
 import type { ZiWeiChart } from "@/lib/ziwei";
 import type { ChartPlateType, PalaceName } from "@/lib/ziwei/types";
 import type { PalaceAnalysesResponse, PalaceScoresResponse } from "@/lib/ai/types";
-import { buildChartHref, getChartLayoutHint, type ChartLayoutId } from "@/lib/chart-layout";
+import { buildChartHref, getChartLayoutHint, CHART_LAYOUT } from "@/lib/chart-layout";
 import { buildChartFortuneSummary } from "@/lib/chart-fortune-summary";
 import { chartWhatsAppUrl } from "@/lib/chart-whatsapp";
 import { formatClock } from "@/lib/ziwei/true-solar-time";
 import MasterReadingCta from "@/components/MasterReadingCta";
 import ChartSavedHistory from "./ChartSavedHistory";
 import { PalaceScoresLegend } from "./PalaceScoreBadge";
-import ChartPalacesFocus from "./layouts/ChartPalacesFocus";
-import ChartPalacesClassic from "./layouts/ChartPalacesClassic";
 import ChartPalacesGrid from "./layouts/ChartPalacesGrid";
-import ChartPalacesList from "./layouts/ChartPalacesList";
-import ChartPalacesRanked from "./layouts/ChartPalacesRanked";
-import ChartLayoutPicker from "./ChartLayoutPicker";
 import ChartPalaceAnalysis from "./ChartPalaceAnalysis";
 import ChartPersonalInsights from "./ChartPersonalInsights";
 import ChartFortuneSummary from "./ChartFortuneSummary";
@@ -32,7 +27,6 @@ interface Props {
   palaceScores: PalaceScoresResponse;
   palaceAnalyses: PalaceAnalysesResponse;
   focusPalace: PalaceName;
-  layout: ChartLayoutId;
   searchParams: Record<string, string | string[] | undefined>;
   unlockedPalaces: PalaceName[];
   reportTexts: Partial<Record<PalaceName, string>>;
@@ -49,7 +43,6 @@ export default function ChartDisplay({
   palaceScores,
   palaceAnalyses,
   focusPalace,
-  layout,
   searchParams,
   unlockedPalaces,
   reportTexts,
@@ -62,7 +55,7 @@ export default function ChartDisplay({
   const fortuneSummary = buildChartFortuneSummary(chart, palaceScores.scores);
 
   const buildFocusHref = (palace: PalaceName) =>
-    buildChartHref(searchParams, { layout, focus: palace, plate, hash: "analysis" }, locale);
+    buildChartHref(searchParams, { focus: palace, plate, hash: "analysis" }, locale);
 
   const layoutProps = { focusPalace, buildFocusHref };
 
@@ -132,67 +125,37 @@ export default function ChartDisplay({
       </div>
 
       <section id="palaces">
-        <div className="mb-4 space-y-3">
-          <div>
-            <h2 className="font-display text-lg font-bold text-destiny-purple mb-1">
-              {locale === "en" ? "Twelve palaces" : "十二宮位"}
-            </h2>
-            <p className="text-xs text-destiny-purple/45">
-              {getChartLayoutHint(layout, locale)}
-            </p>
-          </div>
-          <ChartLayoutPicker current={layout} searchParams={searchParams} locale={locale} />
+        <div className="mb-4">
+          <h2 className="font-display text-lg font-bold text-destiny-purple mb-1">
+            {locale === "en" ? "Twelve palaces" : "十二宮位"}
+          </h2>
+          <p className="text-xs text-destiny-purple/45">{getChartLayoutHint(locale)}</p>
         </div>
 
-        {layout === "5" && focusAnalysis ? (
-          <ChartPalacesFocus
-            chart={chart}
-            insights={insights}
-            scoreByPalace={scoreByPalace}
-            focusAnalysis={focusAnalysis}
-            unlockedPalaces={unlockedPalaces}
-            reportTexts={reportTexts}
-            layoutId={layout}
+        <div className="space-y-6">
+          <ChartPalacesGrid chart={chart} scoreByPalace={scoreByPalace} {...layoutProps} />
+
+          <ChartPersonalInsights insights={insights} locale={locale} />
+
+          <ChartFortuneSummary
+            data={fortuneSummary}
+            focusPalace={focusPalace}
             locale={locale}
-            {...layoutProps}
           />
-        ) : (
-          <div className="space-y-6">
-            {layout === "2" && (
-              <ChartPalacesClassic chart={chart} scoreByPalace={scoreByPalace} {...layoutProps} />
-            )}
-            {layout === "1" && (
-              <ChartPalacesGrid chart={chart} scoreByPalace={scoreByPalace} {...layoutProps} />
-            )}
-            {layout === "3" && (
-              <ChartPalacesList chart={chart} scoreByPalace={scoreByPalace} {...layoutProps} />
-            )}
-            {layout === "4" && (
-              <ChartPalacesRanked chart={chart} scores={palaceScores.scores} {...layoutProps} />
-            )}
 
-            <ChartPersonalInsights insights={insights} locale={locale} />
-
-            <ChartFortuneSummary
-              data={fortuneSummary}
+          {focusAnalysis && (
+            <ChartPalaceAnalysis
+              chart={chart}
               focusPalace={focusPalace}
+              focusAnalysis={focusAnalysis}
+              scoreByPalace={scoreByPalace}
+              unlockedPalaces={unlockedPalaces}
+              reportTexts={reportTexts}
+              layoutId={CHART_LAYOUT}
               locale={locale}
             />
-
-            {focusAnalysis && (
-              <ChartPalaceAnalysis
-                chart={chart}
-                focusPalace={focusPalace}
-                focusAnalysis={focusAnalysis}
-                scoreByPalace={scoreByPalace}
-                unlockedPalaces={unlockedPalaces}
-                reportTexts={reportTexts}
-                layoutId={layout}
-                locale={locale}
-              />
-            )}
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="mt-4">
           <PalaceScoresLegend locale={locale} />

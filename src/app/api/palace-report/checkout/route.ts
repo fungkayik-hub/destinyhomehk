@@ -118,10 +118,7 @@ export async function POST(request: NextRequest) {
 
   const returnPath =
     input.returnPath === "/en/chart" ? "/en/chart" : "/chart";
-  const layout =
-    typeof input.layout === "string" && input.layout ? input.layout : "5";
   const returnParams = birthInputToSearchParams(birthInput);
-  returnParams.set("layout", layout);
   const returnQuery = returnParams.toString();
   const firstPalace = encodeURIComponent(palaces[0]);
   const siteUrl = getSiteUrl();
