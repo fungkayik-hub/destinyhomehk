@@ -10,6 +10,7 @@ import MasterReadingCta from "@/components/MasterReadingCta";
 import ChartSavedHistory from "./ChartSavedHistory";
 import { PalaceScoresLegend } from "./PalaceScoreBadge";
 import ChartPalacesGrid from "./layouts/ChartPalacesGrid";
+import ChartMutagenSummary from "./ChartMutagenSummary";
 import ChartPalaceAnalysis from "./ChartPalaceAnalysis";
 import ChartPersonalInsights from "./ChartPersonalInsights";
 import ChartFortuneSummary from "./ChartFortuneSummary";
@@ -134,6 +135,8 @@ export default function ChartDisplay({
 
         <div className="space-y-6">
           <ChartPalacesGrid chart={chart} scoreByPalace={scoreByPalace} {...layoutProps} />
+
+          <ChartMutagenSummary chart={chart} locale={locale} />
 
           <ChartPersonalInsights insights={insights} locale={locale} />
 
