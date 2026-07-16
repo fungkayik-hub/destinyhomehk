@@ -73,7 +73,7 @@ export default function AboutPage() {
               幫助你認識自己的優勢和挑戰，在人生的重要時刻做出更明智的選擇。
             </p>
             <p>
-              除咗一對一解盤，Sunny 師傅亦曾<strong className="text-destiny-purple"> 上 ViuTV 節目</strong>分享玄學，
+              除咗一對一解盤，Sunny 師傅亦曾<strong className="text-destiny-purple"> 上 ViuTV、TVB《玄戰》</strong>分享玄學，
               為<strong className="text-destiny-purple"> VISA 等跨國企業</strong>提供風水顧問服務，
               以及為公司團隊主講玄學講座，將中洲派紫微帶到更多生活同職場場景。
             </p>

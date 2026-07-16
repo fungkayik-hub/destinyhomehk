@@ -10,6 +10,15 @@ export const mediaHighlights = [
     caption: "90 後算命師傅 · Sunny 師傅",
   },
   {
+    id: "tvb-xuan-zhan",
+    image: "/images/media/tvb-xuan-zhan.jpg",
+    tag: "電視媒體",
+    title: "TVB《玄戰》受訪",
+    description:
+      "接受 TVB 娛樂新聞台訪問，分享玄學觀點同中洲派紫微，將命理帶到更多觀眾眼前。",
+    caption: "TVB · 玄戰 · 娛樂新聞台",
+  },
+  {
     id: "visa",
     image: "/images/media/visa-feng-shui.png",
     tag: "企業風水",

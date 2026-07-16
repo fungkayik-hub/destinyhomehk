@@ -15,10 +15,10 @@ export default function MediaHighlights({ variant = "full" }: Props) {
           媒體及企業合作
         </h2>
         <p className={`text-destiny-purple/70 mb-8 ${variant === "full" ? "text-sm" : "text-center max-w-xl mx-auto mb-10"}`}>
-          電視媒體、跨國企業風水同公司講座 — Sunny 師傅以專業同貼地方式，將中洲派紫微帶到更多場合。
+          ViuTV、TVB、跨國企業風水同公司講座 — Sunny 師傅以專業同貼地方式，將中洲派紫微帶到更多場合。
         </p>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {mediaHighlights.map((item) => (
             <article
               key={item.id}
