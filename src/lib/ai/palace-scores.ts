@@ -22,14 +22,21 @@ export function scoreToLabel(score: number): PalaceScoreLabel {
 function briefForPalace(palace: PalaceInfo, score: number): string {
   const majors = palace.stars.filter((s) => s.type !== "minor");
   if (majors.length === 0) {
-    return "空宮有借星力，仍有發揮位";
+    return "空宮借星，宜靈活變通";
   }
   const names = majors.map((s) => s.name).join("、");
-  if (score >= 85) return `${names}廟旺，能量強勁`;
+  const hasXian = majors.some((s) => s.brightness === "陷" || s.brightness === "不");
+  if (score >= 85) return `${names}廟旺，能量強勁可發揮`;
   if (score >= 70) return `${names}配置佳，穩定發揮`;
   if (score >= 55) return `${names}有潛力，宜循序發展`;
-  if (score >= 40) return `${names}要執一執方向，仍有位`;
-  return `${names}宜保守穩陣，慢慢嚟`;
+  if (score >= 40) {
+    return hasXian
+      ? `${names}入弱，宜留意節奏同方向`
+      : `${names}要執一執，留意細節`;
+  }
+  return hasXian
+    ? `${names}入陷，宜保守穩陣多留意`
+    : `${names}偏弱，宜穩陣慢慢嚟`;
 }
 
 export function fallbackPalaceScores(palaces: PalaceInfo[]): PalaceScore[] {

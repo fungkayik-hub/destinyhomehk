@@ -204,18 +204,11 @@ export function buildChartFortuneSummary(
   };
 }
 
-/** 折線圖：以而家為中心，顯示前後共 8 段大限 */
+/** 折線圖：由顯示虛歲 0 起計，固定顯示首 8 段大限（唔以而家為中心裁切） */
 export function sliceDecadalTrendForChart(
   trend: DecadalTrendPoint[],
-  current: DecadalPeriod | null,
+  _current: DecadalPeriod | null,
 ): DecadalTrendPoint[] {
   if (!trend.length) return [];
-  if (!current) return trend.slice(0, 8);
-
-  const idx = trend.findIndex((t) => t.isCurrent);
-  if (idx < 0) return trend.slice(0, 8);
-
-  const start = Math.max(0, idx - 3);
-  const end = Math.min(trend.length, start + 8);
-  return trend.slice(start, end);
+  return trend.slice(0, 8);
 }

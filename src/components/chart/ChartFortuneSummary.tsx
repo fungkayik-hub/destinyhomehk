@@ -159,24 +159,25 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
 
         <div className="px-2 py-4 md:px-4 bg-white border-t md:border-t-0 border-destiny-purple/8">
           <p className="text-xs text-destiny-purple/50 text-center mb-2">
-            {isEn ? "Decade trend (8 periods · grade 1–8)" : "十年大限走勢（八段 · 縱軸八級）"}
+            {isEn ? "Decade trend from age 0 (8 periods · grade 1–8)" : "十年大限走勢（由 0 虛歲起 · 八段 · 縱軸八級）"}
           </p>
           <ResponsiveContainer width="100%" height={220}>
-            <LineChart data={lineData} margin={{ top: 8, right: 8, left: -20, bottom: 0 }}>
+            <LineChart data={lineData} margin={{ top: 8, right: 12, left: 4, bottom: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={MUTED} strokeOpacity={0.25} />
               <XAxis
                 dataKey="label"
                 tick={{ fill: MUTED, fontSize: 10, fontFamily: "sans-serif" }}
                 interval={0}
-                angle={-20}
+                angle={-25}
                 textAnchor="end"
-                height={52}
+                height={56}
+                padding={{ left: 8, right: 8 }}
               />
               <YAxis
                 domain={[1, 8]}
                 ticks={[1, 2, 3, 4, 5, 6, 7, 8]}
                 tick={{ fill: MUTED, fontSize: 10 }}
-                width={28}
+                width={32}
                 tickFormatter={(v) => `${v}級`}
               />
               <Tooltip
@@ -228,8 +229,8 @@ export default function ChartFortuneSummary({ data, focusPalace, locale = "zh" }
           </ResponsiveContainer>
           <p className="text-[10px] text-destiny-purple/40 text-center mt-1 px-2">
             {isEn
-              ? "Gold dot = current decade · Y-axis: 8 = best, 1 = weak"
-              : "金點 = 而家大限 · 縱軸 8級最好、1級較弱"}
+              ? "From age 0 · Gold = current decade · Y: 8 = best, 1 = weak"
+              : "由 0 虛歲起計 · 金點 = 而家大限 · 縱軸 8級最好、1級較弱"}
           </p>
         </div>
       </div>

@@ -12,6 +12,8 @@ import {
 } from "./palace-report-voice";
 import { chatComplete, hasAiConfigured } from "./ai-provider";
 import { STAR_TRAIT_HINTS, ZHONGZHOU_PATTERNS_HINT } from "./sunny-voice";
+import { PALACE_PROMPT_RULES } from "./palace-prompt-rules";
+import { meaningsForPalaceMajors } from "./star-palace-meanings";
 import {
   formatDecadalBlock,
   formatPalaceDecadalFocus,
@@ -23,20 +25,6 @@ import type { PalaceInfo, PalaceName, ZiWeiChart } from "@/lib/ziwei/types";
 const REPORT_MIN_CHARS = 700;
 const REPORT_MAX_CHARS = 1800;
 
-const PALACE_THEMES: Record<PalaceName, string> = {
-  命宮: "性格、處世同人生大方向",
-  兄弟宮: "手足、平輩合作同競爭",
-  夫妻宮: "感情、婚姻同伴侶緣分",
-  子女宮: "子女、後輩同創造力",
-  財帛宮: "收入、理財同金錢觀",
-  疾厄宮: "健康、體質同生活習慣",
-  遷移宮: "外出、環境變動同貴人",
-  奴僕宮: "朋友、下屬同人際助力",
-  官祿宮: "事業、工作同社會地位",
-  田宅宮: "家庭、置業同居住環境",
-  福德宮: "精神、嗜好同內心滿足",
-  父母宮: "長輩、上司同先天福蔭",
-};
 
 const REPORT_SYSTEM = `${PALACE_REPORT_VOICE_GUIDE}
 
@@ -47,6 +35,7 @@ ${ZHONGZHOU_PATTERNS_HINT}
 【任務 — 網上小師傅命書（付費詳批）】
 - 只寫指定單一宮位，**800–1200 字**
 - 必須引用「排盤摘要」「此宮三方四正」「十年大限」
+- 主星解讀必須跟「此宮主星×宮位含義」，唔好套命宮性格去呢宮
 - 十年大限要用虛歲段（如 23–32 虛歲），唔好估公曆年
 - 只輸出 JSON 物件，不要 markdown：{"palace":"夫妻宮","text":"..."}
 
@@ -102,17 +91,27 @@ function buildPalaceReportPrompt(
   insights: ChartInsights,
 ): string {
   const palaceInfo = chart.palaces.find((p) => p.name === palace);
-  const theme = PALACE_THEMES[palace];
+  const theme = PALACE_PROMPT_RULES[palace].theme;
+  const starMeanings = palaceInfo ? meaningsForPalaceMajors(palaceInfo) : [];
 
   return [
     `請為以下命盤撰寫【${palace}】網上小師傅命書。`,
     `此宮主題：${theme}`,
     `字數：800–1200 字。必須引用排盤摘要、此宮三方四正、十年大限虛歲段，唔好寫到其他宮。`,
+    starMeanings.length > 0
+      ? `【此宮主星×宮位含義 — 必須跟】\n${starMeanings.map((l) => `• ${l}`).join("\n")}`
+      : "",
     palace === "官祿宮"
       ? "官祿宮必須包含 1–2 個具體事業方向 + 實操建議。"
       : "",
     palace === "夫妻宮"
       ? "夫妻宮必須包含相處模式 + 適合另一半 2–3 個特質。"
+      : "",
+    palace === "遷移宮"
+      ? "遷移宮：只有天機入陷先寫一生漂泊／雀鳥／迷路；其他主星唔好套用。"
+      : "",
+    palace === "疾厄宮"
+      ? "疾厄宮只講作息體質傾向，禁止病名同恐嚇。"
       : "",
     "",
     buildPalaceSanfangBlock(chart, palace),
@@ -135,7 +134,7 @@ function buildPalaceReportPrompt(
 function fallbackPalaceReport(chart: ZiWeiChart, palace: PalaceName): string {
   const insights = computeChartInsights(chart);
   const palaceInfo = chart.palaces.find((p) => p.name === palace);
-  const theme = PALACE_THEMES[palace];
+  const theme = PALACE_PROMPT_RULES[palace].theme;
   const region = sanfangSizheng(chart.palaces, palace);
   const stars = formatPalaceStars(palaceInfo ?? region[0]);
   const sanfangLines = region.slice(1).map((p) => `${p.name}：${formatPalaceStars(p).split("：")[1] ?? "—"}`);

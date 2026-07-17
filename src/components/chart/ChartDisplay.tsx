@@ -17,6 +17,7 @@ import ChartFortuneSummary from "./ChartFortuneSummary";
 import ChartPlatePicker from "./ChartPlatePicker";
 import ChartPlateCompare from "./ChartPlateCompare";
 import ChartDingPanQuiz from "./ChartDingPanQuiz";
+import ChartFiveElements from "./ChartFiveElements";
 
 interface Props {
   chart: ZiWeiChart;
@@ -110,6 +111,7 @@ export default function ChartDisplay({
             <span className="text-white/50">身宮 </span>
             <strong>{chart.shenPalaceBranch}</strong>
           </span>
+          <ChartFiveElements chineseDate={chart.chineseDate} locale={locale} />
         </div>
       </div>
 

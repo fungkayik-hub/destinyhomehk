@@ -14,13 +14,11 @@ export async function getCachedChartResults(
   return unstable_cache(
     async () => {
       const chart = generateChart(input, plate);
-      const [palaceScores, palaceAnalyses] = await Promise.all([
-        analyzePalaceScores(chart),
-        analyzePalaceAnalyses(chart),
-      ]);
+      const palaceScores = await analyzePalaceScores(chart);
+      const palaceAnalyses = await analyzePalaceAnalyses(chart, palaceScores.scores);
       return { chart, palaceScores, palaceAnalyses };
     },
-    ["chart-results-v11", key],
+    ["chart-results-v13", key],
     { revalidate: 86400 },
   )();
 }

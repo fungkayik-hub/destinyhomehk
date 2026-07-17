@@ -1,22 +1,17 @@
 import type { PalaceInfo, PalaceName, ZiWeiChart } from "@/lib/ziwei/types";
 import { PALACES } from "@/lib/ziwei/types";
 import { computeChartInsights, type ChartInsights } from "./chart-insights";
-import type { PalaceAnalysis } from "./types";
+import {
+  PALACE_FALLBACK_CLIFF,
+  PALACE_PROMPT_RULES,
+} from "./palace-prompt-rules";
+import type { PalaceAnalysis, PalaceScore } from "./types";
+import { scoreToLabel } from "./palace-scores";
+import {
+  lookupStarPalaceMeaning,
+  primaryStarPalaceMeaning,
+} from "./star-palace-meanings";
 
-const PALACE_THEMES: Record<PalaceName, string> = {
-  命宮: "性格、處世同人生大方向",
-  兄弟宮: "手足、平輩合作同競爭",
-  夫妻宮: "感情、婚姻同伴侶緣分",
-  子女宮: "子女、後輩同創造力",
-  財帛宮: "收入、理財同金錢觀",
-  疾厄宮: "健康、體質同生活習慣",
-  遷移宮: "外出、環境變動同貴人",
-  奴僕宮: "朋友、下屬同人際助力",
-  官祿宮: "事業、工作同社會地位",
-  田宅宮: "家庭、置業同居住環境",
-  福德宮: "精神、嗜好同內心滿足",
-  父母宮: "長輩、上司同先天福蔭",
-};
 
 const MAJOR_STAR_TAGS: Record<string, string> = {
   紫微: "帶隊型",
@@ -235,11 +230,16 @@ function fallbackMingAnalysis(palace: PalaceInfo, insights: ChartInsights): stri
   const branch = `${palace.heavenlyStem}${palace.earthlyBranch}`;
   const life = major ? STAR_LIFE_SCENES[major.name] : null;
   const brightness = major?.brightness ? `（${major.brightness}）` : "";
+  const palaceMeaning = major
+    ? lookupStarPalaceMeaning(major.name, "命宮")
+    : null;
 
   const opening = `徒弟先按你命宮${branch}講 — ${stars}坐命，你係「${tag}」。`;
-  const praise = life
-    ? `${major!.name}${brightness}嘅優勢：${life.praise}。`
-    : "空宮借星，變通力同適應力反而係你特色。";
+  const praise = palaceMeaning
+    ? `${major!.name}${brightness}坐命：${palaceMeaning}`
+    : life
+      ? `${major!.name}${brightness}嘅優勢：${life.praise}。`
+      : "空宮借星，變通力同適應力反而係你特色。";
   const scene = life
     ? `生活上：${life.scene}；旁人常覺得你${life.habit}。`
     : "你擅長因應環境調整自己，唔係一成不變嗰種人。";
@@ -258,8 +258,7 @@ function fallbackMingAnalysis(palace: PalaceInfo, insights: ChartInsights): stri
     ? `主星組合標籤：${insights.mingComboTag}。`
     : "";
 
-  const close =
-    "邊段大限先係真正發力、財氣同感情點行，徒弟睇唔到時間軸 — 要 Sunny 師傅親批先拆到準。";
+  const close = PALACE_FALLBACK_CLIFF.命宮;
 
   return [
     opening,
@@ -276,42 +275,103 @@ function fallbackMingAnalysis(palace: PalaceInfo, insights: ChartInsights): stri
     .join("");
 }
 
-function fallbackPalaceAnalysis(palace: PalaceInfo, insights?: ChartInsights): string {
+function scoreToneNote(palace: PalaceInfo, score?: PalaceScore): string {
+  const level = score?.score ?? null;
+  const label = score?.label ?? (level != null ? scoreToLabel(level) : null);
+  const major = palace.stars.find((s) => s.type !== "minor");
+  const weak =
+    major?.brightness === "陷" ||
+    major?.brightness === "不" ||
+    (level != null && level < 55) ||
+    label === "需注意" ||
+    label === "待加強";
+  const strong =
+    (level != null && level >= 70) || label === "極佳" || label === "佳";
+
+  if (strong) {
+    return `呢宮評級${label ?? "佳"}，優勢要賺到 — 宜主動發揮呢方面潛力。`;
+  }
+  if (weak) {
+    const area = PALACE_PROMPT_RULES[palace.name].theme.split("、")[0];
+    return `呢宮評級${label ?? "需注意"}，宜特別留意「${area}」節奏 — 唔使驚，用「宜／穩陣」心態調整就得。`;
+  }
+  return "";
+}
+
+function fallbackPalaceAnalysis(
+  palace: PalaceInfo,
+  insights?: ChartInsights,
+  score?: PalaceScore,
+): string {
   const stars = majorStarsText(palace);
-  const theme = PALACE_THEMES[palace.name];
+  const theme = PALACE_PROMPT_RULES[palace.name].theme;
   const empty =
     palace.stars.filter((s) => s.type !== "minor").length === 0
       ? "此宮空宮，借對宮星力，變通同適應力反而係你優勢。"
       : "";
+  const cliff = PALACE_FALLBACK_CLIFF[palace.name];
+  const tone = scoreToneNote(palace, score);
 
   if (palace.isSoulPalace && insights) {
-    return fallbackMingAnalysis(palace, insights);
+    const base = fallbackMingAnalysis(palace, insights);
+    return tone ? `${base}${tone}` : base;
   }
 
   const major = palace.stars.find((s) => s.type !== "minor");
-  const tag = major ? (MAJOR_STAR_TAGS[major.name] ?? "有自己節奏") : "變通型";
-  const life = major ? STAR_LIFE_SCENES[major.name] : null;
+  const starMeaning = primaryStarPalaceMeaning(palace);
+  const meaningBit = starMeaning
+    ? `${major!.name}坐${palace.name}：${starMeaning}`
+    : "";
   const minorBlock = describeMinors(palace);
-  const sceneBit = life ? `你喺呢方面${life.scene.replace("你", "")}` : "";
 
   if (palace.name === "官祿宮") {
     const direction = careerDirectionByMajor(major?.name);
-    return `${palace.name}管${theme}。主星${stars}，工作上你似係${tag}。${sceneBit}較有利方向：${direction}。${minorBlock}${empty}宜揀可以自主拍板、又睇到成果嘅位。而家係轉工定守成嘅時機，要配合大限 — 師傅全批先準。`;
+    return `${palace.name}管${theme}。主星${stars}。${meaningBit}較有利方向：${direction}。${minorBlock}${empty}${tone}${cliff}`;
   }
 
   if (palace.name === "夫妻宮") {
     const traits = partnerTraitsByMajor(major?.name);
-    return `${palace.name}管${theme}。主星${stars}，感情上你似係${tag}。${sceneBit}適合另一半特質：${traits}。${minorBlock}${empty}相處要講清楚節奏。邊種緣分先係正緣，要同大限一齊睇 — 師傅親批會清楚啲。`;
+    return `${palace.name}管${theme}。主星${stars}。${meaningBit}適合另一半特質：${traits}。${minorBlock}${empty}${tone}${cliff}`;
   }
 
-  return `${palace.name}管${theme}。主星${stars}，你喺呢方面似係${tag}。${sceneBit}${minorBlock}${empty}呢宮點樣同命宮夾，師傅全批會拆得更清楚 — 不妨睇下一宮。`;
+  if (palace.name === "遷移宮") {
+    const tianJiXian = palace.stars.some(
+      (s) => s.name === "天機" && s.brightness === "陷",
+    );
+    if (tianJiXian) {
+      return `${palace.name}管${theme}。主星${stars}，天機入陷坐遷移，外出同環境變動方面，你一生漂泊感較強，好似雀鳥一樣，經常要走嚟走去，亦容易迷路 — 方向感同落腳點要特別留心。${starMeaning ? `（底色：${starMeaning}）` : ""}${minorBlock}${empty}${tone}${cliff}`;
+    }
+    return `${palace.name}管${theme}。主星${stars}。${meaningBit}${minorBlock}${empty}${tone}${cliff}`;
+  }
+
+  if (
+    palace.name === "兄弟宮" ||
+    palace.name === "子女宮" ||
+    palace.name === "財帛宮" ||
+    palace.name === "疾厄宮" ||
+    palace.name === "奴僕宮" ||
+    palace.name === "田宅宮" ||
+    palace.name === "福德宮" ||
+    palace.name === "父母宮"
+  ) {
+    return `${palace.name}管${theme}。主星${stars}。${meaningBit}${minorBlock}${empty}${tone}${cliff}`;
+  }
+
+  return `${palace.name}管${theme}。主星${stars}。${meaningBit}${minorBlock}${empty}${tone}${cliff}`;
 }
 
-export function fallbackPalaceAnalyses(chart: ZiWeiChart): PalaceAnalysis[] {
+export function fallbackPalaceAnalyses(
+  chart: ZiWeiChart,
+  scores?: PalaceScore[],
+): PalaceAnalysis[] {
   const insights = computeChartInsights(chart);
+  const scoreMap = new Map((scores ?? []).map((s) => [s.palace, s]));
   return chart.palaces.map((p) => ({
     palace: p.name,
-    text: fallbackPalaceAnalysis(p, insights).slice(0, p.isSoulPalace ? 600 : 480),
+    text: fallbackPalaceAnalysis(p, insights, scoreMap.get(p.name)).slice(
+      0,
+      p.isSoulPalace ? 600 : 480,
+    ),
   }));
 }
 
