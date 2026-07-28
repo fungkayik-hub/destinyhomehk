@@ -44,8 +44,15 @@ const TOOLS = [
     keywords: "結婚擇日香港",
   },
   {
+    href: "/nameology",
+    title: "姓名學五格查詢",
+    desc: "康熙筆劃 · 天格人格地格外格總格",
+    tag: "免費",
+    keywords: "姓名學總格、五格剖象",
+  },
+  {
     href: "/academy/name-numerology",
-    title: "姓名學總格筆劃",
+    title: "姓名學總格解說",
     desc: "五格剖象 1–81 吉凶對照表",
     tag: "學堂",
     keywords: "姓名學總格",

@@ -217,6 +217,7 @@ export function getFeaturedAcademyCategories() {
 const toolNavChildren = [
   { href: "/chart", label: "紫微排盤" },
   { href: "/compatibility", label: "姻緣探測器" },
+  { href: "/nameology", label: "姓名學五格" },
   { href: "/qiu-qian", label: "一事一問(觀音100靈籤)" },
   { href: "/daily", label: "每日流日" },
   { href: "/wedding-date", label: "結婚擇日" },
@@ -311,6 +312,13 @@ export const services = [
     imageKey: "datePicker" as const,
   },
   {
+    title: "姓名學五格查詢",
+    description: "輸入姓名，即時計康熙筆劃、五格吉凶 — 台灣姓名學初步參考。",
+    price: "免費",
+    href: "/nameology",
+    imageKey: "nameNumerology" as const,
+  },
+  {
     title: "結婚擇日及吉時",
     description: "上頭、過大禮、出門、入門等，由師傅親自擇日。",
     price: "HK$800",
@@ -363,5 +371,12 @@ export function whatsappUrl(message?: string) {
 export function whatsappDatePickerUrl() {
   return whatsappUrl(
     "你好，我想預約結婚／入伙擇日，請問收費同需要咩資料？",
+  );
+}
+
+export function whatsappNameologyUrl(fullName?: string) {
+  const namePart = fullName ? `（現用名：${fullName}）` : "";
+  return whatsappUrl(
+    `你好，我想預約改名／起名服務${namePart}，請問流程同需要咩資料？`,
   );
 }

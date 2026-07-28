@@ -38,6 +38,17 @@ export const apprenticeCopy = {
   datePickerDisclaimer:
     "以上按傳統通勝宜忌同雙方生肖冲煞整理，僅供參考；未含八字、紫微大限流年等師傅級擇日。",
   datePickerMasterNote: "要師傅按雙方生辰擇上頭、出門、入門吉時？",
+  /** 台灣姓名學五格 */
+  nameologyName: "姓名學五格查詢",
+  nameologySubtitle: "康熙筆劃 · 天格人格地格外格總格 · 免費初步參考",
+  nameologySubmit: "查詢五格吉凶",
+  nameologyFormHint:
+    "輸入姓氏同名字，即時用康熙字典筆劃計五格 — 入門參考免費，改名請 WhatsApp 師傅。",
+  nameologyFormFooter:
+    "以上為台灣姓名學五格剖象初步查詢，非師傅親批；正式改名（HK$3,800，含 8 個名字建議）請預約 Sunny 師傅。",
+  nameologyDisclaimer:
+    "以上按康熙筆劃同 1–81 數理整理，僅供參考；未含三才細配、紫微命盤同師傅級改名。",
+  nameologyMasterNote: "想配合命格改名、或幫寶寶起名？",
   chemistryTitle: "緣分火花",
   strengthsTitle: "徒弟睇到嘅位",
   tipsTitle: "呢對咁相處會順啲",

@@ -24,6 +24,7 @@ const TOOL_LABELS: Record<UsageTool, string> = {
   compatibility: "姻緣探測器",
   "date-picker": "結婚吉日篩選",
   "fortune-stick": "觀音求籤",
+  nameology: "姓名學五格",
 };
 
 interface JsonStore {

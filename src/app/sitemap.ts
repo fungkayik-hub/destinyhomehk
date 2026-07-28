@@ -35,6 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${site}/daily`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     { url: `${site}/wedding-date`, lastModified: now, changeFrequency: "monthly", priority: 0.88 },
     { url: `${site}/date-picker`, lastModified: now, changeFrequency: "monthly", priority: 0.88 },
+    { url: `${site}/nameology`, lastModified: now, changeFrequency: "monthly", priority: 0.88 },
     { url: `${site}/wan-chai-ziwei`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${site}/hong-kong-fortune-telling`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
     { url: `${site}/ai-faq`, lastModified: now, changeFrequency: "monthly", priority: 0.86 },

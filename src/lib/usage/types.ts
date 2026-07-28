@@ -4,6 +4,7 @@ export const USAGE_TOOLS = [
   "compatibility",
   "date-picker",
   "fortune-stick",
+  "nameology",
 ] as const;
 
 export type UsageTool = (typeof USAGE_TOOLS)[number];

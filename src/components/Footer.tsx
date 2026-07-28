@@ -22,6 +22,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm">
             <li><Link href="/chart" className="hover:text-destiny-gold">紫微即時排盤</Link></li>
             <li><Link href="/compatibility" className="hover:text-destiny-gold">姻緣探測器</Link></li>
+            <li><Link href="/nameology" className="hover:text-destiny-gold">姓名學五格查詢</Link></li>
             <li><Link href="/daily" className="hover:text-destiny-gold">每日流日黃曆</Link></li>
             <li><Link href="/date-picker" className="hover:text-destiny-gold">結婚吉日篩選</Link></li>
             <li><Link href="/wedding-date" className="hover:text-destiny-gold">結婚擇日</Link></li>
