@@ -3,7 +3,7 @@ export const siteConfig = {
   nameEn: "Destiny Home",
   tagline: "香港紫微斗數 · 風水擇日 · Sunny 師傅",
   description:
-    "灣仔馮命居｜紫微斗數全批 HK$2,000、免費排盤、結婚擇日、台灣姓名學總格改名。過千 Google 好評，WhatsApp 預約 Sunny 師傅親批。",
+    "灣仔馮命居｜香港算命師傅 Sunny 親批紫微斗數全批 HK$2,000、免費排盤、結婚擇日。過千 Google 好評，WhatsApp 即約。",
   announcement:
     "可能係最體貼嘅紫微斗數師傅 🤍🤍🤍 已達過千客人真實好評‼️ IG 同 Google 都有評價，不斷更新",
   announcementShort: "過千真實好評 ⭐ 4.9 · IG + Google · ViuTV",

@@ -15,12 +15,14 @@ import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "台灣姓名學五格查詢 — 康熙筆劃吉凶",
+  title: "姓名學諮詢價格 — 免費五格查詢 · 改名 HK$3,800",
   description:
-    "免費輸入姓名，即時計康熙筆劃、天格人格地格外格總格吉凶。Destiny Home 採用台灣姓名學五格剖象；改名諮詢 HK$3,800。",
+    "香港姓名學老師 Sunny 師傅｜免費查康熙筆劃五格吉凶；正式改名諮詢 HK$3,800（含 8 個名字 + 電話講解）。灣仔工作室，WhatsApp 預約。",
   path: "/nameology",
   image: siteImages.services.nameNumerology,
   keywords: [
+    "姓名學諮詢價格",
+    "姓名學老師",
     "姓名學",
     "台灣姓名學",
     "五格剖象",
@@ -75,6 +77,25 @@ export default async function NameologyPage({
         overlay="subtle"
       />
       <div className="py-12 px-4">
+        {!result && (
+          <div className="max-w-5xl mx-auto mb-8 rounded-2xl border border-destiny-gold/25 bg-destiny-gold/5 px-5 py-4 text-sm text-destiny-purple/80 leading-relaxed">
+            <p>
+              <strong className="text-destiny-purple">姓名學諮詢價格：</strong>
+              網上五格查詢免費；正式改名／起名 HK$3,800（8 個名字建議 + 15–30 分鐘電話講解）。
+              由灣仔姓名學老師 Sunny 師傅親做，可配合紫微命盤。
+            </p>
+            <p className="mt-2">
+              <Link href="/booking#birth-name" className="text-destiny-gold hover:underline font-medium">
+                睇收費詳情
+              </Link>
+              <span className="text-destiny-purple/30 mx-2">·</span>
+              <Link href="/booking" className="text-destiny-gold hover:underline font-medium">
+                WhatsApp 預約改名
+              </Link>
+            </p>
+          </div>
+        )}
+
         <NameologyForm
           surname={parsed.surname}
           givenName={parsed.givenName}
@@ -97,8 +118,8 @@ export default async function NameologyPage({
             免費紫微排盤
           </Link>
           <span className="text-destiny-purple/30">·</span>
-          <Link href="/booking" className="text-destiny-gold hover:underline">
-            預約改名服務
+          <Link href="/booking#birth-name" className="text-destiny-gold hover:underline">
+            改名收費 HK$3,800
           </Link>
         </div>
 

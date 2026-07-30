@@ -13,11 +13,18 @@ import { siteConfig, whatsappUrl } from "@/lib/site-config";
 import { siteImages } from "@/lib/site-images";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "香港算命師傅 — 紫微斗數全批",
+  title: "香港算命師傅推薦 — 紫微全批 HK$2,000",
   description:
-    "香港 Destiny Home — 中洲派紫微斗數、結婚擇日、風水顧問。灣仔工作室，過千好評，免費線上排盤，WhatsApp 預約 Sunny 師傅。",
+    "搵香港算命師傅？馮命居 Sunny 專攻中洲派紫微斗數全批 HK$2,000，過千好評，灣仔工作室。可先免費排盤，再 WhatsApp 預約真人親批。",
   path: "/hong-kong-fortune-telling",
-  keywords: ["香港算命", "香港算命師傅", "香港紫微斗數", "香港風水師傅", "Master Sunny"],
+  keywords: [
+    "香港算命",
+    "香港算命師傅",
+    "香港算命師傅推薦",
+    "紫微斗數全批",
+    "香港紫微斗數",
+    "真人算命",
+  ],
 });
 
 const faq = [
@@ -68,26 +75,32 @@ export default function HongKongFortuneTellingPage() {
       />
       <PageBanner
         src={siteImages.homeHero}
-        title="香港算命師傅"
-        subtitle={`${siteConfig.school} · Master Sunny`}
+        title="香港算命師傅推薦"
+        subtitle="紫微全批 HK$2,000 · 過千好評 · 灣仔 Sunny 師傅"
       />
       <div className="py-12 px-4 max-w-4xl mx-auto space-y-10">
         <section>
-          <h2 className="section-title">香港紫微斗數 · 真人師傅親批</h2>
+          <h2 className="section-title">想搵人算命？真人全批，唔係月費 AI</h2>
           <p className="text-destiny-purple/80 leading-relaxed">
-            唔使月費 AI 訂閱 — Destiny Home 用免費工具幫你了解命格，再由 Sunny 師傅親自全批。
-            服務香港本地客人，工作室喺灣仔，亦承接風水到府。
+            好多香港人上網搵「算命師傅」，最怕只得 AI 訂閱同模板答案。
+            Destiny Home 用免費紫微排盤幫你先了解命格，再由 Sunny 師傅親自全批 —
+            事業、感情、大限十年同流年，一次講清楚。工作室喺灣仔，亦可 WhatsApp 預約。
           </p>
+          <div className="mt-4 rounded-xl border border-destiny-gold/25 bg-destiny-gold/5 px-4 py-3 text-sm text-destiny-purple/80">
+            <strong className="text-destiny-purple">全批 HK$2,000</strong>
+            {" · "}60–90 分鐘親批
+            {" · "}⭐ {siteConfig.rating.score} 過千真實好評
+          </div>
           <div className="flex flex-wrap gap-3 mt-6">
-            <Link href="/chart" className="btn-primary">
-              免費排盤
-            </Link>
-            <Link href="/daily" className="btn-secondary">
-              每日流日
+            <Link href="/book" className="btn-primary">
+              網上預約全批
             </Link>
             <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="btn-secondary">
-              WhatsApp
+              WhatsApp 預約算命
             </a>
+            <Link href="/chart" className="btn-secondary">
+              先免費排盤
+            </Link>
           </div>
         </section>
 

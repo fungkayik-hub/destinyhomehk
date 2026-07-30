@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { PageBanner } from "@/components/SiteImage";
 import ChartBirthForm from "@/components/chart/ChartBirthForm";
 import ChartDisplay from "@/components/chart/ChartDisplay";
@@ -24,18 +25,21 @@ import { siteImages } from "@/lib/site-images";
 import type { PalaceName } from "@/lib/ziwei/types";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "紫微斗數天地人盤排盤 — 免費即時十二宮",
+  title: "免費紫微排盤 — 香港天地人盤即時起盤",
   description:
-    "免費香港紫微斗數天地人盤排盤 — 無限次、真太陽時校正、中洲派十二宮小徒弟贈言。時辰唔準可參考定盤或預約 Sunny 師傅全批。",
+    "免費紫微排盤｜香港中洲派天地人盤、真太陽時校正、十二宮小徒弟贈言。想深入全批？灣仔 Sunny 師傅 HK$2,000，WhatsApp 預約。",
   path: "/chart",
   image: siteImages.services.chart,
   keywords: [
-    "紫微斗數天地人盤排盤",
+    "免費紫微排盤",
     "紫微排盤",
+    "紫微斗數排盤",
+    "紫微斗數天地人盤排盤",
     "天地人盤",
     "免費算命",
     "真太陽時",
     "十二宮",
+    "香港紫微斗數",
   ],
 });
 
@@ -99,13 +103,35 @@ export default async function ChartPage({
       {!hasResults && (
         <PageBanner
           src={siteImages.services.chart}
-          title="紫微即時排盤及分析"
-          subtitle="輸入出生資料，即時起盤"
+          title="免費紫微排盤"
+          subtitle="香港中洲派天地人盤 · 輸入出生資料即時起盤 · 過千好評 Sunny 師傅"
           overlay="subtle"
         />
       )}
       <div className={hasResults ? "py-6 px-4" : "py-10 px-4"}>
-        {!hasResults && <ChartBirthForm input={parsed.input} error={chartError} />}
+        {!hasResults && (
+          <>
+            <div className="max-w-5xl mx-auto mb-6 rounded-2xl border border-destiny-gold/30 bg-destiny-gold/5 px-5 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div>
+                <p className="font-display font-bold text-destiny-purple">
+                  排盤免費 · 想真人算命？
+                </p>
+                <p className="text-sm text-destiny-purple/70 mt-1">
+                  小徒弟贈言只係入門；紫微全批 HK$2,000，Sunny 師傅親批大限流年。
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2 shrink-0">
+                <Link href="/book" className="btn-primary text-sm">
+                  預約全批
+                </Link>
+                <Link href="/booking#full-reading" className="btn-secondary text-sm">
+                  睇收費
+                </Link>
+              </div>
+            </div>
+            <ChartBirthForm input={parsed.input} error={chartError} />
+          </>
+        )}
 
         {hasResults && (
           <div id="chart-results" className="max-w-4xl mx-auto scroll-mt-20">

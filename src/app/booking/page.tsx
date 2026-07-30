@@ -18,11 +18,19 @@ import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "收費詳情及預約師傅",
+  title: "香港算命預約 — 紫微全批 HK$2,000 · 灣仔 Sunny",
   description:
-    "Destiny Home 全批 HK$2,000、擇日 HK$800、流年問事 HK$1,000、風水陽宅 HK$11/尺、生孩改名 HK$3,800 — 灣仔 Sunny 師傅親批，WhatsApp 預約。",
+    "香港算命師傅推薦｜馮命居 Sunny 過千好評。紫微斗數全批 HK$2,000（60–90 分鐘親批）、擇日 HK$800、流年問事 HK$1,000。灣仔駱克道工作室，WhatsApp 即約。",
   path: "/booking",
-  keywords: ["紫微斗數收費", "香港算命預約", "結婚擇日價錢"],
+  keywords: [
+    "香港算命",
+    "香港算命師傅",
+    "香港算命師傅推薦",
+    "紫微斗數全批",
+    "紫微斗數收費",
+    "香港算命預約",
+    "灣仔算命",
+  ],
 });
 
 interface Props {
@@ -43,11 +51,34 @@ export default async function BookingPage({ searchParams }: Props) {
       />
       <PageBanner
         src="/images/home-hero-stars.png"
-        title={isDateService ? "結婚／入伙擇日預約" : "服務及收費"}
-        subtitle={`命居 · ${siteConfig.school} · Sunny 師傅親批`}
+        title={isDateService ? "結婚／入伙擇日預約" : "香港算命 · 紫微全批預約"}
+        subtitle={`過千好評 · ${siteConfig.school} · 灣仔 Sunny 師傅親批`}
         overlay="subtle"
       />
       <div className="py-12 px-4">
+        {!isDateService && (
+          <div className="max-w-3xl mx-auto mb-8 rounded-2xl border border-destiny-gold/30 bg-gradient-to-r from-destiny-gold/10 to-transparent px-5 py-4">
+            <p className="font-display text-lg font-bold text-destiny-purple mb-1">
+              想搵人算命？由全批開始
+            </p>
+            <p className="text-sm text-destiny-purple/75 leading-relaxed">
+              紫微斗數全批 HK$2,000，60–90 分鐘由 Sunny 師傅親批事業、感情、大限流年。
+              可先免費排盤，再 WhatsApp 或網上預約。
+            </p>
+            <div className="mt-3 flex flex-wrap gap-3 text-sm">
+              <Link href="#full-reading" className="text-destiny-gold hover:underline font-medium">
+                睇全批詳情
+              </Link>
+              <Link href="/chart" className="text-destiny-gold hover:underline font-medium">
+                先免費排盤
+              </Link>
+              <Link href="/hong-kong-fortune-telling" className="text-destiny-gold hover:underline font-medium">
+                點解揀馮命居
+              </Link>
+            </div>
+          </div>
+        )}
+
         {isDateService && (
           <div className="max-w-3xl mx-auto mb-8 card bg-destiny-gold/10 border-destiny-gold/30">
             <p className="text-sm text-destiny-purple/80 leading-relaxed">

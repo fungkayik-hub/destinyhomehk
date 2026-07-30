@@ -71,10 +71,23 @@ export default function ChartDisplay({
           {chart.trueSolarTime.placeName} ·{" "}
           {formatClock(chart.trueSolarTime.civilHour, chart.trueSolarTime.civilMinute)}
           {" → "}
+          {chart.trueSolarTime.dayDelta !== 0 && (
+            <span>
+              {chart.trueSolarTime.correctedYear}-
+              {chart.trueSolarTime.correctedMonth}-
+              {chart.trueSolarTime.correctedDay}{" "}
+            </span>
+          )}
           {formatClock(chart.trueSolarTime.correctedHour, chart.trueSolarTime.correctedMinute)}
           {locale === "en"
             ? ` (${chart.trueSolarTime.offsetMinutes} min)`
-            : `（${chart.trueSolarTime.offsetMinutes > 0 ? "+" : ""}${chart.trueSolarTime.offsetMinutes} 分鐘）`}
+            : `（${chart.trueSolarTime.offsetMinutes > 0 ? "+" : ""}${chart.trueSolarTime.offsetMinutes} 分鐘${
+                chart.trueSolarTime.dayDelta < 0
+                  ? " · 退一日"
+                  : chart.trueSolarTime.dayDelta > 0
+                    ? " · 進一日"
+                    : ""
+              }）`}
         </p>
       )}
 
@@ -146,6 +159,13 @@ export default function ChartDisplay({
             data={fortuneSummary}
             focusPalace={focusPalace}
             locale={locale}
+          />
+
+          <MasterReadingCta
+            whatsappHref={waUrl}
+            locale={locale}
+            variant="chart"
+            size="compact"
           />
 
           {focusAnalysis && (

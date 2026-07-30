@@ -13,11 +13,18 @@ import { siteConfig, whatsappUrl } from "@/lib/site-config";
 import { siteImages } from "@/lib/site-images";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "灣仔紫微斗數 — Sunny 師傅工作室",
+  title: "灣仔算命師傅 — 紫微斗數全批 HK$2,000",
   description:
-    "灣仔駱克道382號 Destiny Home — 中洲派紫微斗數全批、結婚擇日、風水。過千好評，免費即時排盤，WhatsApp 預約。",
+    "灣仔算命｜駱克道382號馮命居 Sunny 師傅。中洲派紫微全批 HK$2,000、結婚擇日、風水。過千好評，可先免費排盤再預約親批。",
   path: "/wan-chai-ziwei",
-  keywords: ["灣仔紫微斗數", "灣仔算命", "駱克道", "香港紫微斗數", "中洲派"],
+  keywords: [
+    "灣仔紫微斗數",
+    "灣仔算命",
+    "灣仔算命師傅",
+    "駱克道算命",
+    "香港紫微斗數",
+    "中洲派",
+  ],
 });
 
 const faq = [
@@ -67,25 +74,25 @@ export default function WanChaiZiWeiPage() {
       />
       <PageBanner
         src={siteImages.sunnyStudio}
-        title="灣仔紫微斗數"
-        subtitle={`${siteConfig.school} · ${siteConfig.address}`}
+        title="灣仔算命 · 紫微斗數"
+        subtitle={`全批 HK$2,000 · ${siteConfig.address}`}
       />
       <div className="py-12 px-4 max-w-4xl mx-auto space-y-10">
         <section>
-          <h2 className="section-title">灣仔駱克道 · Destiny Home</h2>
+          <h2 className="section-title">灣仔駱克道 · 真人算命工作室</h2>
           <p className="text-destiny-purple/80 leading-relaxed">
-            搜尋「灣仔紫微斗數」「灣仔算命師傅」— Sunny 師傅喺駱克道382號1807室為你全批、擇日、風水。
-            過千真實好評，結合傳統中洲派同現代免費排盤工具。
+            搜「灣仔算命」「灣仔紫微斗數」— Sunny 師傅喺駱克道382號1807室親批全批、擇日、風水。
+            過千真實好評；想先了解自己命盤，可免費網上排盤，再預約面談。
           </p>
           <div className="flex flex-wrap gap-3 mt-6">
-            <Link href="/chart" className="btn-primary">
-              免費即時排盤
+            <Link href="/book" className="btn-primary">
+              預約全批算命
             </Link>
             <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="btn-secondary">
               WhatsApp 預約
             </a>
-            <Link href="/booking" className="btn-secondary">
-              收費詳情
+            <Link href="/chart" className="btn-secondary">
+              免費排盤
             </Link>
           </div>
         </section>

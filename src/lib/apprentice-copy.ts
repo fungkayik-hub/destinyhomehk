@@ -43,7 +43,7 @@ export const apprenticeCopy = {
   nameologySubtitle: "康熙筆劃 · 天格人格地格外格總格 · 免費初步參考",
   nameologySubmit: "查詢五格吉凶",
   nameologyFormHint:
-    "輸入姓氏同名字，即時用康熙字典筆劃計五格 — 入門參考免費，改名請 WhatsApp 師傅。",
+    "輸入姓氏同名字，即時用康熙字典筆劃計五格 — 入門參考免費；正式改名可 WhatsApp 師傅。",
   nameologyFormFooter:
     "以上為台灣姓名學五格剖象初步查詢，非師傅親批；正式改名（HK$3,800，含 8 個名字建議）請預約 Sunny 師傅。",
   nameologyDisclaimer:

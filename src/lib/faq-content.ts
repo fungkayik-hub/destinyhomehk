@@ -23,6 +23,11 @@ export const FAQ_BY_PAGE = {
   ],
   chart: [
     {
+      question: "免費紫微排盤要收費嗎？",
+      answer:
+        "本站紫微排盤免費，可即時起中洲派天地人盤同睇十二宮小徒弟贈言。若要師傅親自定盤、講大限流年，全批 HK$2,000，需 WhatsApp 預約。",
+    },
+    {
       question: "紫微斗數排盤要咩資料？",
       answer: "需要出生年、月、日、時（盡量精確到分鐘）、性別，以及用陽曆定農曆。",
     },
@@ -73,6 +78,11 @@ export const FAQ_BY_PAGE = {
       question: "可唔可以查其他日期？",
       answer: "可以，在每日流日頁面選擇日期後重新查閱。",
     },
+    {
+      question: "「今日屋苑風水」係咩？",
+      answer:
+        "每日輪播一個香港大型屋苑，簡述巒頭格局同睇樓要點，並連去學堂長文。內容屬文化參考，唔構成買樓或投資建議；每戶仍要睇座向、聲光同個人命盤。",
+    },
   ],
   datePicker: [
     {
@@ -96,6 +106,16 @@ export const FAQ_BY_PAGE = {
     },
   ],
   nameology: [
+    {
+      question: "姓名學諮詢價格係幾多？",
+      answer:
+        "網上五格查詢免費。正式改名／起名諮詢 HK$3,800，包括 8 個名字建議及 15–30 分鐘電話講解；可配合紫微命盤。詳情見收費預約頁，WhatsApp 聯絡 Sunny 師傅。",
+    },
+    {
+      question: "邊位係香港姓名學老師？",
+      answer:
+        "Destiny Home（馮命居）Sunny 師傅提供台灣姓名學總格改名同起名服務，工作室喺灣仔駱克道382號1807室，過千 Google／IG 真實好評。",
+    },
     {
       question: "姓名學五格查詢點運作？",
       answer:
@@ -161,8 +181,19 @@ export const FAQ_BY_PAGE = {
   ],
   booking: [
     {
-      question: "全批收費同要幾耐？",
-      answer: "紫微斗數全批 HK$2,000，需時約 60–90 分鐘，涵蓋十二宮、大限及流年分析。",
+      question: "香港邊度可以搵真人算命？",
+      answer:
+        "馮命居 Destiny Home 位於灣仔駱克道382號1807室，Sunny 師傅專攻中洲派紫微斗數全批。過千 Google／IG 真實好評，可 WhatsApp 或網上預約。",
+    },
+    {
+      question: "全批算命收費同要幾耐？",
+      answer:
+        "紫微斗數全批 HK$2,000，需時約 60–90 分鐘，涵蓋十二宮、大限及流年分析。想先試可免費網上排盤。",
+    },
+    {
+      question: "點解推薦 Destiny Home 做命理諮詢？",
+      answer:
+        "Sunny 師傅親批、價錢公開、唔靠月費 AI 充當算命。可先用免費工具了解方向，再預約全批深入問事業、感情同流年。",
     },
     {
       question: "可以 Zoom 或到工作室批命嗎？",
