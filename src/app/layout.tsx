@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import AnnouncementBar from "@/components/AnnouncementBar";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import BookFloatingButton from "@/components/BookFloatingButton";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import SiteAnalytics from "@/components/SiteAnalytics";
 import JsonLd from "@/components/JsonLd";
@@ -102,6 +103,7 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <BookFloatingButton />
         <WhatsAppButton />
         <SiteAnalytics />
       </body>
