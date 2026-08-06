@@ -1,7 +1,7 @@
 import { astro } from "iztro";
 import { buildDecadalTimeline } from "./chart-decadal";
 import type { BirthInput, ChartPlateType, PalaceInfo, StarPlacement, ZiWeiChart } from "./types";
-import { hourMinuteToTimeIndex, formatSolarDate } from "./time";
+import { toChartTimeIndex, formatSolarDate } from "./time";
 import { applyTrueSolarTime } from "./true-solar-time";
 import { normalizeStarName } from "../star-names";
 
@@ -190,6 +190,9 @@ function buildAstrolabeOptions(
   input: BirthInput,
   timeIndex: number,
   plateType: ChartPlateType,
+  solarYear: number,
+  solarMonth: number,
+  solarDay: number,
 ) {
   const gender = input.gender === "male" ? ("男" as const) : ("女" as const);
   const base = {
@@ -212,7 +215,7 @@ function buildAstrolabeOptions(
   return {
     ...base,
     type: "solar" as const,
-    dateStr: formatSolarDate(input.year, input.month, input.day),
+    dateStr: formatSolarDate(solarYear, solarMonth, solarDay),
   };
 }
 
@@ -231,12 +234,22 @@ export function generateChart(
   plateType: ChartPlateType = "heaven",
 ): ZiWeiChart {
   const trueSolarTime = applyTrueSolarTime(input);
-  const timeIndex = hourMinuteToTimeIndex(
+  const timeIndex = toChartTimeIndex(
     trueSolarTime.correctedHour,
     trueSolarTime.correctedMinute,
   );
 
-  const astrolabe = astro.withOptions(buildAstrolabeOptions(input, timeIndex, plateType));
+  // 陽曆：用真太陽時校正後日期（跨日子時要退日／進日，對齊文墨天機）
+  const solarYear =
+    input.calendarType === "solar" ? trueSolarTime.correctedYear : input.year;
+  const solarMonth =
+    input.calendarType === "solar" ? trueSolarTime.correctedMonth : input.month;
+  const solarDay =
+    input.calendarType === "solar" ? trueSolarTime.correctedDay : input.day;
+
+  const astrolabe = astro.withOptions(
+    buildAstrolabeOptions(input, timeIndex, plateType, solarYear, solarMonth, solarDay),
+  );
   return astrolabeToChart(
     astrolabe,
     input,

@@ -12,6 +12,16 @@ export function hourMinuteToTimeIndex(hour: number, minute: number): number {
   return 0;
 }
 
+/**
+ * 排盤用時辰索引（對齊文墨天機等常見軟件）
+ * iztro 晚子(12)同早子(0)安星不同；文墨將 23:00–00:59 子時作同一套安星。
+ * 因此晚子統一用早子索引起盤。
+ */
+export function toChartTimeIndex(hour: number, minute: number): number {
+  const index = hourMinuteToTimeIndex(hour, minute);
+  return index === 12 ? 0 : index;
+}
+
 export function formatSolarDate(year: number, month: number, day: number): string {
   return `${year}-${month}-${day}`;
 }

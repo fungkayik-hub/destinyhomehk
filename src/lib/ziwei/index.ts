@@ -1,4 +1,4 @@
-export { hourMinuteToTimeIndex, getShichenLabel } from "./time";
+export { hourMinuteToTimeIndex, toChartTimeIndex, getShichenLabel } from "./time";
 export { SHICHEN, PALACES } from "./types";
 export { generateThreePlates } from "./iztro-adapter";
 export { CHART_PLATES, suggestPlateFromBirthTime, getPlateMeta } from "./zhongzhou-plates";
