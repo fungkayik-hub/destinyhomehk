@@ -72,14 +72,6 @@ export default function ChartPalacesFocus({
         })}
       </div>
 
-      <ChartPersonalInsights insights={insights} locale={locale} />
-
-      <ChartFortuneSummary
-        data={fortuneSummary}
-        focusPalace={focusPalace}
-        locale={locale}
-      />
-
       <ChartPalaceAnalysis
         chart={chart}
         focusPalace={focusPalace}
@@ -88,6 +80,14 @@ export default function ChartPalacesFocus({
         unlockedPalaces={unlockedPalaces}
         reportTexts={reportTexts}
         layoutId={layoutId}
+        locale={locale}
+      />
+
+      <ChartPersonalInsights insights={insights} locale={locale} />
+
+      <ChartFortuneSummary
+        data={fortuneSummary}
+        focusPalace={focusPalace}
         locale={locale}
       />
     </div>

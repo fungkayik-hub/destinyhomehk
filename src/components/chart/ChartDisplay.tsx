@@ -151,6 +151,19 @@ export default function ChartDisplay({
         <div className="space-y-6">
           <ChartPalacesGrid chart={chart} scoreByPalace={scoreByPalace} {...layoutProps} />
 
+          {focusAnalysis && (
+            <ChartPalaceAnalysis
+              chart={chart}
+              focusPalace={focusPalace}
+              focusAnalysis={focusAnalysis}
+              scoreByPalace={scoreByPalace}
+              unlockedPalaces={unlockedPalaces}
+              reportTexts={reportTexts}
+              layoutId={CHART_LAYOUT}
+              locale={locale}
+            />
+          )}
+
           <ChartMutagenSummary chart={chart} locale={locale} />
 
           <ChartPersonalInsights insights={insights} locale={locale} />
@@ -167,19 +180,6 @@ export default function ChartDisplay({
             variant="chart"
             size="compact"
           />
-
-          {focusAnalysis && (
-            <ChartPalaceAnalysis
-              chart={chart}
-              focusPalace={focusPalace}
-              focusAnalysis={focusAnalysis}
-              scoreByPalace={scoreByPalace}
-              unlockedPalaces={unlockedPalaces}
-              reportTexts={reportTexts}
-              layoutId={CHART_LAYOUT}
-              locale={locale}
-            />
-          )}
         </div>
 
         <div className="mt-4">
