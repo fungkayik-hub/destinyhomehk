@@ -4,6 +4,12 @@ import { getArticleSitemapEntries } from "@/lib/articles";
 import { getHongKongTodayISO } from "@/lib/hong-kong-time";
 import { getSiteUrl } from "@/lib/site-url";
 
+function safeLastModified(value: string | null | undefined, fallback: Date): Date {
+  if (!value) return fallback;
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? fallback : parsed;
+}
+
 function recentDailyUrls(site: string, days: number): MetadataRoute.Sitemap {
   const today = getHongKongTodayISO();
   const [y, m, d] = today.split("-").map(Number);
@@ -22,6 +28,20 @@ function recentDailyUrls(site: string, days: number): MetadataRoute.Sitemap {
     });
   }
   return urls;
+}
+
+function buildArticlePages(site: string, now: Date): MetadataRoute.Sitemap {
+  try {
+    return getArticleSitemapEntries().map(({ slug, articleSlug, publishedAt }) => ({
+      url: `${site}/academy/${slug}/${encodeURIComponent(articleSlug)}`,
+      lastModified: safeLastModified(publishedAt, now),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    }));
+  } catch (err) {
+    console.error("[sitemap] failed to build article entries", err);
+    return [];
+  }
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -58,14 +78,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: HIGH_PRIORITY_CATEGORIES.has(cat.slug) ? 0.9 : 0.7,
   }));
 
-  const articlePages: MetadataRoute.Sitemap = getArticleSitemapEntries().map(
-    ({ slug, articleSlug, publishedAt }) => ({
-      url: `${site}/academy/${slug}/${encodeURIComponent(articleSlug)}`,
-      lastModified: publishedAt ? new Date(publishedAt) : now,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    }),
-  );
-
-  return [...staticPages, ...recentDailyUrls(site, 14), ...categoryPages, ...articlePages];
+  return [
+    ...staticPages,
+    ...recentDailyUrls(site, 14),
+    ...categoryPages,
+    ...buildArticlePages(site, now),
+  ];
 }

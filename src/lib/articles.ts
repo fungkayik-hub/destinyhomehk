@@ -1,5 +1,6 @@
 import articlesData from "@/data/articles.json";
 import { getHongKongTodayISO } from "./hong-kong-time";
+import { isEstateDailySlug } from "./estate-of-the-day";
 import { academyCategories } from "./site-config";
 
 export interface Article {
@@ -13,11 +14,27 @@ export interface Article {
   type: "blog" | "page";
 }
 
-const articles: Article[] = articlesData.articles.map((a) => ({
-  ...a,
-  type: a.type as Article["type"],
-  content: cleanContent(a.content),
-}));
+/**
+ * 唔喺 module init 清洗全部 HTML——sitemap／列表只需要 slug／日期。
+ * 首次讀 content 先 clean，避免 serverless cold start 超時變 500。
+ */
+const articles: Article[] = articlesData.articles.map((a) => {
+  const rawContent = a.content ?? "";
+  let cleaned: string | null = null;
+  return {
+    slug: a.slug,
+    category: a.category,
+    title: a.title,
+    image: a.image,
+    publishedAt: a.publishedAt,
+    sourceUrl: a.sourceUrl,
+    type: a.type as Article["type"],
+    get content() {
+      if (cleaned === null) cleaned = cleanContent(rawContent);
+      return cleaned;
+    },
+  };
+});
 
 /** 優化匯入 HTML 供前端顯示 */
 export function prepareArticleHtml(html: string): string {
@@ -88,12 +105,15 @@ export function getLatestVisibleArticles(limit = 5): Article[] {
     .slice(0, limit);
 }
 
-/** 格局文用 publishedAt（香港日期）排期；其他分類一律可見 */
+/** 格局文、每日屋苑風水用 publishedAt（香港日期）排期；其他分類一律可見 */
 export function isArticlePublished(
   article: Article,
   today = getHongKongTodayISO(),
 ): boolean {
-  if (article.category !== "geju") return true;
+  const drip =
+    article.category === "geju" ||
+    (article.category === "feng-shui" && isEstateDailySlug(article.slug));
+  if (!drip) return true;
   if (!article.publishedAt) return false;
   return article.publishedAt.slice(0, 10) <= today;
 }
