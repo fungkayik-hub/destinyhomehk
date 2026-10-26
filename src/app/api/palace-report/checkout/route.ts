@@ -90,6 +90,13 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const customerEmailRaw =
+    typeof input.customerEmail === "string" ? input.customerEmail.trim() : "";
+  const customerEmail =
+    customerEmailRaw && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmailRaw)
+      ? customerEmailRaw
+      : undefined;
+
   const returnPath =
     input.returnPath === "/en/chart" ? "/en/chart" : "/chart";
   const returnParams = birthInputToSearchParams(birthInput);
@@ -102,6 +109,8 @@ export async function POST(request: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
+      customer_creation: "always",
+      customer_email: customerEmail,
       line_items: [
         {
           quantity: 1,
@@ -122,6 +131,7 @@ export async function POST(request: NextRequest) {
         chartKey,
         palaces: slot,
         returnQuery,
+        customerEmail: customerEmail ?? "",
       },
       success_url: `${siteUrl}${returnPath}?${returnQuery}&report_session={CHECKOUT_SESSION_ID}#annual-report`,
       cancel_url: `${siteUrl}${returnPath}?${returnQuery}#annual-report`,

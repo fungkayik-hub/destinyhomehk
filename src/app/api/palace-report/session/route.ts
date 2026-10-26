@@ -6,6 +6,7 @@ import {
 import { getCachedPalaceReport } from "@/lib/ai/analyze-palace-report";
 import { buildBirthKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
+import { deliverPalaceReportEmailIfReady } from "@/lib/palace-report/deliver-email";
 import {
   findPalaceReportProduct,
   isAnnualProduct,
@@ -206,6 +207,16 @@ export async function GET(request: NextRequest) {
   ) as PalaceName[];
 
   if (pending.length === 0) {
+    const stripe = getStripe();
+    if (stripe) {
+      try {
+        const session = await stripe.checkout.sessions.retrieve(sessionId);
+        await deliverPalaceReportEmailIfReady(purchase, session, stripe);
+      } catch (err) {
+        console.error("Palace report email check failed (ready):", err, sessionId);
+      }
+    }
+
     return NextResponse.json({
       status: "ready",
       chartKey,
@@ -266,6 +277,8 @@ export async function GET(request: NextRequest) {
       },
     });
   }
+
+  await deliverPalaceReportEmailIfReady(purchase, session, stripe);
 
   return NextResponse.json({
     status: "ready",
