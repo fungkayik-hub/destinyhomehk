@@ -127,6 +127,7 @@ export async function POST(request: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
+      // Stripe Checkout 會收集付款人電郵（customer_details.email），用於寄送命書副本
       line_items: [
         {
           quantity: 1,

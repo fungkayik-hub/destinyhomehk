@@ -3,6 +3,10 @@ import { getCachedPalaceReport } from "@/lib/ai/analyze-palace-report";
 import { buildBirthKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
 import {
+  maybeSendPalaceReportEmail,
+  syncCustomerEmailFromStripeSession,
+} from "@/lib/palace-report/deliver-email";
+import {
   createPurchaseFromSession,
   getPurchaseByStripeSessionId,
   getReportContent,
@@ -10,12 +14,19 @@ import {
   getUnlockedPalaces,
   saveReportContent,
 } from "@/lib/palace-report/store";
+import type { PalaceReportPurchase } from "@/lib/palace-report/types";
 import { getStripe } from "@/lib/stripe/client";
 import { generateChart } from "@/lib/ziwei/iztro-adapter";
 import { type BirthInput, type PalaceName } from "@/lib/ziwei/types";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
+
+function queuePalaceReportEmail(purchase: PalaceReportPurchase): void {
+  void maybeSendPalaceReportEmail(purchase).catch((err) => {
+    console.error("Palace report email delivery error:", err, purchase.stripeSessionId);
+  });
+}
 
 function parseBirthInput(body: Record<string, unknown>): BirthInput | null {
   const sp: Record<string, string> = {};
@@ -91,6 +102,7 @@ export async function GET(request: NextRequest) {
   const pending = purchase.palaces.filter((p) => !existingSet.has(p));
 
   if (pending.length === 0) {
+    queuePalaceReportEmail(purchase);
     return NextResponse.json({
       status: "ready",
       chartKey,
@@ -108,6 +120,10 @@ export async function GET(request: NextRequest) {
   }
 
   const session = await stripe.checkout.sessions.retrieve(sessionId);
+  purchase = await syncCustomerEmailFromStripeSession(
+    purchase,
+    session.customer_details?.email ?? session.customer_email,
+  );
   const returnQueryRaw = session.metadata?.returnQuery?.trim();
   if (!returnQueryRaw) {
     return NextResponse.json({ error: "missing_return_query" }, { status: 500 });
@@ -147,6 +163,8 @@ export async function GET(request: NextRequest) {
       },
     });
   }
+
+  queuePalaceReportEmail(purchase);
 
   return NextResponse.json({
     status: "ready",

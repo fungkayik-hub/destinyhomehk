@@ -47,6 +47,7 @@ function rowToPurchase(row: {
   palaces: string[] | string;
   amount_paid_cents: number;
   customer_email: string | null;
+  report_email_sent_at?: string | Date | null;
   created_at: string | Date;
 }): PalaceReportPurchase {
   const palaces = Array.isArray(row.palaces)
@@ -61,6 +62,12 @@ function rowToPurchase(row: {
     palaces,
     amountPaidCents: row.amount_paid_cents,
     customerEmail: row.customer_email ?? undefined,
+    reportEmailSentAt:
+      row.report_email_sent_at == null
+        ? undefined
+        : row.report_email_sent_at instanceof Date
+          ? row.report_email_sent_at.toISOString()
+          : String(row.report_email_sent_at),
     createdAt:
       row.created_at instanceof Date
         ? row.created_at.toISOString()
@@ -117,8 +124,13 @@ async function ensurePostgresTables(): Promise<void> {
       palaces TEXT NOT NULL,
       amount_paid_cents INTEGER NOT NULL,
       customer_email TEXT,
+      report_email_sent_at TIMESTAMPTZ,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
+  `;
+  await sql`
+    ALTER TABLE palace_report_purchases
+    ADD COLUMN IF NOT EXISTS report_email_sent_at TIMESTAMPTZ
   `;
   await sql`
     CREATE INDEX IF NOT EXISTS palace_report_purchases_chart_key_idx
@@ -190,6 +202,7 @@ export async function createPurchaseFromSession(
     amountPaidCents: session.amount_total ?? product.priceCents,
     customerEmail:
       session.customer_details?.email?.trim() ||
+      session.customer_email?.trim() ||
       metadata.customerEmail?.trim() ||
       undefined,
     createdAt: new Date().toISOString(),
@@ -349,4 +362,67 @@ export async function saveReportContent(
   }
   await writeJsonStore(store);
   return content;
+}
+
+export async function updatePurchaseCustomerEmail(
+  stripeSessionId: string,
+  customerEmail: string,
+): Promise<void> {
+  if (hasPostgres()) {
+    await ensurePostgresTables();
+    await sql`
+      UPDATE palace_report_purchases
+      SET customer_email = ${customerEmail}
+      WHERE stripe_session_id = ${stripeSessionId}
+    `;
+    return;
+  }
+
+  const store = await ensureJsonStore();
+  const purchase = store.purchases.find((p) => p.stripeSessionId === stripeSessionId);
+  if (!purchase) return;
+  purchase.customerEmail = customerEmail;
+  await writeJsonStore(store);
+}
+
+/** 原子鎖定：避免重複寄出命書電郵 */
+export async function claimReportEmailSend(stripeSessionId: string): Promise<boolean> {
+  const claimMarker = new Date().toISOString();
+
+  if (hasPostgres()) {
+    await ensurePostgresTables();
+    const { rows } = await sql`
+      UPDATE palace_report_purchases
+      SET report_email_sent_at = ${claimMarker}::timestamptz
+      WHERE stripe_session_id = ${stripeSessionId}
+        AND report_email_sent_at IS NULL
+      RETURNING id
+    `;
+    return rows.length > 0;
+  }
+
+  const store = await ensureJsonStore();
+  const purchase = store.purchases.find((p) => p.stripeSessionId === stripeSessionId);
+  if (!purchase || purchase.reportEmailSentAt) return false;
+  purchase.reportEmailSentAt = claimMarker;
+  await writeJsonStore(store);
+  return true;
+}
+
+export async function releaseReportEmailSendClaim(stripeSessionId: string): Promise<void> {
+  if (hasPostgres()) {
+    await ensurePostgresTables();
+    await sql`
+      UPDATE palace_report_purchases
+      SET report_email_sent_at = NULL
+      WHERE stripe_session_id = ${stripeSessionId}
+    `;
+    return;
+  }
+
+  const store = await ensureJsonStore();
+  const purchase = store.purchases.find((p) => p.stripeSessionId === stripeSessionId);
+  if (!purchase) return;
+  delete purchase.reportEmailSentAt;
+  await writeJsonStore(store);
 }
