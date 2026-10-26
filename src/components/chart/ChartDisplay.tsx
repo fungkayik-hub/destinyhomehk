@@ -21,7 +21,7 @@ import ChartDingPanQuiz from "./ChartDingPanQuiz";
 import ChartFiveElements from "./ChartFiveElements";
 import AnnualMingshuSection from "./AnnualMingshuSection";
 import type { AnnualReportAccess } from "@/lib/palace-report/types";
-import type { PalaceReportTier } from "@/lib/palace-report/config";
+import type { AnnualReportView } from "@/lib/palace-report/load-reports";
 
 interface Props {
   chart: ZiWeiChart;
@@ -35,7 +35,7 @@ interface Props {
   focusPalace: PalaceName;
   searchParams: Record<string, string | string[] | undefined>;
   annualAccess: AnnualReportAccess;
-  annualReports: { tier: PalaceReportTier; text: string }[];
+  annualReports: AnnualReportView[];
   locale?: "zh" | "en";
 }
 

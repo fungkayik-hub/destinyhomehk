@@ -6,6 +6,10 @@ import type Stripe from "stripe";
 import {
   findPalaceReportProduct,
   isAnnualProduct,
+  isLegacyAnnualProductId,
+  isLegacyAnnualSlot,
+  legacyAnnualProductPriceCents,
+  LEGACY_ANNUAL_SLOTS,
   storageSlotForTier,
   tierFromStorageSlot,
 } from "@/lib/palace-report/config";
@@ -192,13 +196,25 @@ export async function createPurchaseFromSession(
     return { ok: false, error: "missing_metadata" };
   }
 
-  const product = findPalaceReportProduct(productId);
-  if (!product) {
-    return { ok: false, error: "invalid_product" };
-  }
-
   let palaces: string[];
   let tier: PalaceReportTier | undefined;
+  let amountPaidCents: number;
+
+  if (isLegacyAnnualProductId(productId)) {
+    const slot = palacesRaw?.split(",")[0]?.trim();
+    if (!slot || (!isLegacyAnnualSlot(slot) && !tierFromStorageSlot(slot))) {
+      return { ok: false, error: "invalid_palaces" };
+    }
+    palaces = [slot];
+    amountPaidCents =
+      session.amount_total ?? legacyAnnualProductPriceCents(productId) ?? 0;
+  } else {
+    const product = findPalaceReportProduct(productId);
+    if (!product) {
+      return { ok: false, error: "invalid_product" };
+    }
+
+    amountPaidCents = session.amount_total ?? product.priceCents;
 
   if (isAnnualProduct(product)) {
     tier = product.tier;
@@ -208,10 +224,16 @@ export async function createPurchaseFromSession(
       return { ok: false, error: "missing_metadata" };
     }
     const parsed = parsePalaces(palacesRaw);
-    if (!parsed || parsed.length === 0 || parsed.length > product.maxPalaces) {
+    if (
+      !parsed ||
+      parsed.length === 0 ||
+      !("maxPalaces" in product) ||
+      parsed.length > product.maxPalaces
+    ) {
       return { ok: false, error: "invalid_palaces" };
     }
     palaces = parsed;
+  }
   }
 
   const purchase: PalaceReportPurchase = {
@@ -221,7 +243,7 @@ export async function createPurchaseFromSession(
     productId,
     palaces,
     tier,
-    amountPaidCents: session.amount_total ?? product.priceCents,
+    amountPaidCents,
     customerEmail:
       session.customer_details?.email?.trim() ||
       metadata.customerEmail?.trim() ||
@@ -277,7 +299,7 @@ export async function createPurchaseFromSession(
 export async function getAnnualReportAccess(
   chartKey: string,
 ): Promise<AnnualReportAccess> {
-  const access: AnnualReportAccess = { brief: false, detailed: false };
+  const access: AnnualReportAccess = { standard: false, full: false };
 
   if (hasPostgres()) {
     await ensurePostgresTables();
@@ -289,7 +311,11 @@ export async function getAnnualReportAccess(
       const slots = row.palaces.split(",").map((s) => s.trim());
       for (const slot of slots) {
         const t = tierFromStorageSlot(slot);
-        if (t) access[t] = true;
+        if (t) {
+          access[t] = true;
+        } else if (slot === LEGACY_ANNUAL_SLOTS.detailed) {
+          access.standard = true;
+        }
       }
     }
     return access;
@@ -300,7 +326,11 @@ export async function getAnnualReportAccess(
     if (purchase.chartKey !== chartKey) continue;
     for (const slot of purchase.palaces) {
       const t = tierFromStorageSlot(slot);
-      if (t) access[t] = true;
+      if (t) {
+        access[t] = true;
+      } else if (slot === LEGACY_ANNUAL_SLOTS.detailed) {
+        access.standard = true;
+      }
     }
   }
   return access;
@@ -340,7 +370,22 @@ export async function getAnnualReportContent(
   tier: PalaceReportTier,
 ): Promise<PalaceReportContent | null> {
   const slot = storageSlotForTier(tier);
-  return getReportContent(chartKey, slot);
+  const direct = await getReportContent(chartKey, slot);
+  if (direct) return direct;
+  if (tier === "standard") {
+    return getReportContent(chartKey, LEGACY_ANNUAL_SLOTS.detailed);
+  }
+  return null;
+}
+
+/** All stored annual report bodies for this chart (incl. legacy slots). */
+export async function getAnnualReportContentsForChart(
+  chartKey: string,
+): Promise<PalaceReportContent[]> {
+  const contents = await getReportContentsForChart(chartKey);
+  return contents.filter(
+    (c) => tierFromStorageSlot(c.palace) || isLegacyAnnualSlot(c.palace),
+  );
 }
 
 export async function getReportContent(

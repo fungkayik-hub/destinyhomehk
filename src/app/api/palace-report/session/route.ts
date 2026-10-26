@@ -1,19 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCachedAnnualReport } from "@/lib/ai/analyze-annual-report";
+import {
+  getCachedAnnualReport,
+  type AnnualGenerationTier,
+} from "@/lib/ai/analyze-annual-report";
 import { getCachedPalaceReport } from "@/lib/ai/analyze-palace-report";
 import { buildBirthKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
 import {
   findPalaceReportProduct,
   isAnnualProduct,
+  isLegacyAnnualProductId,
+  isLegacyAnnualSlot,
+  LEGACY_ANNUAL_SLOTS,
   storageSlotForTier,
+  tierFromStorageSlot,
 } from "@/lib/palace-report/config";
-import type { PalaceReportTier } from "@/lib/palace-report/config";
+import { loadAnnualReportViews } from "@/lib/palace-report/load-reports";
+import type { PalaceReportPurchase } from "@/lib/palace-report/types";
 import {
   createPurchaseFromSession,
-  getAnnualReportAccess,
-  getAnnualReportContent,
   getPurchaseByStripeSessionId,
+  getReportContent,
   getReportContentsForChart,
   getUnlockedPalaces,
   saveReportContent,
@@ -53,20 +60,45 @@ function isPalaceName(value: string): value is PalaceName {
 }
 
 async function buildAnnualReadyResponse(chartKey: string) {
-  const access = await getAnnualReportAccess(chartKey);
-  const reports: { tier: PalaceReportTier; text: string }[] = [];
-  for (const tier of ["brief", "detailed"] as PalaceReportTier[]) {
-    if (!access[tier]) continue;
-    const content = await getAnnualReportContent(chartKey, tier);
-    if (content) reports.push({ tier, text: content.text });
-  }
+  const { access, views } = await loadAnnualReportViews(chartKey);
   return NextResponse.json({
     status: "ready",
     chartKey,
     annualAccess: access,
-    annualReports: reports,
+    annualReports: views.map((v) => ({ tier: v.id, text: v.text })),
     unlockedPalaces: await getUnlockedPalaces(chartKey),
   });
+}
+
+function resolveAnnualGeneration(
+  purchase: PalaceReportPurchase,
+  product: ReturnType<typeof findPalaceReportProduct>,
+): { storageSlot: string; generationTier: AnnualGenerationTier } | null {
+  if (product && isAnnualProduct(product)) {
+    return {
+      storageSlot: storageSlotForTier(product.tier),
+      generationTier: product.tier,
+    };
+  }
+
+  const slot = purchase.palaces[0];
+  if (!slot) return null;
+
+  if (isLegacyAnnualProductId(purchase.productId) || isLegacyAnnualSlot(slot)) {
+    if (slot === LEGACY_ANNUAL_SLOTS.brief) {
+      return { storageSlot: slot, generationTier: "legacyBrief" };
+    }
+    if (slot === LEGACY_ANNUAL_SLOTS.detailed) {
+      return { storageSlot: slot, generationTier: "standard" };
+    }
+  }
+
+  const currentTier = tierFromStorageSlot(slot);
+  if (currentTier) {
+    return { storageSlot: slot, generationTier: currentTier };
+  }
+
+  return null;
 }
 
 export async function GET(request: NextRequest) {
@@ -116,9 +148,9 @@ export async function GET(request: NextRequest) {
   const chartKey = purchase.chartKey;
   const product = findPalaceReportProduct(purchase.productId);
 
-  if (product && isAnnualProduct(product)) {
-    const tier = product.tier;
-    const existing = await getAnnualReportContent(chartKey, tier);
+  const annualGen = resolveAnnualGeneration(purchase, product);
+  if (annualGen) {
+    const existing = await getReportContent(chartKey, annualGen.storageSlot);
     if (existing) {
       return buildAnnualReadyResponse(chartKey);
     }
@@ -146,14 +178,21 @@ export async function GET(request: NextRequest) {
     }
 
     const chart = generateChart(parsed.input);
-    const slot = storageSlotForTier(tier);
-    const { text, provider } = await getCachedAnnualReport(chartKey, chart, tier);
+    const { text, provider } = await getCachedAnnualReport(
+      chartKey,
+      chart,
+      annualGen.generationTier,
+    );
+    const saveTier =
+      annualGen.generationTier === "legacyBrief"
+        ? undefined
+        : annualGen.generationTier;
     await saveReportContent({
       chartKey,
-      palace: slot,
+      palace: annualGen.storageSlot,
       text,
       provider,
-      tier,
+      tier: saveTier,
     });
 
     return buildAnnualReadyResponse(chartKey);
@@ -255,13 +294,8 @@ export async function POST(request: NextRequest) {
   }
 
   const chartKey = buildBirthKey(birthInput);
-  const access = await getAnnualReportAccess(chartKey);
-  const annualReports: { tier: PalaceReportTier; text: string }[] = [];
-  for (const tier of ["brief", "detailed"] as PalaceReportTier[]) {
-    if (!access[tier]) continue;
-    const content = await getAnnualReportContent(chartKey, tier);
-    if (content) annualReports.push({ tier, text: content.text });
-  }
+  const { access, views } = await loadAnnualReportViews(chartKey);
+  const annualReports = views.map((v) => ({ tier: v.id, text: v.text }));
 
   const unlockedPalaces = await getUnlockedPalaces(chartKey);
   const reports: { palace: PalaceName; text: string }[] = [];

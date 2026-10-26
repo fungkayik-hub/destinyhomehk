@@ -1,10 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { ZiWeiChart } from "@/lib/ziwei";
-import { getPalaceReportCopy } from "@/lib/palace-report-copy";
-import type { PalaceReportTier } from "@/lib/palace-report/config";
+import {
+  getPalaceReportCopy,
+  reportViewTitle,
+  type AnnualReportViewId,
+} from "@/lib/palace-report-copy";
 import type { AnnualReportAccess } from "@/lib/palace-report/types";
 import { whatsappUrl } from "@/lib/site-config";
 
@@ -12,17 +15,40 @@ const STRIPE_ENABLED = Boolean(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.trim(),
 );
 
-interface TierReport {
-  tier: PalaceReportTier;
+const VIEW_PRIORITY: AnnualReportViewId[] = [
+  "full",
+  "standard",
+  "legacyDetailed",
+  "legacyBrief",
+];
+
+interface ReportView {
+  id: AnnualReportViewId;
   text: string;
 }
 
 interface Props {
   chart: ZiWeiChart;
   initialAccess: AnnualReportAccess;
-  initialReports: TierReport[];
+  initialReports: ReportView[];
   layout: string;
   locale?: "zh" | "en";
+}
+
+function defaultActiveView(reports: ReportView[]): AnnualReportViewId {
+  for (const id of VIEW_PRIORITY) {
+    if (reports.some((r) => r.id === id)) return id;
+  }
+  return "standard";
+}
+
+function emptyReportTexts(): Record<AnnualReportViewId, string | undefined> {
+  return {
+    standard: undefined,
+    full: undefined,
+    legacyBrief: undefined,
+    legacyDetailed: undefined,
+  };
 }
 
 export default function AnnualMingshuSection({
@@ -39,19 +65,40 @@ export default function AnnualMingshuSection({
   const returnPath = locale === "en" ? "/en/chart" : "/chart";
 
   const [access, setAccess] = useState(initialAccess);
-  const [reports, setReports] = useState<Record<PalaceReportTier, string | undefined>>(() => ({
-    brief: initialReports.find((r) => r.tier === "brief")?.text,
-    detailed: initialReports.find((r) => r.tier === "detailed")?.text,
-  }));
-  const [loading, setLoading] = useState<PalaceReportTier | null>(null);
+  const [reports, setReports] = useState(() => {
+    const next = emptyReportTexts();
+    for (const r of initialReports) next[r.id] = r.text;
+    return next;
+  });
+  const [loading, setLoading] = useState<"standard" | "full" | null>(null);
   const [generating, setGenerating] = useState(Boolean(reportSession));
   const [error, setError] = useState<string | null>(null);
-  const [activeTier, setActiveTier] = useState<PalaceReportTier>(
-    initialReports.some((r) => r.tier === "detailed")
-      ? "detailed"
-      : initialReports.some((r) => r.tier === "brief")
-        ? "brief"
-        : "detailed",
+  const [activeView, setActiveView] = useState<AnnualReportViewId>(
+    defaultActiveView(initialReports),
+  );
+
+  const tierCards = useMemo(
+    () =>
+      [
+        {
+          tier: "standard" as const,
+          title: copy.tierStandardTitle,
+          price: copy.tierStandardPrice,
+          bullets: copy.tierStandardBullets,
+          unlock: copy.unlockStandard,
+          unlockedLabel: copy.alreadyUnlockedStandard,
+        },
+        {
+          tier: "full" as const,
+          title: copy.tierFullTitle,
+          price: copy.tierFullPrice,
+          bullets: copy.tierFullBullets,
+          unlock: copy.unlockFull,
+          unlockedLabel: copy.alreadyUnlockedFull,
+          highlighted: true,
+        },
+      ] as const,
+    [copy],
   );
 
   const pollSession = useCallback(
@@ -72,13 +119,18 @@ export default function AnnualMingshuSection({
             setAccess(data.annualAccess ?? access);
             setReports((prev) => {
               const next = { ...prev };
-              for (const r of data.annualReports as TierReport[]) {
+              for (const r of data.annualReports as {
+                tier: AnnualReportViewId;
+                text: string;
+              }[]) {
                 next[r.tier] = r.text;
               }
               return next;
             });
-            const bought = (data.annualReports as TierReport[])[0]?.tier;
-            if (bought) setActiveTier(bought);
+            const bought = (
+              data.annualReports as { tier: AnnualReportViewId; text: string }[]
+            ).at(-1)?.tier;
+            if (bought) setActiveView(bought);
             setGenerating(false);
             const params = new URLSearchParams(searchParams.toString());
             params.delete("report_session");
@@ -118,7 +170,7 @@ export default function AnnualMingshuSection({
     if (reportSession) pollSession(reportSession);
   }, [reportSession, pollSession]);
 
-  async function startCheckout(tier: PalaceReportTier) {
+  async function startCheckout(tier: "standard" | "full") {
     if (!STRIPE_ENABLED || access[tier]) return;
     setLoading(tier);
     setError(null);
@@ -127,7 +179,7 @@ export default function AnnualMingshuSection({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          productKey: tier === "brief" ? "brief" : "detailed",
+          productKey: tier,
           ...chart.input,
           returnPath,
           layout,
@@ -146,10 +198,8 @@ export default function AnnualMingshuSection({
     }
   }
 
-  const unlockedTiers = (["brief", "detailed"] as PalaceReportTier[]).filter(
-    (t) => access[t] && reports[t],
-  );
-  const hasAnyReport = unlockedTiers.length > 0;
+  const unlockedViews = VIEW_PRIORITY.filter((id) => reports[id]);
+  const hasAnyReport = unlockedViews.length > 0;
 
   if (generating) {
     return (
@@ -164,7 +214,7 @@ export default function AnnualMingshuSection({
   }
 
   if (hasAnyReport) {
-    const text = reports[activeTier];
+    const text = reports[activeView];
     return (
       <section
         id="annual-report"
@@ -174,20 +224,20 @@ export default function AnnualMingshuSection({
           <span className="text-xs font-medium bg-destiny-purple text-white px-2 py-0.5 rounded">
             {copy.shortBadge}
           </span>
-          {unlockedTiers.length > 1 && (
-            <div className="flex gap-1">
-              {unlockedTiers.map((t) => (
+          {unlockedViews.length > 1 && (
+            <div className="flex flex-wrap gap-1 justify-end">
+              {unlockedViews.map((id) => (
                 <button
-                  key={t}
+                  key={id}
                   type="button"
-                  onClick={() => setActiveTier(t)}
+                  onClick={() => setActiveView(id)}
                   className={`text-xs px-2 py-1 rounded-full border ${
-                    activeTier === t
+                    activeView === id
                       ? "bg-destiny-purple text-white border-destiny-purple"
                       : "border-destiny-purple/20 text-destiny-purple"
                   }`}
                 >
-                  {t === "brief" ? copy.tierBriefTitle : copy.tierDetailedTitle}
+                  {reportViewTitle(id, copy)}
                 </button>
               ))}
             </div>
@@ -195,7 +245,7 @@ export default function AnnualMingshuSection({
         </div>
         <div className="px-4 py-4">
           <h3 className="font-display font-bold text-destiny-purple mb-2">
-            {activeTier === "brief" ? copy.tierBriefTitle : copy.tierDetailedTitle}
+            {reportViewTitle(activeView, copy)}
           </h3>
           <p className="text-destiny-purple/90 leading-relaxed text-base whitespace-pre-wrap">
             {text}
@@ -229,34 +279,28 @@ export default function AnnualMingshuSection({
         )}
 
         <div className="grid sm:grid-cols-2 gap-4">
-          <TierCard
-            title={copy.tierBriefTitle}
-            price={copy.tierBriefPrice}
-            bullets={copy.tierBriefBullets}
-            unlocked={access.brief}
-            unlockedLabel={copy.alreadyUnlockedBrief}
-            loading={loading === "brief"}
-            disabled={Boolean(loading) || access.brief}
-            onBuy={() => startCheckout("brief")}
-            buyLabel={copy.unlockBrief}
-            stripeEnabled={STRIPE_ENABLED}
-            whatsappFallback={copy.whatsappFallback}
-          />
-          <TierCard
-            title={copy.tierDetailedTitle}
-            price={copy.tierDetailedPrice}
-            bullets={copy.tierDetailedBullets}
-            highlighted
-            unlocked={access.detailed}
-            unlockedLabel={copy.alreadyUnlockedDetailed}
-            loading={loading === "detailed"}
-            disabled={Boolean(loading) || access.detailed}
-            onBuy={() => startCheckout("detailed")}
-            buyLabel={copy.unlockDetailed}
-            stripeEnabled={STRIPE_ENABLED}
-            whatsappFallback={copy.whatsappFallback}
-          />
+          {tierCards.map((card) => (
+            <TierCard
+              key={card.tier}
+              title={card.title}
+              price={card.price}
+              bullets={card.bullets}
+              highlighted={"highlighted" in card && card.highlighted}
+              unlocked={access[card.tier]}
+              unlockedLabel={card.unlockedLabel}
+              loading={loading === card.tier}
+              disabled={Boolean(loading) || access[card.tier]}
+              onBuy={() => startCheckout(card.tier)}
+              buyLabel={card.unlock}
+              stripeEnabled={STRIPE_ENABLED}
+              whatsappFallback={copy.whatsappFallback}
+            />
+          ))}
         </div>
+        <p className="text-xs text-destiny-purple/45 mt-3 text-center">
+          {copy.sectionHint} · {copy.tierStandardTitle} {copy.tierStandardPrice} /{" "}
+          {copy.tierFullTitle} {copy.tierFullPrice}
+        </p>
       </div>
     </section>
   );
@@ -293,7 +337,7 @@ function TierCard({
     <div
       className={`rounded-xl border p-4 flex flex-col h-full ${
         highlighted
-          ? "border-destiny-gold bg-white shadow-sm"
+          ? "border-destiny-gold bg-white shadow-sm ring-1 ring-destiny-gold/30"
           : "border-destiny-purple/12 bg-white/80"
       }`}
     >

@@ -15,11 +15,7 @@ import { parseChartPlate, parseFocusPalace } from "@/lib/chart-layout";
 import { logToolUsage } from "@/lib/usage/log";
 import { generateThreePlates } from "@/lib/ziwei/iztro-adapter";
 import { suggestPlateFromBirthTime } from "@/lib/ziwei/zhongzhou-plates";
-import type { PalaceReportTier } from "@/lib/palace-report/config";
-import {
-  getAnnualReportAccess,
-  getAnnualReportContent,
-} from "@/lib/palace-report/store";
+import { loadAnnualReportViews } from "@/lib/palace-report/load-reports";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
 export const metadata: Metadata = buildPageMetadata({
@@ -77,17 +73,14 @@ export default async function ChartPage({
     ? parseFocusPalace(sp, chart.palaces.find((p) => p.isSoulPalace)?.name ?? "命宮")
     : parseFocusPalace(sp);
 
-  let annualAccess = { brief: false, detailed: false };
-  let annualReports: { tier: PalaceReportTier; text: string }[] = [];
+  let annualAccess = { standard: false, full: false };
+  let annualReports: Awaited<ReturnType<typeof loadAnnualReportViews>>["views"] = [];
   let birthKey = "";
   if (parsed.submitted && !parsed.error) {
     birthKey = buildBirthKey(parsed.input);
-    annualAccess = await getAnnualReportAccess(birthKey);
-    for (const tier of ["brief", "detailed"] as PalaceReportTier[]) {
-      if (!annualAccess[tier]) continue;
-      const content = await getAnnualReportContent(birthKey, tier);
-      if (content) annualReports.push({ tier, text: content.text });
-    }
+    const loaded = await loadAnnualReportViews(birthKey);
+    annualAccess = loaded.access;
+    annualReports = loaded.views;
   }
 
   const hasResults = Boolean(chart && palaceScores && palaceAnalyses && threePlates);

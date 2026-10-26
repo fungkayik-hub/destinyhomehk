@@ -3,6 +3,7 @@ import { buildBirthKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams, birthInputToSearchParams } from "@/lib/chart-parse-params";
 import { clientIp, checkRateLimit } from "@/lib/rate-limit";
 import {
+  checkoutDescriptionForTier,
   getPalaceReportProduct,
   PALACE_REPORT_PRODUCTS,
   storageSlotForTier,
@@ -109,10 +110,7 @@ export async function POST(request: NextRequest) {
             unit_amount: product.priceCents,
             product_data: {
               name: `${year} ${product.title} — Destiny Home 網上小師傅命書`,
-              description:
-                product.tier === "brief"
-                  ? "流年重點、短總結、整體宜忌方向"
-                  : "完整流年、十二個月流月、實用化解行動",
+              description: checkoutDescriptionForTier(product.tier),
             },
           },
         },

@@ -40,6 +40,6 @@ export interface SaveReportContentInput {
 }
 
 export interface AnnualReportAccess {
-  brief: boolean;
-  detailed: boolean;
+  standard: boolean;
+  full: boolean;
 }
