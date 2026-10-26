@@ -9,7 +9,7 @@ export const apprenticeCopy = {
   dingPanNote: "定盤、大限流年請 WhatsApp 預約師傅",
   swipeHint: "左右滑動揀其他宮位。",
   scoreLegend: "評分僅供入門參考，非師傅親批。",
-  chartSectionHint: "左右滑動揀宮 · 小徒弟逐宮贈你幾句，越睇越清楚",
+  chartSectionHint: "左右滑動揀宮 · 每宮約 80–150 字入門方向，付費命書才會寫到三方四正同大限",
   clickForAnalysis: "點擊睇小徒弟贈言 →",
   clickPalaceHint: "點擊外圍宮位睇小徒弟贈言",
   loadingHint: "首次起盤約需 10–20 秒（小徒弟整理贈言）；換排版唔使再等。採用《紫微斗數全書》三合派安星法。",

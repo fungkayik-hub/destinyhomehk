@@ -167,40 +167,30 @@ export type EmailSendResult =
 
 
 
-async function sendEmail(
+export interface SendHtmlEmailOptions {
+  to: string;
+  subject: string;
+  html: string;
+  bcc?: string;
+}
 
-  to: string,
-
-  subject: string,
-
-  html: string,
-
+export async function sendHtmlEmail(
+  options: SendHtmlEmailOptions,
 ): Promise<EmailSendResult> {
-
   const apiKey = process.env.RESEND_API_KEY?.trim();
 
   if (!apiKey) {
-
     console.warn("RESEND_API_KEY not set or empty — skipping email");
-
     return { sent: false, reason: "missing_key" };
-
   }
 
-
-
   const resend = new Resend(apiKey);
-
   const { error } = await resend.emails.send({
-
     from: getFromEmail(),
-
-    to,
-
-    subject,
-
-    html,
-
+    to: options.to,
+    subject: options.subject,
+    html: options.html,
+    bcc: options.bcc,
   });
 
 
@@ -222,10 +212,15 @@ async function sendEmail(
   }
 
   return { sent: true };
-
 }
 
-
+async function sendEmail(
+  to: string,
+  subject: string,
+  html: string,
+): Promise<EmailSendResult> {
+  return sendHtmlEmail({ to, subject, html });
+}
 
 export async function sendBookingNotification(
 

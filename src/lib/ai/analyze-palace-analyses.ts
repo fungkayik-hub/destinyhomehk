@@ -2,6 +2,10 @@ import { chartToContext } from "./chart-context";
 import { computeChartInsights } from "./chart-insights";
 import { chatComplete, hasAiConfigured } from "./ai-provider";
 import {
+  finalizeFreePalaceCopy,
+  FREE_PALACE_LENGTH_HINT,
+} from "./free-palace-copy-limits";
+import {
   fallbackPalaceAnalyses,
   isAnalysisTooThin,
   parseMingPalaceJson,
@@ -43,7 +47,7 @@ ${formatPalacePromptRulesBlock("ming")}
 - **嚴格跟上面「命宮」專屬規則**
 - **必須跟「十二宮評分」**：命宮高分要賺、低分要講留意位
 - **必須跟「本盤主星×宮位含義」**寫命宮主星，唔好套錯宮
-- **280–380 字**，唔好只寫兩三句就收工
+- **${FREE_PALACE_LENGTH_HINT}**：1–2 短段方向 + 最後一句提醒／懸念，唔好寫成長文
 - 禁止「一開波睇成張盤」
 - **必須引用** prompt 入面「排盤摘要」嘅格局名、主星組合標籤、身命差異
 - 若程式寫「未命中常見格名」，要解釋主星組合仍有咩力，唔好話冇格局
@@ -61,7 +65,7 @@ ${STAR_TRAIT_HINTS}
 ${formatPalacePromptRulesBlock("others")}
 
 【任務 — 寫除命宮外十一宮】
-- 用**小徒弟**口吻，每宮 **180–240 字**
+- 用**小徒弟**口吻，每宮 **${FREE_PALACE_LENGTH_HINT}**（1–2 短段 + 一句提醒）
 - **每一宮嚴格跟上面該宮專屬規則**（主題／必寫／條件／懸念）
 - **必須跟「十二宮評分」**：該宮高分要賺優勢；低分（待加強／需注意）必須講留意位 + 溫和解法
 - **必須跟「本盤主星×宮位含義」**：寫邊宮就用該星@該宮，禁止把命宮性格句抄去其他宮
@@ -92,20 +96,24 @@ async function analyzeMingPalace(
       { role: "system", content: MING_SYSTEM },
       {
         role: "user",
-        content: `請用 Sunny 師傅門下小徒弟口吻只寫命宮贈言。**至少 280 字**。${scoreHint}
-開頭可讚潛力，但要跟評分：高分賺優勢、低分講留意。引用「排盤摘要」格局。最後留懸念。\n\n${context}`,
+        content: `請用 Sunny 師傅門下小徒弟口吻只寫命宮贈言。**嚴格 ${FREE_PALACE_LENGTH_HINT}**。${scoreHint}
+1–2 短段：標籤 + 方向；跟評分；可引用格局或主星其一。最後一句提醒／懸念。\n\n${context}`,
       },
     ],
-    1200,
+    400,
     { temperature: 0.85 },
   );
 
   const parsed = parseMingPalaceJson(text);
+  const normalized = parsed
+    ? { ...parsed, text: finalizeFreePalaceCopy(parsed.text) }
+    : null;
   const analysis =
-    parsed && !isAnalysisTooThin(parsed.text, "命宮") ? parsed : fallback;
+    normalized && !isAnalysisTooThin(normalized.text, "命宮") ? normalized : fallback;
   return {
     analysis,
-    provider: parsed && !isAnalysisTooThin(parsed.text, "命宮") ? provider : "fallback",
+    provider:
+      normalized && !isAnalysisTooThin(normalized.text, "命宮") ? provider : "fallback",
   };
 }
 
@@ -128,7 +136,7 @@ async function analyzeOtherPalaces(
       { role: "system", content: OTHER_SYSTEM },
       {
         role: "user",
-        content: `請用師傅門下小徒弟口吻寫除命宮外十一宮贈言，每宮至少 180 字。
+        content: `請用師傅門下小徒弟口吻寫除命宮外十一宮贈言，每宮嚴格 ${FREE_PALACE_LENGTH_HINT}。
 **每一宮必須跟 system 專屬規則 + 十二宮評分**。
 高分宮（要賺）：${highPalaces || "按評分表"}
 低分宮（必須講留意位）：${lowPalaces || "若評分表有待加強／需注意就要寫"}
@@ -139,7 +147,7 @@ async function analyzeOtherPalaces(
 每宮最後一句用該宮專屬懸念。\n\n${context}`,
       },
     ],
-    4800,
+    2400,
     { temperature: 0.75 },
   );
 
@@ -175,11 +183,13 @@ export async function analyzePalaceAnalyses(
     const analyses: PalaceAnalysis[] = [
       mingResult.analysis,
       ...otherResult.analyses.map((a) => {
-        if (isAnalysisTooThin(a.text, a.palace)) {
-          const fb = fallback.find((f) => f.palace === a.palace);
-          return fb ?? a;
+        const text = finalizeFreePalaceCopy(a.text);
+        const item = { ...a, text };
+        if (isAnalysisTooThin(item.text, item.palace)) {
+          const fb = fallback.find((f) => f.palace === item.palace);
+          return fb ?? item;
         }
-        return a;
+        return item;
       }),
     ];
 

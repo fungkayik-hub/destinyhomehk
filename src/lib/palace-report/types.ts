@@ -10,6 +10,7 @@ export interface PalaceReportPurchase {
   palaces: string[];
   amountPaidCents: number;
   customerEmail?: string;
+  emailSentAt?: string;
   createdAt: string;
   tier?: PalaceReportTier;
 }
