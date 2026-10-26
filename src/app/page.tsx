@@ -13,6 +13,7 @@ import {
   getFeaturedAcademyCategories,
   homepageDigitalServices,
   homepageServices,
+  homepageServicesSection,
   siteConfig,
   whatsappUrl,
 } from "@/lib/site-config";
@@ -88,13 +89,18 @@ export default function HomePage() {
 
       <section className="py-14 px-4">
         <div className="max-w-5xl mx-auto">
-          <h2 className="section-title mb-10">服務項目</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <h2 className="section-title mb-8 sm:mb-10">服務項目</h2>
+          <HomeFeaturedDigitalServices items={homepageDigitalServices} />
+          <div className="mt-12 sm:mt-14">
+            <h3 className="text-center font-display text-base sm:text-lg font-semibold text-destiny-purple/75 mb-6 tracking-wide">
+              {homepageServicesSection.masterServicesTitle}
+            </h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {homepageServices.map((s) => {
               const hasSecondary = "secondaryHref" in s && s.secondaryHref;
               const cardBody = (
                 <>
-                  <div className="relative h-36 overflow-hidden bg-destiny-cream">
+                  <div className="relative h-32 overflow-hidden bg-destiny-cream">
                     <SiteImage
                       src={siteImages.services[s.imageKey]}
                       alt={s.title}
@@ -108,11 +114,11 @@ export default function HomePage() {
                       {s.price}
                     </span>
                   </div>
-                  <div className="p-5">
-                    <h3 className="font-display font-bold group-hover:text-destiny-gold transition-colors mb-2">
+                  <div className="p-4">
+                    <h3 className="font-display text-sm sm:text-base font-bold group-hover:text-destiny-gold transition-colors mb-1.5">
                       {s.title}
                     </h3>
-                    <p className="text-sm text-destiny-purple/70">{s.description}</p>
+                    <p className="text-xs sm:text-sm text-destiny-purple/70 leading-relaxed">{s.description}</p>
                   </div>
                 </>
               );
@@ -120,7 +126,7 @@ export default function HomePage() {
               return hasSecondary ? (
                 <div key={s.title} className="card hover:shadow-xl transition-shadow group p-0 overflow-hidden flex flex-col">
                   <Link href={s.href} className="block flex-1">
-                    <div className="relative h-36 overflow-hidden bg-destiny-cream">
+                    <div className="relative h-32 overflow-hidden bg-destiny-cream">
                       <SiteImage
                         src={siteImages.services[s.imageKey]}
                         alt={s.title}
@@ -134,14 +140,14 @@ export default function HomePage() {
                         {s.price}
                       </span>
                     </div>
-                    <div className="p-5 pb-2">
-                      <h3 className="font-display font-bold group-hover:text-destiny-gold transition-colors mb-2">
+                    <div className="p-4 pb-2">
+                      <h3 className="font-display text-sm sm:text-base font-bold group-hover:text-destiny-gold transition-colors mb-1.5">
                         {s.title}
                       </h3>
-                      <p className="text-sm text-destiny-purple/70">{s.description}</p>
+                      <p className="text-xs sm:text-sm text-destiny-purple/70 leading-relaxed">{s.description}</p>
                     </div>
                   </Link>
-                  <div className="px-5 pb-5">
+                  <div className="px-4 pb-4">
                     <Link
                       href={s.secondaryHref!}
                       className="text-xs text-destiny-gold hover:underline"
@@ -160,8 +166,8 @@ export default function HomePage() {
                 </Link>
               );
             })}
+            </div>
           </div>
-          <HomeFeaturedDigitalServices items={homepageDigitalServices} />
         </div>
       </section>
 
