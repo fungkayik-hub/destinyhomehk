@@ -12,7 +12,7 @@ import {
   academyCategories,
   getFeaturedAcademyCategories,
   homepageDigitalServices,
-  services,
+  homepageServices,
   siteConfig,
   whatsappUrl,
 } from "@/lib/site-config";
@@ -90,7 +90,7 @@ export default function HomePage() {
         <div className="max-w-5xl mx-auto">
           <h2 className="section-title mb-10">服務項目</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {services.map((s) => {
+            {homepageServices.map((s) => {
               const hasSecondary = "secondaryHref" in s && s.secondaryHref;
               const cardBody = (
                 <>

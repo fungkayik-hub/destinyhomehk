@@ -343,6 +343,11 @@ export const services = [
   },
 ];
 
+/** 首頁「服務項目」第一格 — 最多 9 格（3×3）；完整列表見 `services`（預約／內頁仍可用） */
+export const homepageServices = services.filter(
+  (s) => s.title !== "流年單項／問事",
+);
+
 /** 首頁服務項目 — 第二行數碼命書（排盤頁解鎖） */
 export type HomepageDigitalService = {
   title: string;
