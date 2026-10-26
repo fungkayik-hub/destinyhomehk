@@ -1,3 +1,4 @@
+import { FREE_PALACE_LENGTH_HINT } from "@/lib/ai/free-palace-copy-limits";
 import type { PalaceName } from "@/lib/ziwei/types";
 import { PALACES } from "@/lib/ziwei/types";
 
@@ -19,11 +20,9 @@ export const PALACE_PROMPT_RULES: Record<PalaceName, PalacePromptRule> = {
   命宮: {
     theme: "性格、處世同人生大方向",
     must: [
-      "280–380 字；徒弟開場",
-      "跟評分：高分要賺優勢；低分必須講留意位（溫和）",
-      "標籤 + 2–3 個生活場景（由命宮主星＋亮度推）",
-      "必須引用排盤摘要嘅格局名／主星組合標籤／身命差異",
-      "輔星、四化點名；凶格一句輕帶轉正面",
+      `${FREE_PALACE_LENGTH_HINT}；1–2 短段 + 一句提醒`,
+      "徒弟開場；跟評分：高分賺優勢、低分一句留意（溫和）",
+      "標籤 + 一個生活方向；格局或主星標籤擇一提及即可",
       "禁止「一開波睇成張盤」",
     ],
     cliffhanger: "邊段大限先係真正發力期／身命差異／格局入格要師傅確認",
@@ -180,7 +179,8 @@ export function formatPalacePromptRulesBlock(
 
   const lines: string[] = [
     "【十二宮專屬寫作規則 — 每宮必須跟自己嗰條，唔好九唔搭八】",
-    "每宮主題、必寫、條件、懸念都唔同；寫完一宮要似『講緊呢個生活範疇』，唔好用同一套性格標籤套晒十二宮。",
+    `每宮總字數 ${FREE_PALACE_LENGTH_HINT}；必寫項揀重點，唔使逐條寫長。`,
+    "每宮主題、懸念唔同；寫完要似『講緊呢個生活範疇』，唔好套命宮性格標籤。",
     "",
   ];
 
