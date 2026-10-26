@@ -27,6 +27,10 @@ import {
   saveReportContent,
 } from "@/lib/palace-report/store";
 import { getStripe } from "@/lib/stripe/client";
+import {
+  logWebhookEvent,
+  notifyWebhookFailureIfNeeded,
+} from "@/lib/stripe/webhook-observability";
 import { generateChart } from "@/lib/ziwei/iztro-adapter";
 import { PALACES, type BirthInput, type PalaceName } from "@/lib/ziwei/types";
 
@@ -125,7 +129,20 @@ export async function GET(request: NextRequest) {
         if (created.ok) {
           purchase = created.purchase;
         } else {
-          console.error("Palace report purchase sync failed:", created.error, sessionId);
+          logWebhookEvent({
+            area: "palace_report_session",
+            sessionId,
+            productType: "palace-report",
+            success: false,
+            reason: "purchase_sync_failed",
+            detail: { error: created.error },
+          });
+          await notifyWebhookFailureIfNeeded({
+            area: "palace_report_session",
+            sessionId,
+            productType: "palace-report",
+            reason: created.error ?? "purchase_sync_failed",
+          });
           return NextResponse.json({
             status: "processing",
             message: "付款已收到，正在確認…",

@@ -17,8 +17,8 @@ export const palaceReportCopy = {
   previewHint: "解鎖後可睇完整命書。",
   lockedPreview: "流年命書已鎖定 · 付款後即時整理",
   analysisDisclaimer:
-    "以上為 AI 按中洲派排盤整理嘅參考命書，僅供參考。",
-  notMasterNote: "非 Sunny 師傅親批",
+    "以上為 AI 協助整理之網上小師傅命書（按中洲派排盤），僅供娛樂及個人參考，",
+  notMasterNote: "非 Sunny 師傅親批，不構成醫療、理財或法律意見",
   masterCtaNote: "定盤、大限流年請 WhatsApp 預約師傅全批",
   tierStandardTitle: "流年詳批",
   tierStandardPrice: formatPriceHkd(standard.priceCents),

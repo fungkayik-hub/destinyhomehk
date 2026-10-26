@@ -132,3 +132,14 @@ export function checkoutDescriptionForTier(tier: PalaceReportTier): string {
       return "流年詳批內容＋流年風水點化＋完整化解清單";
   }
 }
+
+/** Stripe Checkout / 信用卡結帳顯示名稱（含實際售價） */
+export function stripeCheckoutProductName(tier: PalaceReportTier): string {
+  const product =
+    tier === "standard" ? PALACE_REPORT_PRODUCTS.standard : PALACE_REPORT_PRODUCTS.full;
+  const priceLabel = `HK$${(product.priceCents / 100).toLocaleString("en-HK")}`;
+  const tierLabel = tier === "standard" ? "流年詳批" : "全批";
+  return `命居 Destiny Home｜${tierLabel} ${priceLabel}`;
+}
+
+export const STRIPE_STATEMENT_DESCRIPTOR_SUFFIX = "DESTINYHOME";

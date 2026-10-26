@@ -4,7 +4,6 @@ import { findPalaceReportProduct } from "@/lib/palace-report/config";
 import type { PalaceReportPurchase } from "@/lib/palace-report/types";
 import { getSiteUrl } from "@/lib/site-url";
 import { siteConfig } from "@/lib/site-config";
-import type { PalaceName } from "@/lib/ziwei/types";
 
 function escapeHtml(text: string): string {
   return text
@@ -22,14 +21,14 @@ function formatReportHtml(text: string): string {
 
 function buildPalaceReportEmailHtml(
   productTitle: string,
-  reports: { palace: PalaceName; text: string }[],
+  reports: { sectionTitle: string; text: string }[],
 ): string {
   const siteUrl = getSiteUrl();
   const sections = reports
     .map(
       (r) => `
       <section style="margin: 24px 0; padding-top: 16px; border-top: 1px solid #E8ECF4;">
-        <h3 style="color: #C9A96E; margin: 0 0 12px;">${escapeHtml(r.palace)}</h3>
+        <h3 style="color: #C9A96E; margin: 0 0 12px;">${escapeHtml(r.sectionTitle)}</h3>
         <div style="line-height: 1.75; color: #0F1A33;">${formatReportHtml(r.text)}</div>
       </section>`,
     )
@@ -59,7 +58,7 @@ function buildPalaceReportEmailHtml(
 
 export async function sendPalaceReportDeliveryEmail(
   purchase: PalaceReportPurchase,
-  reports: { palace: PalaceName; text: string }[],
+  reports: { sectionTitle: string; text: string }[],
 ): Promise<EmailSendResult | { sent: false; reason: "no_customer_email" }> {
   const email = purchase.customerEmail?.trim();
   if (!email) {

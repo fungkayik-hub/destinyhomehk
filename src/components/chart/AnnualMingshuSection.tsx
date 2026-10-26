@@ -10,6 +10,7 @@ import {
 } from "@/lib/palace-report-copy";
 import type { AnnualReportAccess } from "@/lib/palace-report/types";
 import { whatsappUrl } from "@/lib/site-config";
+import MingshuComplianceNotes from "@/components/compliance/MingshuComplianceNotes";
 
 const STRIPE_ENABLED = Boolean(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.trim(),
@@ -209,6 +210,7 @@ export default function AnnualMingshuSection({
       >
         <p className="text-sm text-destiny-purple animate-pulse">{copy.generatingHint}</p>
         <p className="text-xs text-destiny-purple/50 mt-2">{copy.paymentProcessingHint}</p>
+        <MingshuComplianceNotes locale={locale} variant="report" />
       </section>
     );
   }
@@ -255,6 +257,7 @@ export default function AnnualMingshuSection({
             <strong className="text-destiny-purple/60">{copy.notMasterNote}</strong>。
             {copy.masterCtaNote}
           </p>
+          <MingshuComplianceNotes locale={locale} variant="report" />
         </div>
       </section>
     );
@@ -297,7 +300,8 @@ export default function AnnualMingshuSection({
             />
           ))}
         </div>
-        <p className="text-xs text-destiny-purple/45 mt-3 text-center">
+        <MingshuComplianceNotes locale={locale} variant="checkout" />
+        <p className="text-xs text-destiny-purple/40 mt-2 text-center">
           {copy.sectionHint} · {copy.tierStandardTitle} {copy.tierStandardPrice} /{" "}
           {copy.tierFullTitle} {copy.tierFullPrice}
         </p>
