@@ -129,7 +129,7 @@ export function checkoutDescriptionForTier(tier: PalaceReportTier): string {
     case "standard":
       return "完整流年、十二個月流月、實用化解行動";
     case "full":
-      return "流年詳批內容＋流年風水點化＋完整化解清單";
+      return "一生大運、十年大運、流年命運（含十二個月流月）";
   }
 }
 
