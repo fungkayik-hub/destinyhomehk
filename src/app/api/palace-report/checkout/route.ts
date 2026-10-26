@@ -3,26 +3,23 @@ import { buildBirthKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams, birthInputToSearchParams } from "@/lib/chart-parse-params";
 import { clientIp, checkRateLimit } from "@/lib/rate-limit";
 import {
+  checkoutDescriptionForTier,
   getPalaceReportProduct,
   PALACE_REPORT_PRODUCTS,
+  storageSlotForTier,
   type PalaceReportProductKey,
 } from "@/lib/palace-report/config";
-import { getUnlockedPalaces } from "@/lib/palace-report/store";
+import { getAnnualReportAccess } from "@/lib/palace-report/store";
 import { getSiteUrl } from "@/lib/site-url";
 import { getStripe, stripePaymentsEnabled } from "@/lib/stripe/client";
 import { formatPriceHkd } from "@/lib/stripe/plans";
 import { generateChart } from "@/lib/ziwei/iztro-adapter";
-import { PALACES, type BirthInput, type PalaceName } from "@/lib/ziwei/types";
 
 function isProductKey(value: string): value is PalaceReportProductKey {
   return value in PALACE_REPORT_PRODUCTS;
 }
 
-function isPalaceName(value: string): value is PalaceName {
-  return (PALACES as readonly string[]).includes(value);
-}
-
-function parseBirthInput(body: Record<string, unknown>): BirthInput | null {
+function parseBirthInput(body: Record<string, unknown>) {
   const sp: Record<string, string> = {};
   for (const key of [
     "year",
@@ -84,34 +81,11 @@ export async function POST(request: NextRequest) {
   generateChart(birthInput);
   const chartKey = buildBirthKey(birthInput);
   const product = getPalaceReportProduct(productKeyRaw);
+  const access = await getAnnualReportAccess(chartKey);
 
-  let palaces: PalaceName[];
-  if (productKeyRaw === "full") {
-    palaces = [...PALACES];
-  } else {
-    const rawPalaces = input.palaces;
-    if (!Array.isArray(rawPalaces)) {
-      return NextResponse.json({ error: "請選擇宮位" }, { status: 400 });
-    }
-    palaces = rawPalaces
-      .filter((p): p is string => typeof p === "string")
-      .filter(isPalaceName);
-    if (palaces.length !== product.maxPalaces) {
-      return NextResponse.json(
-        { error: `請選擇 ${product.maxPalaces} 個宮位` },
-        { status: 400 },
-      );
-    }
-    if (new Set(palaces).size !== palaces.length) {
-      return NextResponse.json({ error: "宮位不可重複" }, { status: 400 });
-    }
-  }
-
-  const alreadyUnlocked = await getUnlockedPalaces(chartKey);
-  const overlap = palaces.filter((p) => alreadyUnlocked.includes(p));
-  if (overlap.length > 0) {
+  if (access[product.tier]) {
     return NextResponse.json(
-      { error: `以下宮位已解鎖：${overlap.join("、")}` },
+      { error: `你已解鎖「${product.title}」，請刷新頁面查看。` },
       { status: 400 },
     );
   }
@@ -120,8 +94,9 @@ export async function POST(request: NextRequest) {
     input.returnPath === "/en/chart" ? "/en/chart" : "/chart";
   const returnParams = birthInputToSearchParams(birthInput);
   const returnQuery = returnParams.toString();
-  const firstPalace = encodeURIComponent(palaces[0]);
   const siteUrl = getSiteUrl();
+  const slot = storageSlotForTier(product.tier);
+  const year = new Date().getFullYear();
 
   try {
     const session = await stripe.checkout.sessions.create({
@@ -134,8 +109,8 @@ export async function POST(request: NextRequest) {
             currency: "hkd",
             unit_amount: product.priceCents,
             product_data: {
-              name: `${product.title} — Destiny Home`,
-              description: palaces.join("、"),
+              name: `${year} ${product.title} — Destiny Home 網上小師傅命書`,
+              description: checkoutDescriptionForTier(product.tier),
             },
           },
         },
@@ -143,12 +118,13 @@ export async function POST(request: NextRequest) {
       metadata: {
         productType: "palace-report",
         productId: product.id,
+        reportTier: product.tier,
         chartKey,
-        palaces: palaces.join(","),
+        palaces: slot,
         returnQuery,
       },
-      success_url: `${siteUrl}${returnPath}?${returnQuery}&report_session={CHECKOUT_SESSION_ID}&focus=${firstPalace}#analysis`,
-      cancel_url: `${siteUrl}${returnPath}?${returnQuery}&focus=${firstPalace}#analysis`,
+      success_url: `${siteUrl}${returnPath}?${returnQuery}&report_session={CHECKOUT_SESSION_ID}#annual-report`,
+      cancel_url: `${siteUrl}${returnPath}?${returnQuery}#annual-report`,
     });
 
     if (!session.url) {

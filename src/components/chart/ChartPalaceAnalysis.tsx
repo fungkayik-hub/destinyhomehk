@@ -1,20 +1,15 @@
-import { Suspense } from "react";
 import type { ZiWeiChart } from "@/lib/ziwei";
 import type { PalaceName } from "@/lib/ziwei/types";
 import type { PalaceAnalysis, PalaceScore } from "@/lib/ai/types";
 import { getApprenticeCopy } from "@/lib/apprentice-copy";
 import { SCORE_LABEL_BG } from "@/lib/palace-score-styles";
 import { PalaceStars, PalaceTags } from "./layouts/palace-shared";
-import PalaceReportSection from "./PalaceReportSection";
 
 interface Props {
   chart: ZiWeiChart;
   focusPalace: PalaceName;
   focusAnalysis: PalaceAnalysis;
   scoreByPalace: Map<string, PalaceScore>;
-  unlockedPalaces: PalaceName[];
-  reportTexts: Partial<Record<PalaceName, string>>;
-  layoutId: string;
   locale?: "zh" | "en";
 }
 
@@ -23,9 +18,6 @@ export default function ChartPalaceAnalysis({
   focusPalace,
   focusAnalysis,
   scoreByPalace,
-  unlockedPalaces,
-  reportTexts,
-  layoutId,
   locale = "zh",
 }: Props) {
   const copy = getApprenticeCopy(locale);
@@ -93,18 +85,6 @@ export default function ChartPalaceAnalysis({
           {copy.swipeHint}
         </p>
 
-        <Suspense fallback={null}>
-          <PalaceReportSection
-            chart={chart}
-            focusPalace={focusPalace}
-            unlockedPalaces={unlockedPalaces}
-            initialReports={Object.entries(reportTexts)
-              .filter((entry): entry is [PalaceName, string] => Boolean(entry[1]))
-              .map(([palace, text]) => ({ palace, text }))}
-            layout={layoutId}
-            locale={locale}
-          />
-        </Suspense>
       </div>
     </div>
   );

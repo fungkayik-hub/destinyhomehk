@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { ChartInsights } from "@/lib/ai/chart-insights";
 import type { ZiWeiChart } from "@/lib/ziwei";
 import type { ChartPlateType, PalaceName } from "@/lib/ziwei/types";
@@ -18,6 +19,9 @@ import ChartPlatePicker from "./ChartPlatePicker";
 import ChartPlateCompare from "./ChartPlateCompare";
 import ChartDingPanQuiz from "./ChartDingPanQuiz";
 import ChartFiveElements from "./ChartFiveElements";
+import AnnualMingshuSection from "./AnnualMingshuSection";
+import type { AnnualReportAccess } from "@/lib/palace-report/types";
+import type { AnnualReportView } from "@/lib/palace-report/load-reports";
 
 interface Props {
   chart: ZiWeiChart;
@@ -30,8 +34,8 @@ interface Props {
   palaceAnalyses: PalaceAnalysesResponse;
   focusPalace: PalaceName;
   searchParams: Record<string, string | string[] | undefined>;
-  unlockedPalaces: PalaceName[];
-  reportTexts: Partial<Record<PalaceName, string>>;
+  annualAccess: AnnualReportAccess;
+  annualReports: AnnualReportView[];
   locale?: "zh" | "en";
 }
 
@@ -46,8 +50,8 @@ export default function ChartDisplay({
   palaceAnalyses,
   focusPalace,
   searchParams,
-  unlockedPalaces,
-  reportTexts,
+  annualAccess,
+  annualReports,
   locale = "zh",
 }: Props) {
   const waUrl = chartWhatsAppUrl(chart);
@@ -148,15 +152,22 @@ export default function ChartDisplay({
             locale={locale}
           />
 
+          <Suspense fallback={null}>
+            <AnnualMingshuSection
+              chart={chart}
+              initialAccess={annualAccess}
+              initialReports={annualReports}
+              layout={CHART_LAYOUT}
+              locale={locale}
+            />
+          </Suspense>
+
           {focusAnalysis && (
             <ChartPalaceAnalysis
               chart={chart}
               focusPalace={focusPalace}
               focusAnalysis={focusAnalysis}
               scoreByPalace={scoreByPalace}
-              unlockedPalaces={unlockedPalaces}
-              reportTexts={reportTexts}
-              layoutId={CHART_LAYOUT}
               locale={locale}
             />
           )}

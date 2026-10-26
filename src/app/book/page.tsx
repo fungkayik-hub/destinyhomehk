@@ -28,10 +28,10 @@ export default function BookPage() {
             想買網上小師傅命書？
           </p>
           <p className="text-xs text-destiny-purple/65 mb-3 leading-relaxed">
-            師傅面批（全批 $2,000 等）請喺下面預約 + WhatsApp 確認。網上信用卡付款只喺排盤頁，逐宮解鎖詳細命書。
+            師傅面批（全批 $2,000 等）請喺下面預約 + WhatsApp 確認。網上信用卡付款只喺排盤頁：流年詳批 HK$128、全批 HK$688。
           </p>
           <Link href="/chart" className="btn-primary inline-flex text-sm">
-            去排盤 · 解鎖網上小師傅命書
+            去排盤 · 購買流年命書
           </Link>
         </div>
         <p className="max-w-lg mx-auto text-sm text-destiny-purple/70 text-center mb-8 leading-relaxed">

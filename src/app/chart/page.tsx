@@ -15,14 +15,9 @@ import { parseChartPlate, parseFocusPalace } from "@/lib/chart-layout";
 import { logToolUsage } from "@/lib/usage/log";
 import { generateThreePlates } from "@/lib/ziwei/iztro-adapter";
 import { suggestPlateFromBirthTime } from "@/lib/ziwei/zhongzhou-plates";
-import {
-  getReportContentsForChart,
-  getUnlockedPalaces,
-} from "@/lib/palace-report/store";
+import { loadAnnualReportViews } from "@/lib/palace-report/load-reports";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
-import type { PalaceName } from "@/lib/ziwei/types";
-
 export const metadata: Metadata = buildPageMetadata({
   title: "紫微斗數天地人盤排盤 — 免費即時十二宮",
   description:
@@ -78,14 +73,14 @@ export default async function ChartPage({
     ? parseFocusPalace(sp, chart.palaces.find((p) => p.isSoulPalace)?.name ?? "命宮")
     : parseFocusPalace(sp);
 
-  let unlockedPalaces: PalaceName[] = [];
-  let reportTexts: Partial<Record<PalaceName, string>> = {};
+  let annualAccess = { standard: false, full: false };
+  let annualReports: Awaited<ReturnType<typeof loadAnnualReportViews>>["views"] = [];
   let birthKey = "";
   if (parsed.submitted && !parsed.error) {
     birthKey = buildBirthKey(parsed.input);
-    unlockedPalaces = await getUnlockedPalaces(birthKey);
-    const contents = await getReportContentsForChart(birthKey);
-    reportTexts = Object.fromEntries(contents.map((c) => [c.palace, c.text]));
+    const loaded = await loadAnnualReportViews(birthKey);
+    annualAccess = loaded.access;
+    annualReports = loaded.views;
   }
 
   const hasResults = Boolean(chart && palaceScores && palaceAnalyses && threePlates);
@@ -122,8 +117,8 @@ export default async function ChartPage({
               palaceAnalyses={palaceAnalyses!}
               focusPalace={focusPalace}
               searchParams={sp}
-              unlockedPalaces={unlockedPalaces}
-              reportTexts={reportTexts}
+              annualAccess={annualAccess}
+              annualReports={annualReports}
               locale="zh"
             />
           </div>

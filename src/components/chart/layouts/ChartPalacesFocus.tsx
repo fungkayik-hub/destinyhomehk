@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { ChartInsights } from "@/lib/ai/chart-insights";
 import type { ZiWeiChart } from "@/lib/ziwei";
-import type { PalaceName } from "@/lib/ziwei/types";
 import type { PalaceAnalysis, PalaceScore } from "@/lib/ai/types";
 import { buildChartFortuneSummary } from "@/lib/chart-fortune-summary";
 import type { PalaceLayoutProps } from "./palace-shared";
@@ -14,9 +13,6 @@ interface Props extends PalaceLayoutProps {
   insights: ChartInsights;
   scoreByPalace: Map<string, PalaceScore>;
   focusAnalysis: PalaceAnalysis;
-  unlockedPalaces: PalaceName[];
-  reportTexts: Partial<Record<PalaceName, string>>;
-  layoutId: string;
   locale?: "zh" | "en";
 }
 
@@ -28,9 +24,6 @@ export default function ChartPalacesFocus({
   focusPalace,
   focusAnalysis,
   buildFocusHref,
-  unlockedPalaces,
-  reportTexts,
-  layoutId,
   locale = "zh",
 }: Props) {
   const fortuneSummary = buildChartFortuneSummary(
@@ -85,9 +78,6 @@ export default function ChartPalacesFocus({
         focusPalace={focusPalace}
         focusAnalysis={focusAnalysis}
         scoreByPalace={scoreByPalace}
-        unlockedPalaces={unlockedPalaces}
-        reportTexts={reportTexts}
-        layoutId={layoutId}
         locale={locale}
       />
     </div>

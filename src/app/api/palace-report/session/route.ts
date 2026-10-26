@@ -1,7 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  getCachedAnnualReport,
+  type AnnualGenerationTier,
+} from "@/lib/ai/analyze-annual-report";
 import { getCachedPalaceReport } from "@/lib/ai/analyze-palace-report";
 import { buildBirthKey } from "@/lib/chart-key";
 import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
+import {
+  findPalaceReportProduct,
+  isAnnualProduct,
+  isLegacyAnnualProductId,
+  isLegacyAnnualSlot,
+  LEGACY_ANNUAL_SLOTS,
+  storageSlotForTier,
+  tierFromStorageSlot,
+} from "@/lib/palace-report/config";
+import { loadAnnualReportViews } from "@/lib/palace-report/load-reports";
+import type { PalaceReportPurchase } from "@/lib/palace-report/types";
 import {
   createPurchaseFromSession,
   getPurchaseByStripeSessionId,
@@ -12,7 +27,7 @@ import {
 } from "@/lib/palace-report/store";
 import { getStripe } from "@/lib/stripe/client";
 import { generateChart } from "@/lib/ziwei/iztro-adapter";
-import { type BirthInput, type PalaceName } from "@/lib/ziwei/types";
+import { PALACES, type BirthInput, type PalaceName } from "@/lib/ziwei/types";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -40,6 +55,52 @@ function parseBirthInput(body: Record<string, unknown>): BirthInput | null {
   return parsed.input;
 }
 
+function isPalaceName(value: string): value is PalaceName {
+  return (PALACES as readonly string[]).includes(value);
+}
+
+async function buildAnnualReadyResponse(chartKey: string) {
+  const { access, views } = await loadAnnualReportViews(chartKey);
+  return NextResponse.json({
+    status: "ready",
+    chartKey,
+    annualAccess: access,
+    annualReports: views.map((v) => ({ tier: v.id, text: v.text })),
+    unlockedPalaces: await getUnlockedPalaces(chartKey),
+  });
+}
+
+function resolveAnnualGeneration(
+  purchase: PalaceReportPurchase,
+  product: ReturnType<typeof findPalaceReportProduct>,
+): { storageSlot: string; generationTier: AnnualGenerationTier } | null {
+  if (product && isAnnualProduct(product)) {
+    return {
+      storageSlot: storageSlotForTier(product.tier),
+      generationTier: product.tier,
+    };
+  }
+
+  const slot = purchase.palaces[0];
+  if (!slot) return null;
+
+  if (isLegacyAnnualProductId(purchase.productId) || isLegacyAnnualSlot(slot)) {
+    if (slot === LEGACY_ANNUAL_SLOTS.brief) {
+      return { storageSlot: slot, generationTier: "legacyBrief" };
+    }
+    if (slot === LEGACY_ANNUAL_SLOTS.detailed) {
+      return { storageSlot: slot, generationTier: "standard" };
+    }
+  }
+
+  const currentTier = tierFromStorageSlot(slot);
+  if (currentTier) {
+    return { storageSlot: slot, generationTier: currentTier };
+  }
+
+  return null;
+}
+
 export async function GET(request: NextRequest) {
   const sessionId = request.nextUrl.searchParams.get("session_id")?.trim();
   if (!sessionId) {
@@ -58,7 +119,6 @@ export async function GET(request: NextRequest) {
       if (session.payment_status !== "paid") {
         return NextResponse.json({ status: "pending" });
       }
-      // 本機 dev 常未設定 webhook — 付款成功時喺度補記錄購買
       if (session.metadata?.productType === "palace-report") {
         const created = await createPurchaseFromSession(session);
         if (created.ok) {
@@ -86,19 +146,76 @@ export async function GET(request: NextRequest) {
   }
 
   const chartKey = purchase.chartKey;
+  const product = findPalaceReportProduct(purchase.productId);
+
+  const annualGen = resolveAnnualGeneration(purchase, product);
+  if (annualGen) {
+    const existing = await getReportContent(chartKey, annualGen.storageSlot);
+    if (existing) {
+      return buildAnnualReadyResponse(chartKey);
+    }
+
+    const stripe = getStripe();
+    if (!stripe) {
+      return NextResponse.json({ status: "processing", message: "確認付款中…" });
+    }
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const returnQueryRaw = session.metadata?.returnQuery?.trim();
+    if (!returnQueryRaw) {
+      return NextResponse.json({ error: "missing_return_query" }, { status: 500 });
+    }
+
+    const sp = Object.fromEntries(new URLSearchParams(returnQueryRaw));
+    const parsed = birthInputFromSearchParams(sp);
+    if (!parsed.submitted || parsed.error) {
+      return NextResponse.json({ error: "invalid_birth_data" }, { status: 500 });
+    }
+
+    const birthChartKey = buildBirthKey(parsed.input);
+    if (birthChartKey !== chartKey) {
+      return NextResponse.json({ error: "chart_mismatch" }, { status: 500 });
+    }
+
+    const chart = generateChart(parsed.input);
+    const { text, provider } = await getCachedAnnualReport(
+      chartKey,
+      chart,
+      annualGen.generationTier,
+    );
+    const saveTier =
+      annualGen.generationTier === "legacyBrief"
+        ? undefined
+        : annualGen.generationTier;
+    await saveReportContent({
+      chartKey,
+      palace: annualGen.storageSlot,
+      text,
+      provider,
+      tier: saveTier,
+    });
+
+    return buildAnnualReadyResponse(chartKey);
+  }
+
+  // Legacy per-palace purchases
   const existingReports = await getReportContentsForChart(chartKey);
   const existingSet = new Set(existingReports.map((r) => r.palace));
-  const pending = purchase.palaces.filter((p) => !existingSet.has(p));
+  const pending = purchase.palaces.filter(
+    (p) => isPalaceName(p) && !existingSet.has(p),
+  ) as PalaceName[];
 
   if (pending.length === 0) {
     return NextResponse.json({
       status: "ready",
       chartKey,
       unlockedPalaces: await getUnlockedPalaces(chartKey),
-      reports: existingReports.map((r) => ({
-        palace: r.palace,
-        text: r.text,
-      })),
+      reports: existingReports
+        .filter((r) => isPalaceName(r.palace))
+        .map((r) => ({
+          palace: r.palace as PalaceName,
+          text: r.text,
+        })),
     });
   }
 
@@ -131,7 +248,7 @@ export async function GET(request: NextRequest) {
 
   const allReports = await getReportContentsForChart(chartKey);
   const stillPending = purchase.palaces.filter(
-    (p) => !allReports.some((r) => r.palace === p),
+    (p) => isPalaceName(p) && !allReports.some((r) => r.palace === p),
   );
 
   if (stillPending.length > 0) {
@@ -140,7 +257,9 @@ export async function GET(request: NextRequest) {
       message: "網上小師傅整理緊…",
       chartKey,
       unlockedPalaces: await getUnlockedPalaces(chartKey),
-      reports: allReports.map((r) => ({ palace: r.palace, text: r.text })),
+      reports: allReports
+        .filter((r) => isPalaceName(r.palace))
+        .map((r) => ({ palace: r.palace as PalaceName, text: r.text })),
       progress: {
         done: purchase.palaces.length - stillPending.length,
         total: purchase.palaces.length,
@@ -152,12 +271,14 @@ export async function GET(request: NextRequest) {
     status: "ready",
     chartKey,
     unlockedPalaces: await getUnlockedPalaces(chartKey),
-    reports: allReports.map((r) => ({ palace: r.palace, text: r.text })),
+    reports: allReports
+      .filter((r) => isPalaceName(r.palace))
+      .map((r) => ({ palace: r.palace as PalaceName, text: r.text })),
     newlyGenerated: [palace],
   });
 }
 
-/** 已解鎖宮位內容（唔使 session） */
+/** 已解鎖內容（唔使 session） */
 export async function POST(request: NextRequest) {
   let body: unknown;
   try {
@@ -173,13 +294,23 @@ export async function POST(request: NextRequest) {
   }
 
   const chartKey = buildBirthKey(birthInput);
+  const { access, views } = await loadAnnualReportViews(chartKey);
+  const annualReports = views.map((v) => ({ tier: v.id, text: v.text }));
+
   const unlockedPalaces = await getUnlockedPalaces(chartKey);
   const reports: { palace: PalaceName; text: string }[] = [];
-
-  for (const palace of unlockedPalaces) {
-    const content = await getReportContent(chartKey, palace);
-    if (content) reports.push({ palace, text: content.text });
+  const contents = await getReportContentsForChart(chartKey);
+  for (const row of contents) {
+    if (isPalaceName(row.palace)) {
+      reports.push({ palace: row.palace as PalaceName, text: row.text });
+    }
   }
 
-  return NextResponse.json({ chartKey, unlockedPalaces, reports });
+  return NextResponse.json({
+    chartKey,
+    annualAccess: access,
+    annualReports,
+    unlockedPalaces,
+    reports,
+  });
 }
