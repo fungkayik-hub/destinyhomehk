@@ -7,8 +7,11 @@ import {
   getPalaceReportProduct,
   PALACE_REPORT_PRODUCTS,
   storageSlotForTier,
+  STRIPE_STATEMENT_DESCRIPTOR_SUFFIX,
+  stripeCheckoutProductName,
   type PalaceReportProductKey,
 } from "@/lib/palace-report/config";
+import { logWebhookEvent } from "@/lib/stripe/webhook-observability";
 import { getAnnualReportAccess } from "@/lib/palace-report/store";
 import { getSiteUrl } from "@/lib/site-url";
 import { getStripe, stripePaymentsEnabled } from "@/lib/stripe/client";
@@ -96,12 +99,13 @@ export async function POST(request: NextRequest) {
   const returnQuery = returnParams.toString();
   const siteUrl = getSiteUrl();
   const slot = storageSlotForTier(product.tier);
-  const year = new Date().getFullYear();
-
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       payment_method_types: ["card"],
+      payment_intent_data: {
+        statement_descriptor_suffix: STRIPE_STATEMENT_DESCRIPTOR_SUFFIX,
+      },
       line_items: [
         {
           quantity: 1,
@@ -109,7 +113,7 @@ export async function POST(request: NextRequest) {
             currency: "hkd",
             unit_amount: product.priceCents,
             product_data: {
-              name: `${year} ${product.title} — Destiny Home 網上小師傅命書`,
+              name: stripeCheckoutProductName(product.tier),
               description: checkoutDescriptionForTier(product.tier),
             },
           },
@@ -128,15 +132,39 @@ export async function POST(request: NextRequest) {
     });
 
     if (!session.url) {
+      logWebhookEvent({
+        area: "palace_report_session",
+        success: false,
+        reason: "checkout_no_url",
+        detail: { chartKey, productId: product.id },
+      });
       return NextResponse.json({ error: "無法建立付款連結" }, { status: 500 });
     }
+
+    logWebhookEvent({
+      area: "palace_report_session",
+      sessionId: session.id,
+      productType: "palace-report",
+      success: true,
+      reason: "checkout_created",
+      detail: { chartKey, tier: product.tier },
+    });
 
     return NextResponse.json({
       url: session.url,
       amountLabel: formatPriceHkd(product.priceCents),
     });
   } catch (err) {
-    console.error("Palace report checkout failed:", err);
+    logWebhookEvent({
+      area: "palace_report_session",
+      success: false,
+      reason: "checkout_exception",
+      detail: {
+        chartKey,
+        productId: product.id,
+        message: err instanceof Error ? err.message : "unknown",
+      },
+    });
     return NextResponse.json({ error: "付款系統暫時未能使用" }, { status: 500 });
   }
 }

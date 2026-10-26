@@ -4,8 +4,8 @@ export const apprenticeCopy = {
   tagline: "師傅授意 · 免費贈你幾句",
   shortBadge: "小徒弟贈言",
   analysisDisclaimer:
-    "以上為小徒弟按中洲派排盤整理嘅入門參考，僅供參考。",
-  notMasterNote: "非 Sunny 師傅親批",
+    "以上為 AI 協助整理之小徒弟贈言（按中洲派排盤），僅供娛樂及個人參考，",
+  notMasterNote: "非 Sunny 師傅親批，不構成醫療、理財或法律意見",
   dingPanNote: "定盤、大限流年請 WhatsApp 預約師傅",
   swipeHint: "左右滑動揀其他宮位。",
   scoreLegend: "評分僅供入門參考，非師傅親批。",

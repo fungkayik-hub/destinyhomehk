@@ -35,6 +35,7 @@ export default function Footer() {
             <li><Link href="/wan-chai-ziwei" className="hover:text-destiny-gold">灣仔紫微斗數</Link></li>
             <li><Link href="/hong-kong-fortune-telling" className="hover:text-destiny-gold">香港算命師傅</Link></li>
             <li><Link href="/ai-faq" className="hover:text-destiny-gold">AI 算命 FAQ</Link></li>
+            <li><Link href="/privacy" className="hover:text-destiny-gold">私隱與退款</Link></li>
             <li><Link href="/ai-monitoring" className="hover:text-destiny-gold">AI 每月監測清單</Link></li>
             <li><Link href="/about" className="hover:text-destiny-gold">關於師傅</Link></li>
             {academyLinks.slice(0, 3).map((link) => (
@@ -77,8 +78,15 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-white/10 py-4 text-center text-xs text-white/50 px-4">
-        © {new Date().getFullYear()} destinyhomehk · {siteConfig.school}
+      <div className="border-t border-white/10 py-4 text-center text-xs text-white/50 px-4 space-y-1">
+        <p>
+          網上命書為 AI 協助整理，非師傅親批；詳見{" "}
+          <Link href="/privacy" className="hover:text-destiny-gold underline-offset-2 hover:underline">
+            私隱與退款
+          </Link>
+          。
+        </p>
+        <p>© {new Date().getFullYear()} destinyhomehk · {siteConfig.school}</p>
       </div>
     </footer>
   );
