@@ -1,3 +1,4 @@
+import type { PalaceReportTier } from "@/lib/palace-report/config";
 import type { PalaceName } from "@/lib/ziwei/types";
 
 export interface PalaceReportPurchase {
@@ -5,18 +6,22 @@ export interface PalaceReportPurchase {
   chartKey: string;
   stripeSessionId: string;
   productId: string;
-  palaces: PalaceName[];
+  /** Legacy per-palace unlocks; annual tiers use storage slots in this array. */
+  palaces: string[];
   amountPaidCents: number;
   customerEmail?: string;
   createdAt: string;
+  tier?: PalaceReportTier;
 }
 
 export interface PalaceReportContent {
   chartKey: string;
-  palace: PalaceName;
+  /** Palace name or annual report storage slot. */
+  palace: string;
   text: string;
   provider: string;
   generatedAt: string;
+  tier?: PalaceReportTier;
 }
 
 export type CreatePurchaseResult =
@@ -28,7 +33,13 @@ export type CreatePurchaseResult =
 
 export interface SaveReportContentInput {
   chartKey: string;
-  palace: PalaceName;
+  palace: string;
   text: string;
   provider: string;
+  tier?: PalaceReportTier;
+}
+
+export interface AnnualReportAccess {
+  brief: boolean;
+  detailed: boolean;
 }

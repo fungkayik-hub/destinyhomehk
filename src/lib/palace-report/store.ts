@@ -3,13 +3,20 @@ import { promises as fs } from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
 import type Stripe from "stripe";
-import { findPalaceReportProduct } from "@/lib/palace-report/config";
+import {
+  findPalaceReportProduct,
+  isAnnualProduct,
+  storageSlotForTier,
+  tierFromStorageSlot,
+} from "@/lib/palace-report/config";
 import type {
+  AnnualReportAccess,
   CreatePurchaseResult,
   PalaceReportContent,
   PalaceReportPurchase,
   SaveReportContentInput,
 } from "@/lib/palace-report/types";
+import type { PalaceReportTier } from "@/lib/palace-report/config";
 import { PALACES, type PalaceName } from "@/lib/ziwei/types";
 
 const DATA_FILE = path.join(process.cwd(), "data", "palace-reports.json");
@@ -49,9 +56,21 @@ function rowToPurchase(row: {
   customer_email: string | null;
   created_at: string | Date;
 }): PalaceReportPurchase {
-  const palaces = Array.isArray(row.palaces)
-    ? row.palaces.filter(isPalaceName)
-    : (parsePalaces(row.palaces) ?? []);
+  const rawList = Array.isArray(row.palaces)
+    ? row.palaces
+    : row.palaces.split(",").map((s) => s.trim()).filter(Boolean);
+
+  const annualSlots = rawList.filter((s) => tierFromStorageSlot(s));
+  const palaceNames = rawList.filter(isPalaceName);
+  const palaces = annualSlots.length > 0 ? annualSlots : palaceNames;
+
+  const product = findPalaceReportProduct(row.product_id);
+  const tier =
+    product && isAnnualProduct(product)
+      ? product.tier
+      : annualSlots[0]
+        ? tierFromStorageSlot(annualSlots[0]) ?? undefined
+        : undefined;
 
   return {
     id: row.id,
@@ -65,6 +84,7 @@ function rowToPurchase(row: {
       row.created_at instanceof Date
         ? row.created_at.toISOString()
         : String(row.created_at),
+    tier,
   };
 }
 
@@ -77,7 +97,8 @@ function rowToContent(row: {
 }): PalaceReportContent {
   return {
     chartKey: row.chart_key,
-    palace: row.palace as PalaceName,
+    palace: row.palace,
+    tier: tierFromStorageSlot(row.palace) ?? undefined,
     text: row.text,
     provider: row.provider,
     generatedAt:
@@ -167,7 +188,7 @@ export async function createPurchaseFromSession(
   const productId = metadata.productId?.trim();
   const palacesRaw = metadata.palaces?.trim();
 
-  if (!chartKey || !productId || !palacesRaw) {
+  if (!chartKey || !productId) {
     return { ok: false, error: "missing_metadata" };
   }
 
@@ -176,9 +197,21 @@ export async function createPurchaseFromSession(
     return { ok: false, error: "invalid_product" };
   }
 
-  const palaces = parsePalaces(palacesRaw);
-  if (!palaces || palaces.length === 0 || palaces.length > product.maxPalaces) {
-    return { ok: false, error: "invalid_palaces" };
+  let palaces: string[];
+  let tier: PalaceReportTier | undefined;
+
+  if (isAnnualProduct(product)) {
+    tier = product.tier;
+    palaces = [storageSlotForTier(tier)];
+  } else {
+    if (!palacesRaw) {
+      return { ok: false, error: "missing_metadata" };
+    }
+    const parsed = parsePalaces(palacesRaw);
+    if (!parsed || parsed.length === 0 || parsed.length > product.maxPalaces) {
+      return { ok: false, error: "invalid_palaces" };
+    }
+    palaces = parsed;
   }
 
   const purchase: PalaceReportPurchase = {
@@ -187,6 +220,7 @@ export async function createPurchaseFromSession(
     stripeSessionId: session.id,
     productId,
     palaces,
+    tier,
     amountPaidCents: session.amount_total ?? product.priceCents,
     customerEmail:
       session.customer_details?.email?.trim() ||
@@ -240,6 +274,38 @@ export async function createPurchaseFromSession(
   }
 }
 
+export async function getAnnualReportAccess(
+  chartKey: string,
+): Promise<AnnualReportAccess> {
+  const access: AnnualReportAccess = { brief: false, detailed: false };
+
+  if (hasPostgres()) {
+    await ensurePostgresTables();
+    const { rows } = await sql<{ palaces: string }>`
+      SELECT palaces FROM palace_report_purchases
+      WHERE chart_key = ${chartKey}
+    `;
+    for (const row of rows) {
+      const slots = row.palaces.split(",").map((s) => s.trim());
+      for (const slot of slots) {
+        const t = tierFromStorageSlot(slot);
+        if (t) access[t] = true;
+      }
+    }
+    return access;
+  }
+
+  const store = await ensureJsonStore();
+  for (const purchase of store.purchases) {
+    if (purchase.chartKey !== chartKey) continue;
+    for (const slot of purchase.palaces) {
+      const t = tierFromStorageSlot(slot);
+      if (t) access[t] = true;
+    }
+  }
+  return access;
+}
+
 export async function getUnlockedPalaces(chartKey: string): Promise<PalaceName[]> {
   if (hasPostgres()) {
     await ensurePostgresTables();
@@ -249,9 +315,11 @@ export async function getUnlockedPalaces(chartKey: string): Promise<PalaceName[]
     `;
     const unlocked = new Set<PalaceName>();
     for (const row of rows) {
-      const parsed = parsePalaces(row.palaces);
-      if (!parsed) continue;
-      for (const palace of parsed) unlocked.add(palace);
+      const names = row.palaces
+        .split(",")
+        .map((s) => s.trim())
+        .filter(isPalaceName);
+      for (const palace of names) unlocked.add(palace);
     }
     return [...unlocked];
   }
@@ -261,15 +329,23 @@ export async function getUnlockedPalaces(chartKey: string): Promise<PalaceName[]
   for (const purchase of store.purchases) {
     if (purchase.chartKey !== chartKey) continue;
     for (const palace of purchase.palaces) {
-      unlocked.add(palace);
+      if (isPalaceName(palace)) unlocked.add(palace);
     }
   }
   return [...unlocked];
 }
 
+export async function getAnnualReportContent(
+  chartKey: string,
+  tier: PalaceReportTier,
+): Promise<PalaceReportContent | null> {
+  const slot = storageSlotForTier(tier);
+  return getReportContent(chartKey, slot);
+}
+
 export async function getReportContent(
   chartKey: string,
-  palace: PalaceName,
+  palace: string,
 ): Promise<PalaceReportContent | null> {
   if (hasPostgres()) {
     await ensurePostgresTables();
@@ -316,6 +392,7 @@ export async function saveReportContent(
     text: input.text,
     provider: input.provider,
     generatedAt: new Date().toISOString(),
+    tier: input.tier ?? tierFromStorageSlot(input.palace) ?? undefined,
   };
 
   if (hasPostgres()) {

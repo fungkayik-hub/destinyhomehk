@@ -12,14 +12,13 @@ import { logToolUsage } from "@/lib/usage/log";
 import { generateThreePlates } from "@/lib/ziwei/iztro-adapter";
 import { suggestPlateFromBirthTime } from "@/lib/ziwei/zhongzhou-plates";
 import ToolUsageBeacon from "@/components/ToolUsageBeacon";
+import type { PalaceReportTier } from "@/lib/palace-report/config";
 import {
-  getReportContentsForChart,
-  getUnlockedPalaces,
+  getAnnualReportAccess,
+  getAnnualReportContent,
 } from "@/lib/palace-report/store";
 import { siteImages } from "@/lib/site-images";
 import { getSiteUrl } from "@/lib/site-url";
-import type { PalaceName } from "@/lib/ziwei/types";
-
 export const metadata: Metadata = {
   title: "Free Zi Wei Chart | True Solar Time",
   description:
@@ -76,14 +75,17 @@ export default async function EnChartPage({
     ? parseFocusPalace(sp, chart.palaces.find((p) => p.isSoulPalace)?.name ?? "命宮")
     : parseFocusPalace(sp);
 
-  let unlockedPalaces: PalaceName[] = [];
-  let reportTexts: Partial<Record<PalaceName, string>> = {};
+  let annualAccess = { brief: false, detailed: false };
+  let annualReports: { tier: PalaceReportTier; text: string }[] = [];
   let birthKey = "";
   if (parsed.submitted && !parsed.error) {
     birthKey = buildBirthKey(parsed.input);
-    unlockedPalaces = await getUnlockedPalaces(birthKey);
-    const contents = await getReportContentsForChart(birthKey);
-    reportTexts = Object.fromEntries(contents.map((c) => [c.palace, c.text]));
+    annualAccess = await getAnnualReportAccess(birthKey);
+    for (const tier of ["brief", "detailed"] as PalaceReportTier[]) {
+      if (!annualAccess[tier]) continue;
+      const content = await getAnnualReportContent(birthKey, tier);
+      if (content) annualReports.push({ tier, text: content.text });
+    }
   }
 
   const hasResults = Boolean(chart && palaceScores && palaceAnalyses && threePlates);
@@ -122,8 +124,8 @@ export default async function EnChartPage({
               palaceAnalyses={palaceAnalyses!}
               focusPalace={focusPalace}
               searchParams={sp}
-              unlockedPalaces={unlockedPalaces}
-              reportTexts={reportTexts}
+              annualAccess={annualAccess}
+              annualReports={annualReports}
               locale="en"
             />
           </div>
