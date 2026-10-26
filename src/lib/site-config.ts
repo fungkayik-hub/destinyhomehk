@@ -343,26 +343,35 @@ export const services = [
   },
 ];
 
-/** 首頁「服務項目」第一格 — 最多 9 格（3×3）；完整列表見 `services`（預約／內頁仍可用） */
+/** 首頁「服務項目」格仔 — 最多 9 格（3×3）；完整列表見 `services`（預約／內頁仍可用） */
 export const homepageServices = services.filter(
   (s) => s.title !== "流年單項／問事",
 );
 
-/** 首頁服務項目 — 第二行數碼命書（排盤頁解鎖） */
+/** 首頁服務區塊標題（數碼命書置頂、師傅服務置底） */
+export const homepageServicesSection = {
+  digitalPanelTitle: "網上命書 · 即時解鎖",
+  masterServicesTitle: "師傅親批及其他服務",
+} as const;
+
+/** 首頁服務項目 — Featured 數碼命書（排盤頁解鎖） */
 export type HomepageDigitalService = {
   title: string;
   price: string;
   bullets: readonly string[];
   href: string;
   cta: string;
-  imageKey:
-    | "annualReading"
-    | "fullReading";
+  imageKey: "annualReading" | "fullReading";
+  /** 卡片標語（例如重點推介） */
+  tag?: string;
+  /** 圖片角標（例如最完整） */
+  ribbon?: string;
 };
 
 export const homepageDigitalServices: readonly HomepageDigitalService[] = [
   {
-    title: "流年詳批",
+    title: "2027 流年詳批",
+    tag: "重點推介 · 新一年運勢",
     price: "HK$128",
     bullets: ["完整流年詳批", "十二個月流月", "實用化解"],
     href: "/chart#annual-report",
@@ -371,6 +380,7 @@ export const homepageDigitalServices: readonly HomepageDigitalService[] = [
   },
   {
     title: "全批",
+    ribbon: "最完整",
     price: "HK$688",
     bullets: ["一生大運", "十年大運", "流年命運"],
     href: "/chart#annual-report",
@@ -381,7 +391,8 @@ export const homepageDigitalServices: readonly HomepageDigitalService[] = [
 
 export const homepageDigitalServicesEn: readonly HomepageDigitalService[] = [
   {
-    title: "Annual detailed",
+    title: "2027 Annual detailed",
+    tag: "Featured · New year outlook",
     price: "HK$128",
     bullets: ["Full annual write-up", "12 monthly forecasts", "Practical remedies"],
     href: "/en/chart#annual-report",
@@ -390,6 +401,7 @@ export const homepageDigitalServicesEn: readonly HomepageDigitalService[] = [
   },
   {
     title: "Full tier",
+    ribbon: "Most complete",
     price: "HK$688",
     bullets: ["Life overview", "Decade luck cycles", "Annual destiny & months"],
     href: "/en/chart#annual-report",
