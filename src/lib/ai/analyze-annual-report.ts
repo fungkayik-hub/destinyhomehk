@@ -37,7 +37,7 @@ function tierInstructions(tier: AnnualGenerationTier, year: number): string {
   if (tier === "standard") {
     return `【任務 — ${year} 流年詳批（HK$128 檔）】
 - 完整流年分析：主題、機遇、壓力位、與大限／命宮如何呼應
-- **必含十二個月流月**：每月一段，格式「農曆X月 — 主題：…；宜：…；忌：…」
+- **必含十二個月流月**：每月一段，格式「農曆X月 — 主題：…；宜：…；忌：…」；十二個月主題必須互相區分
 - **必含 3–5 條實用化解／加強行動**：行為、時機、溝通、節奏調整
 - 字數約 1500–3500 字
 - **禁止**：獨立完整「風水佈局」章節或家居方位佈局清單
@@ -45,9 +45,13 @@ function tierInstructions(tier: AnnualGenerationTier, year: number): string {
   }
 
   return `【任務 — ${year} 流年全批（HK$688 檔）】
-- **必須包含流年詳批（HK$128）全部要素**：完整流年、十二個月流月、3–5 條實用化解行動
-- **另加【流年風水點化】**：坐向、床頭、財位、門路／動線等實用提示
-- **另加【完整化解清單】**：比詳批更長（8–12 條），涵蓋行為、時機、溝通、簡易空間整理
+必須用清楚章節標題，三層缺一不可：
+
+1. **【一生大運】** — 本命層：命盤格局、命宮主星與三方四正、身宮（如有）、一生宜忌主軸；唔需要逐宮長文
+2. **【十年大運】** — 大限層：必引用下方「十年大限」程式資料，列出各段虛歲大限並附可讀註解；標明▶ 而家行緊邊段
+3. **【流年命運】** — 當年層：${year} 年流年總述；**必含十二個月流月**（格式「農曆X月 — 主題：…；宜：…；忌：…」），十二個月主題必須互相區分；**必含 3–5 條實用化解／加強行動**
+
+- 風水佈局章節可選，唔係本檔定義重點；唔好將全批等同「詳批加風水」
 - 字數約 3000–7000 字
 - 可文末一句：想師傅親批面談可 WhatsApp 預約（唔開新收費項目）
 - 只輸出 JSON：{"year":${year},"tier":"full","text":"..."}`;
@@ -103,11 +107,54 @@ const MONTHS_ZH = [
   "七月", "八月", "九月", "十月", "十一月", "十二月",
 ];
 
+const FALLBACK_MONTH_THEMES = [
+  "開局定調",
+  "人際拓展",
+  "理財修整",
+  "職涯節奏",
+  "感情溝通",
+  "健康作息",
+  "進修充電",
+  "合作簽約",
+  "守成鞏固",
+  "變動應對",
+  "收攏資源",
+  "總結鋪排",
+] as const;
+
 function monthLines(): string[] {
   return MONTHS_ZH.map(
     (m, i) =>
-      `${m} — 主題：${i < 4 ? "開局佈局" : i < 8 ? "推進與調整" : "收尾與總結"}；宜：按計劃小步前進、溝通確認；忌：情緒化決策、過度承諾。`,
+      `${m} — 主題：${FALLBACK_MONTH_THEMES[i]}；宜：按計劃小步前進、溝通確認；忌：情緒化決策、過度承諾。`,
   );
+}
+
+/** 流月主題唔可以全部雷同（standard / full 品質門檻） */
+export function monthlyThemesDistinctEnough(text: string): boolean {
+  const themes: string[] = [];
+  for (const m of MONTHS_ZH) {
+    const re = new RegExp(`${m}[^\\n]*主題[：:]([^；;\\n]+)`);
+    const match = text.match(re);
+    if (match?.[1]) themes.push(match[1].trim());
+  }
+  if (themes.length < 12) return false;
+  return new Set(themes).size >= 8;
+}
+
+export function fullTierStructureOk(text: string): boolean {
+  return (
+    /【一生大運】/.test(text) &&
+    /【十年大運】/.test(text) &&
+    /【流年命運】/.test(text)
+  );
+}
+
+function tierContentQualityOk(text: string, tier: AnnualGenerationTier): boolean {
+  if (tier === "standard") return monthlyThemesDistinctEnough(text);
+  if (tier === "full") {
+    return fullTierStructureOk(text) && monthlyThemesDistinctEnough(text);
+  }
+  return true;
 }
 
 function fallbackAnnualReport(
@@ -171,25 +218,51 @@ function fallbackAnnualReport(
     ].join("\n");
   }
 
+  const soul = chart.palaces.find((p) => p.isSoulPalace);
+  const soulStars =
+    soul?.stars
+      .filter((s) => s.type !== "minor")
+      .map((s) => s.name)
+      .join("、") || "空宮";
+  const bodyPalace = chart.palaces.find((p) => p.isBodyPalace)?.name;
+
+  const decadalLines =
+    chart.decadalTimeline?.map((d) => {
+      const mark =
+        decadal && d.palace === decadal.palace ? "▶ 而家 " : "";
+      return `${mark}${d.ageStart}–${d.ageEnd} 虛歲走【${d.palace}】：配合本命此宮主題，留意該十年嘅取捨同人際節奏。`;
+    }) ?? ["排盤未載大限資料，請以命宮同流年層為主。"];
+
   return [
-    ...standardBody,
+    header,
     "",
-    "【流年風水點化】",
-    "• 坐向：書桌宜背靠實牆，面向開闊位。",
-    "• 床頭：靠實牆，避免腳直對門。",
-    "• 財位：入口對角線附近保持明亮整潔。",
-    "• 門路：門口勿阻塞，動線順暢。",
+    "【一生大運】",
+    `命宮（${soulStars}）為一生格局核心；宜先守基本盤、再按大限節奏取捨。`,
+    bodyPalace ? `身宮在【${bodyPalace}】，後天際遇同決策風格會偏向此宮主題。` : "",
+    "一生宜：定方向、累積專長、維持可持續人際。忌：賭一把式轉向、長期透支健康。",
     "",
-    "【完整化解清單】",
-    "5. 大決定前留 48 小時冷靜期。",
-    "6. 每月整理桌面同電子檔。",
-    "7. 與家人固定短會同步行程。",
-    "8. 壓力高時先處理睡眠同飲食。",
-    "9. 重要文件分類存放。",
-    "10. 想針對家居方位深入佈局，可 WhatsApp 預約 Sunny 師傅面談（另計）。",
+    "【十年大運】",
+    ...decadalLines,
     "",
-    "以上為 AI 參考整理，非師傅親批。",
-  ].join("\n");
+    "【流年命運】",
+    intro,
+    "",
+    "【流年總述】",
+    `${year} 年對你係整理方向同取捨嘅年份；宜先守再攻，配合而家大限主題。`,
+    "",
+    "【十二個月流月】",
+    ...monthLines(),
+    "",
+    "【實用化解／加強行動】",
+    "1. 每季一次檢視目標，刪減唔再服務你嘅承諾。",
+    "2. 重要對話選精神好嘅日子，先寫三點要講嘅重點。",
+    "3. 財務大支出留緩衝期，唔好臨急簽約。",
+    "4. 固定每周兩次運動或散步，當作「重置鍵」。",
+    "",
+    "以上為 AI 參考整理，非師傅親批；想定盤同深入大限流年可 WhatsApp 預約師傅。",
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 function parseAnnualReportJson(
@@ -249,7 +322,7 @@ export async function analyzeAnnualReport(
     );
 
     const parsed = parseAnnualReportJson(text, tier, year);
-    if (parsed && isLengthOk(parsed, tier)) {
+    if (parsed && isLengthOk(parsed, tier) && tierContentQualityOk(parsed, tier)) {
       return { text: parsed, provider };
     }
     return { text: fallback, provider: "fallback" };
@@ -266,7 +339,7 @@ export async function getCachedAnnualReport(
   const year = forecastYear();
   return unstable_cache(
     () => analyzeAnnualReport(chart, tier),
-    ["annual-report-v3", chartKey, tier, String(year)],
+    ["annual-report-v4", chartKey, tier, String(year)],
     { revalidate: 86400 },
   )();
 }
