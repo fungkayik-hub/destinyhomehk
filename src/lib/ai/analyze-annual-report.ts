@@ -1,4 +1,10 @@
 import { unstable_cache } from "next/cache";
+import {
+  buildChartAwareMonthLines,
+  isAnnualMonthlyContentAcceptable,
+  isKnownGenericMonthlyTemplate,
+  MONTHS_ZH,
+} from "./annual-report-monthly";
 import { chartToContext } from "./chart-context";
 import {
   computeChartInsights,
@@ -15,14 +21,20 @@ import type { ZiWeiChart } from "@/lib/ziwei/types";
 export type AnnualGenerationTier = PalaceReportTier | "legacyBrief";
 
 const STANDARD_MIN = 1200;
-const STANDARD_MAX = 4500;
 const FULL_MIN = 2500;
-const FULL_MAX = 9000;
 const LEGACY_BRIEF_MIN = 350;
 const LEGACY_BRIEF_MAX = 900;
 
+/** Soft upper bounds — only logged; do not reject AI text solely for length. */
+const STANDARD_SOFT_MAX = 12_000;
+const FULL_SOFT_MAX = 16_000;
+
 function forecastYear(): number {
   return new Date().getFullYear();
+}
+
+function tierRequiresTwelveMonths(tier: AnnualGenerationTier): boolean {
+  return tier === "standard" || tier === "full";
 }
 
 function tierInstructions(tier: AnnualGenerationTier, year: number): string {
@@ -38,6 +50,7 @@ function tierInstructions(tier: AnnualGenerationTier, year: number): string {
     return `【任務 — ${year} 流年詳批（HK$128 檔）】
 - 完整流年分析：主題、機遇、壓力位、與大限／命宮如何呼應
 - **必含十二個月流月**：每月一段，格式「農曆X月 — 主題：…；宜：…；忌：…」
+- **十二個月宜、忌必須逐月不同**，要扣大限、流年、四化、流月宮位（唔可以十二個月複製同一句）
 - **必含 3–5 條實用化解／加強行動**：行為、時機、溝通、節奏調整
 - 字數約 1500–3500 字
 - **禁止**：獨立完整「風水佈局」章節或家居方位佈局清單
@@ -46,6 +59,7 @@ function tierInstructions(tier: AnnualGenerationTier, year: number): string {
 
   return `【任務 — ${year} 流年全批（HK$688 檔）】
 - **必須包含流年詳批（HK$128）全部要素**：完整流年、十二個月流月、3–5 條實用化解行動
+- **十二個月宜、忌必須逐月不同**，要扣大限、流年、四化、流月宮位
 - **另加【流年風水點化】**：坐向、床頭、財位、門路／動線等實用提示
 - **另加【完整化解清單】**：比詳批更長（8–12 條），涵蓋行為、時機、溝通、簡易空間整理
 - 字數約 3000–7000 字
@@ -87,6 +101,9 @@ function buildAnnualReportPrompt(
     currentDecadal
       ? `目前大限：${currentDecadal.ageStart}–${currentDecadal.ageEnd} 虛歲走【${currentDecadal.palace}】。`
       : "",
+    tierRequiresTwelveMonths(tier)
+      ? "流月表要寫足農曆正月至十二月；每月宜忌唔可以重複上一個月。"
+      : "",
     "",
     formatDecadalBlock(chart),
     "",
@@ -96,18 +113,6 @@ function buildAnnualReportPrompt(
   ]
     .filter(Boolean)
     .join("\n");
-}
-
-const MONTHS_ZH = [
-  "正月", "二月", "三月", "四月", "五月", "六月",
-  "七月", "八月", "九月", "十月", "十一月", "十二月",
-];
-
-function monthLines(): string[] {
-  return MONTHS_ZH.map(
-    (m, i) =>
-      `${m} — 主題：${i < 4 ? "開局佈局" : i < 8 ? "推進與調整" : "收尾與總結"}；宜：按計劃小步前進、溝通確認；忌：情緒化決策、過度承諾。`,
-  );
 }
 
 function fallbackAnnualReport(
@@ -145,16 +150,26 @@ function fallbackAnnualReport(
     ].join("\n");
   }
 
+  const monthLines = buildChartAwareMonthLines(chart, year);
+  const insights = computeChartInsights(chart);
+  const patternNote =
+    insights.patterns.length > 0
+      ? `命盤格局參考：${insights.patterns
+          .slice(0, 2)
+          .map((p) => p.slug)
+          .join("、")}。`
+      : "宜配合三方四正同大限一齊睇流月。";
+
   const standardBody = [
     header,
     "",
     intro,
     "",
     "【流年總述】",
-    `${year} 年對你係整理方向同取捨嘅年份；宜先守再攻。`,
+    `${year} 年對你係整理方向同取捨嘅年份；${patternNote}宜先守再攻。`,
     "",
     "【十二個月流月】",
-    ...monthLines(),
+    ...monthLines,
     "",
     "【實用化解／加強行動】",
     "1. 每季一次檢視目標，刪減唔再服務你嘅承諾。",
@@ -192,19 +207,30 @@ function fallbackAnnualReport(
   ].join("\n");
 }
 
-function parseAnnualReportJson(
+export function parseAnnualReportJson(
   raw: string,
   tier: AnnualGenerationTier,
   year: number,
 ): string | null {
   const trimmed = raw.trim();
-  const jsonText = trimmed.startsWith("{")
-    ? trimmed
-    : trimmed.match(/\{[\s\S]*\}/)?.[0]?.trim() ?? null;
+  const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/);
+  const candidate = fenced?.[1]?.trim() ?? trimmed;
+  const jsonText = candidate.startsWith("{")
+    ? candidate
+    : candidate.match(/\{[\s\S]*\}/)?.[0]?.trim() ?? null;
   if (!jsonText) return null;
   try {
-    const obj = JSON.parse(jsonText) as { tier?: string; year?: number; text?: string };
-    if (obj.tier !== tier || obj.year !== year || typeof obj.text !== "string") return null;
+    const obj = JSON.parse(jsonText) as {
+      tier?: string;
+      year?: number | string;
+      text?: string;
+    };
+    const objYear =
+      typeof obj.year === "number" ? obj.year : Number.parseInt(String(obj.year), 10);
+    if (!Number.isFinite(objYear) || objYear !== year) return null;
+    const objTier = typeof obj.tier === "string" ? obj.tier.trim() : tier;
+    if (objTier !== tier) return null;
+    if (typeof obj.text !== "string") return null;
     return obj.text.trim();
   } catch {
     return null;
@@ -213,15 +239,90 @@ function parseAnnualReportJson(
 
 function isLengthOk(text: string, tier: AnnualGenerationTier): boolean {
   const len = text.trim().length;
-  if (tier === "legacyBrief") return len >= LEGACY_BRIEF_MIN && len <= LEGACY_BRIEF_MAX;
-  if (tier === "standard") return len >= STANDARD_MIN && len <= STANDARD_MAX;
-  return len >= FULL_MIN && len <= FULL_MAX;
+  if (tier === "legacyBrief") {
+    return len >= LEGACY_BRIEF_MIN && len <= LEGACY_BRIEF_MAX;
+  }
+  if (tier === "standard") {
+    return len >= STANDARD_MIN && len <= STANDARD_SOFT_MAX;
+  }
+  return len >= FULL_MIN && len <= FULL_SOFT_MAX;
+}
+
+function isAnnualReportTextAcceptable(
+  text: string,
+  tier: AnnualGenerationTier,
+): boolean {
+  if (!isLengthOk(text, tier)) return false;
+  return isAnnualMonthlyContentAcceptable(text, tierRequiresTwelveMonths(tier));
 }
 
 function maxTokensForTier(tier: AnnualGenerationTier): number {
   if (tier === "legacyBrief") return 1200;
   if (tier === "standard") return 4000;
   return 6500;
+}
+
+function logAnnualFallback(
+  reason: string,
+  detail: Record<string, unknown>,
+): void {
+  console.warn("[annual-report] using fallback:", reason, detail);
+}
+
+/** Stored reports with the old template or duplicate 宜忌 should regenerate. */
+export function shouldRegenerateStoredAnnualReport(
+  text: string,
+  tier: AnnualGenerationTier,
+): boolean {
+  if (!tierRequiresTwelveMonths(tier)) return false;
+  return (
+    isKnownGenericMonthlyTemplate(text) ||
+    !isAnnualMonthlyContentAcceptable(text, true)
+  );
+}
+
+async function generateAnnualReportFromAi(
+  chart: ZiWeiChart,
+  tier: AnnualGenerationTier,
+  year: number,
+): Promise<{ text: string; provider: "openai" | "azure" } | null> {
+  const insights = computeChartInsights(chart);
+  const userPrompt = buildAnnualReportPrompt(chart, insights, tier, year);
+  const messages = [
+    { role: "system" as const, content: buildAnnualReportSystem(tier, year) },
+    { role: "user" as const, content: userPrompt },
+  ];
+
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const { text, provider } = await chatComplete(
+      messages,
+      maxTokensForTier(tier),
+      { temperature: attempt === 0 ? 0.72 : 0.55 },
+    );
+
+    const parsed = parseAnnualReportJson(text, tier, year);
+    if (parsed && isAnnualReportTextAcceptable(parsed, tier)) {
+      return { text: parsed, provider };
+    }
+
+    logAnnualFallback("ai_output_rejected", {
+      tier,
+      year,
+      attempt,
+      rawLength: text.length,
+      parsedLength: parsed?.length ?? 0,
+      parsedOk: Boolean(parsed),
+      lengthOk: parsed ? isLengthOk(parsed, tier) : false,
+      monthlyOk: parsed
+        ? isAnnualMonthlyContentAcceptable(
+            parsed,
+            tierRequiresTwelveMonths(tier),
+          )
+        : false,
+    });
+  }
+
+  return null;
 }
 
 export async function analyzeAnnualReport(
@@ -232,28 +333,22 @@ export async function analyzeAnnualReport(
   const fallback = fallbackAnnualReport(chart, tier, year);
 
   if (!hasAiConfigured()) {
+    logAnnualFallback("no_ai_configured", { tier, year });
     return { text: fallback, provider: "fallback" };
   }
 
-  const insights = computeChartInsights(chart);
-  const userPrompt = buildAnnualReportPrompt(chart, insights, tier, year);
-
   try {
-    const { text, provider } = await chatComplete(
-      [
-        { role: "system", content: buildAnnualReportSystem(tier, year) },
-        { role: "user", content: userPrompt },
-      ],
-      maxTokensForTier(tier),
-      { temperature: 0.72 },
-    );
-
-    const parsed = parseAnnualReportJson(text, tier, year);
-    if (parsed && isLengthOk(parsed, tier)) {
-      return { text: parsed, provider };
+    const aiResult = await generateAnnualReportFromAi(chart, tier, year);
+    if (aiResult) {
+      return aiResult;
     }
     return { text: fallback, provider: "fallback" };
-  } catch {
+  } catch (err) {
+    logAnnualFallback("ai_exception", {
+      tier,
+      year,
+      message: err instanceof Error ? err.message : String(err),
+    });
     return { text: fallback, provider: "fallback" };
   }
 }
@@ -266,7 +361,10 @@ export async function getCachedAnnualReport(
   const year = forecastYear();
   return unstable_cache(
     () => analyzeAnnualReport(chart, tier),
-    ["annual-report-v3", chartKey, tier, String(year)],
+    ["annual-report-v4", chartKey, tier, String(year)],
     { revalidate: 86400 },
   )();
 }
+
+/** @internal re-export for scripts */
+export { MONTHS_ZH };
