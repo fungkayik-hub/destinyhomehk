@@ -6,6 +6,10 @@ import {
   PALACE_PROMPT_RULES,
 } from "./palace-prompt-rules";
 import type { PalaceAnalysis, PalaceScore } from "./types";
+import {
+  FREE_PALACE_COPY_HARD_MIN,
+  finalizeFreePalaceCopy,
+} from "./free-palace-copy-limits";
 import { scoreToLabel } from "./palace-scores";
 import {
   lookupStarPalaceMeaning,
@@ -107,27 +111,8 @@ const STAR_LIFE_SCENES: Record<
   },
 };
 
-const MINOR_IN_PALACE: Record<string, string> = {
-  擎羊: "有把刀口 — 平時溫厚，觸及底線會好硬、唔妥協",
-  陀羅: "諗嘢會反覆推敲，慢但細密",
-  火星: "行動快、火氣來得快去得快",
-  鈴星: "內心韌性強，悶住會爆",
-  文昌: "書面、表達、學習方面有加分",
-  文曲: "口才好、談判同寫作有靈氣",
-  左輔: "貴人同拍檔運，愈合作愈順",
-  右弼: "人緣助力，識得借力",
-  天魁: "長輩、上司緣，易得指點",
-  天鉞: "異性貴人或人脈機緣",
-  祿存: "守財、穩定收入傾向",
-  天馬: "走動多，外出、變動常帶機會",
-};
-
-const MING_MIN_CHARS = 200;
-const OTHER_MIN_CHARS = 120;
-
-export function isAnalysisTooThin(text: string, palace: PalaceName): boolean {
-  const min = palace === "命宮" ? MING_MIN_CHARS : OTHER_MIN_CHARS;
-  return text.trim().length < min;
+export function isAnalysisTooThin(text: string, _palace: PalaceName): boolean {
+  return text.trim().length < FREE_PALACE_COPY_HARD_MIN;
 }
 
 function soulPalaceTag(palace: PalaceInfo): string {
@@ -184,95 +169,33 @@ function majorStarsText(palace: PalaceInfo): string {
     .join("、");
 }
 
-function describeMinors(palace: PalaceInfo): string {
-  const minors = palace.stars.filter((s) => s.type === "minor");
-  if (minors.length === 0) return "";
-  const parts = minors
-    .slice(0, 4)
-    .map((s) => MINOR_IN_PALACE[s.name] ? `${s.name}：${MINOR_IN_PALACE[s.name]}` : s.name)
-    .join("；");
-  return `輔星方面 — ${parts}。`;
-}
-
-function mutagenInPalace(palace: PalaceInfo): string {
-  const mutagens = palace.stars
-    .filter((s) => s.mutagen)
-    .map((s) => `${s.name}${s.mutagen}`);
-  if (mutagens.length === 0) return "";
-  return `四化有${mutagens.join("、")}，會令呢宮特色更突出。`;
-}
-
-function formatPatternBlock(insights: ChartInsights, majorName?: string): string {
-  const ji = insights.patterns.filter((p) => p.type === "吉");
-  const xiong = insights.patterns.filter((p) => p.type === "凶");
-
-  if (ji.length > 0) {
-    const names = ji.slice(0, 3).map((p) => p.slug).join("、");
-    return `程式睇到你命宮三方有入吉格傾向：${names} — 對貴人、逢凶化吉或事業助力有幫助；要確認入唔入真格，師傅定盤會逐格對。`;
-  }
-
-  if (xiong.length > 0) {
-    const names = xiong.slice(0, 2).map((p) => p.slug).join("、");
-    return `命盤有留意格局：${names} — 師傅話唔使驚，多數係提醒你要留意嘅方向，配合後天同大限可以減輕。`;
-  }
-
-  if (majorName === "天梁") {
-    return "未命中程式內常見「格名」，但天梁旺坐命本身主貴氣、逢事有轉圜餘地 — 錢格、桃花、權貴要睇財帛、夫妻同四化，唔代表冇格局，係要成盤同大限一齊睇先完整。";
-  }
-
-  return "未命中程式內常見格名，唔代表平淡 — 主星亮度同三方四正已經話到你好大一部分性格同潛力；完整格局要師傅連大限、四化一齊定。";
-}
-
 function fallbackMingAnalysis(palace: PalaceInfo, insights: ChartInsights): string {
   const stars = majorStarsText(palace);
   const tag = soulPalaceTag(palace);
   const major = palace.stars.find((s) => s.type !== "minor");
-  const branch = `${palace.heavenlyStem}${palace.earthlyBranch}`;
   const life = major ? STAR_LIFE_SCENES[major.name] : null;
-  const brightness = major?.brightness ? `（${major.brightness}）` : "";
   const palaceMeaning = major
     ? lookupStarPalaceMeaning(major.name, "命宮")
     : null;
 
-  const opening = `徒弟先按你命宮${branch}講 — ${stars}坐命，你係「${tag}」。`;
+  const opening = `徒弟按命宮講 — ${stars}坐命，「${tag}」。`;
   const praise = palaceMeaning
-    ? `${major!.name}${brightness}坐命：${palaceMeaning}`
+    ? palaceMeaning
     : life
-      ? `${major!.name}${brightness}嘅優勢：${life.praise}。`
-      : "空宮借星，變通力同適應力反而係你特色。";
-  const scene = life
-    ? `生活上：${life.scene}；旁人常覺得你${life.habit}。`
-    : "你擅長因應環境調整自己，唔係一成不變嗰種人。";
-
-  const bodyNote =
-    palace.isBodyPalace && insights.bodyVsSoul
-      ? insights.bodyVsSoul.includes("同宮")
-        ? "身宮同命宮同宮 — 你內心點做人同後天實際行路好一致，唔使猜自己兩套性格。"
-        : insights.bodyVsSoul
-      : "";
-
-  const minorBlock = describeMinors(palace);
-  const mutagenBlock = mutagenInPalace(palace);
-  const patternBlock = formatPatternBlock(insights, major?.name);
-  const comboNote = insights.mingComboTag
-    ? `主星組合標籤：${insights.mingComboTag}。`
-    : "";
+      ? life.praise
+      : "空宮借星，變通力係特色。";
+  const scene = life ? life.scene : "你擅長因應環境調整自己。";
+  const patternHint =
+    insights.patterns.find((p) => p.type === "吉")?.slug ??
+    insights.mingComboTag ??
+    "";
+  const patternBit = patternHint ? `盤面有${patternHint}傾向，宜發揮主星優勢。` : "";
 
   const close = PALACE_FALLBACK_CLIFF.命宮;
 
-  return [
-    opening,
-    praise,
-    scene,
-    bodyNote,
-    comboNote,
-    minorBlock,
-    mutagenBlock,
-    patternBlock,
-    close,
-  ]
-    .filter(Boolean)
-    .join("");
+  return finalizeFreePalaceCopy(
+    [opening, praise, scene, patternBit, close].filter(Boolean).join(""),
+  );
 }
 
 function scoreToneNote(palace: PalaceInfo, score?: PalaceScore): string {
@@ -314,24 +237,25 @@ function fallbackPalaceAnalysis(
 
   if (palace.isSoulPalace && insights) {
     const base = fallbackMingAnalysis(palace, insights);
-    return tone ? `${base}${tone}` : base;
+    return tone ? finalizeFreePalaceCopy(`${base}${tone}`) : base;
   }
 
   const major = palace.stars.find((s) => s.type !== "minor");
   const starMeaning = primaryStarPalaceMeaning(palace);
-  const meaningBit = starMeaning
-    ? `${major!.name}坐${palace.name}：${starMeaning}`
-    : "";
-  const minorBlock = describeMinors(palace);
+  const meaningBit = starMeaning ?? "";
 
   if (palace.name === "官祿宮") {
     const direction = careerDirectionByMajor(major?.name);
-    return `${palace.name}管${theme}。主星${stars}。${meaningBit}較有利方向：${direction}。${minorBlock}${empty}${tone}${cliff}`;
+    return finalizeFreePalaceCopy(
+      `${palace.name}主星${stars}，事業宜留意${direction}。${meaningBit}${empty}${tone}${cliff}`,
+    );
   }
 
   if (palace.name === "夫妻宮") {
     const traits = partnerTraitsByMajor(major?.name);
-    return `${palace.name}管${theme}。主星${stars}。${meaningBit}適合另一半特質：${traits}。${minorBlock}${empty}${tone}${cliff}`;
+    return finalizeFreePalaceCopy(
+      `${palace.name}主星${stars}，相處節奏要溝通；伴侶類型偏向${traits.split("、")[0]}等。${meaningBit}${tone}${cliff}`,
+    );
   }
 
   if (palace.name === "遷移宮") {
@@ -339,25 +263,18 @@ function fallbackPalaceAnalysis(
       (s) => s.name === "天機" && s.brightness === "陷",
     );
     if (tianJiXian) {
-      return `${palace.name}管${theme}。主星${stars}，天機入陷坐遷移，外出同環境變動方面，你一生漂泊感較強，好似雀鳥一樣，經常要走嚟走去，亦容易迷路 — 方向感同落腳點要特別留心。${starMeaning ? `（底色：${starMeaning}）` : ""}${minorBlock}${empty}${tone}${cliff}`;
+      return finalizeFreePalaceCopy(
+        `${palace.name}天機入陷，外出易有漂泊感，方向要留心。${meaningBit}${tone}${cliff}`,
+      );
     }
-    return `${palace.name}管${theme}。主星${stars}。${meaningBit}${minorBlock}${empty}${tone}${cliff}`;
+    return finalizeFreePalaceCopy(
+      `${palace.name}主星${stars}。${meaningBit}${empty}${tone}${cliff}`,
+    );
   }
 
-  if (
-    palace.name === "兄弟宮" ||
-    palace.name === "子女宮" ||
-    palace.name === "財帛宮" ||
-    palace.name === "疾厄宮" ||
-    palace.name === "奴僕宮" ||
-    palace.name === "田宅宮" ||
-    palace.name === "福德宮" ||
-    palace.name === "父母宮"
-  ) {
-    return `${palace.name}管${theme}。主星${stars}。${meaningBit}${minorBlock}${empty}${tone}${cliff}`;
-  }
-
-  return `${palace.name}管${theme}。主星${stars}。${meaningBit}${minorBlock}${empty}${tone}${cliff}`;
+  return finalizeFreePalaceCopy(
+    `${palace.name}主星${stars}，${theme.split("、")[0]}方面：${meaningBit}${empty}${tone}${cliff}`,
+  );
 }
 
 export function fallbackPalaceAnalyses(
@@ -368,10 +285,7 @@ export function fallbackPalaceAnalyses(
   const scoreMap = new Map((scores ?? []).map((s) => [s.palace, s]));
   return chart.palaces.map((p) => ({
     palace: p.name,
-    text: fallbackPalaceAnalysis(p, insights, scoreMap.get(p.name)).slice(
-      0,
-      p.isSoulPalace ? 600 : 480,
-    ),
+    text: fallbackPalaceAnalysis(p, insights, scoreMap.get(p.name)),
   }));
 }
 
@@ -388,12 +302,12 @@ export function parseMingPalaceJson(raw: string): PalaceAnalysis | null {
       const arr = JSON.parse(jsonText) as { palace?: string; text?: string }[];
       const item = arr.find((a) => a.palace === "命宮") ?? arr[0];
       if (!item?.text) return null;
-      return { palace: "命宮", text: item.text.trim().slice(0, 600) };
+      return { palace: "命宮", text: finalizeFreePalaceCopy(item.text) };
     }
     const parsed = JSON.parse(jsonText) as { palace?: string; text?: string };
     if (!parsed.text) return null;
     if (parsed.palace && parsed.palace !== "命宮") return null;
-    return { palace: "命宮", text: parsed.text.trim().slice(0, 600) };
+    return { palace: "命宮", text: finalizeFreePalaceCopy(parsed.text) };
   } catch {
     return null;
   }
@@ -420,7 +334,7 @@ export function parsePalaceAnalysesJson(
       if (!PALACES.includes(item.palace as PalaceName)) continue;
       byName.set(item.palace, {
         palace: item.palace as PalaceName,
-        text: item.text.trim().slice(0, item.palace === "命宮" ? 600 : 480),
+        text: finalizeFreePalaceCopy(item.text),
       });
     }
 
