@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   getCachedAnnualReport,
+  shouldRegenerateStoredAnnualReport,
   type AnnualGenerationTier,
 } from "@/lib/ai/analyze-annual-report";
 import { getCachedPalaceReport } from "@/lib/ai/analyze-palace-report";
@@ -169,7 +170,13 @@ export async function GET(request: NextRequest) {
   const annualGen = resolveAnnualGeneration(purchase, product);
   if (annualGen) {
     const existing = await getReportContent(chartKey, annualGen.storageSlot);
-    if (existing) {
+    if (
+      existing &&
+      !shouldRegenerateStoredAnnualReport(
+        existing.text,
+        annualGen.generationTier,
+      )
+    ) {
       return buildAnnualReadyResponse(chartKey);
     }
 

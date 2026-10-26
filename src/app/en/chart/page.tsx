@@ -13,6 +13,7 @@ import { generateThreePlates } from "@/lib/ziwei/iztro-adapter";
 import { suggestPlateFromBirthTime } from "@/lib/ziwei/zhongzhou-plates";
 import ToolUsageBeacon from "@/components/ToolUsageBeacon";
 import { loadAnnualReportViews } from "@/lib/palace-report/load-reports";
+import { refreshStaleAnnualReportsIfNeeded } from "@/lib/palace-report/refresh-stale-annual-reports";
 import { siteImages } from "@/lib/site-images";
 import { getSiteUrl } from "@/lib/site-url";
 export const metadata: Metadata = {
@@ -76,6 +77,9 @@ export default async function EnChartPage({
   let birthKey = "";
   if (parsed.submitted && !parsed.error) {
     birthKey = buildBirthKey(parsed.input);
+    if (chart) {
+      await refreshStaleAnnualReportsIfNeeded(birthKey, chart);
+    }
     const loaded = await loadAnnualReportViews(birthKey);
     annualAccess = loaded.access;
     annualReports = loaded.views;

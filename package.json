@@ -16,7 +16,8 @@
     "seed-seo-articles": "node scripts/seed-seo-articles.mjs",
     "seed-geju-articles": "node scripts/seed-geju-articles.mjs",
     "fix-internal-links": "node scripts/fix-internal-links.mjs",
-    "transform-guanyin-lots": "node scripts/transform-guanyin-lots.mjs"
+    "transform-guanyin-lots": "node scripts/transform-guanyin-lots.mjs",
+    "verify-annual-report-months": "npx tsx scripts/verify-annual-report-months.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

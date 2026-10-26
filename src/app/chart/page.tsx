@@ -16,6 +16,7 @@ import { logToolUsage } from "@/lib/usage/log";
 import { generateThreePlates } from "@/lib/ziwei/iztro-adapter";
 import { suggestPlateFromBirthTime } from "@/lib/ziwei/zhongzhou-plates";
 import { loadAnnualReportViews } from "@/lib/palace-report/load-reports";
+import { refreshStaleAnnualReportsIfNeeded } from "@/lib/palace-report/refresh-stale-annual-reports";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
 export const metadata: Metadata = buildPageMetadata({
@@ -78,6 +79,9 @@ export default async function ChartPage({
   let birthKey = "";
   if (parsed.submitted && !parsed.error) {
     birthKey = buildBirthKey(parsed.input);
+    if (chart) {
+      await refreshStaleAnnualReportsIfNeeded(birthKey, chart);
+    }
     const loaded = await loadAnnualReportViews(birthKey);
     annualAccess = loaded.access;
     annualReports = loaded.views;
