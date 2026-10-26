@@ -343,6 +343,56 @@ export const services = [
   },
 ];
 
+/** 首頁服務項目 — 第二行數碼命書（排盤頁解鎖） */
+export type HomepageDigitalService = {
+  title: string;
+  price: string;
+  bullets: readonly string[];
+  href: string;
+  cta: string;
+  imageKey:
+    | "annualReading"
+    | "fullReading";
+};
+
+export const homepageDigitalServices: readonly HomepageDigitalService[] = [
+  {
+    title: "流年詳批",
+    price: "HK$128",
+    bullets: ["完整流年詳批", "十二個月流月", "實用化解"],
+    href: "/chart#annual-report",
+    cta: "去排盤解鎖",
+    imageKey: "annualReading",
+  },
+  {
+    title: "全批",
+    price: "HK$688",
+    bullets: ["一生大運", "十年大運", "流年命運"],
+    href: "/chart#annual-report",
+    cta: "去排盤解鎖",
+    imageKey: "fullReading",
+  },
+];
+
+export const homepageDigitalServicesEn: readonly HomepageDigitalService[] = [
+  {
+    title: "Annual detailed",
+    price: "HK$128",
+    bullets: ["Full annual write-up", "12 monthly forecasts", "Practical remedies"],
+    href: "/en/chart#annual-report",
+    cta: "Chart to unlock",
+    imageKey: "annualReading",
+  },
+  {
+    title: "Full tier",
+    price: "HK$688",
+    bullets: ["Life overview", "Decade luck cycles", "Annual destiny & months"],
+    href: "/en/chart#annual-report",
+    cta: "Chart to unlock",
+    imageKey: "fullReading",
+  },
+];
+
 export const youtubeVideos = [
   {
     id: "hFCKjqmZBKs",
