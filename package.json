@@ -17,7 +17,8 @@
     "seed-geju-articles": "node scripts/seed-geju-articles.mjs",
     "fix-internal-links": "node scripts/fix-internal-links.mjs",
     "transform-guanyin-lots": "node scripts/transform-guanyin-lots.mjs",
-    "verify:688-tier": "node scripts/verify-688-full-tier.mjs"
+    "verify:688-tier": "node scripts/verify-688-full-tier.mjs",
+    "build:liunian-2027": "node scripts/build-liunian-2027.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
@@ -40,6 +41,7 @@
     "@types/react-dom": "^19.0.0",
     "eslint": "^9.16.0",
     "eslint-config-next": "^15.1.0",
+    "marked": "^18.1.2",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.16",
     "typescript": "^5.7.2"

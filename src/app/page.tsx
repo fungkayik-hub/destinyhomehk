@@ -8,6 +8,7 @@ import FaqSection from "@/components/FaqSection";
 import { faqJsonLd } from "@/components/JsonLd";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import HomeFeaturedDigitalServices from "@/components/HomeFeaturedDigitalServices";
+import HomeLiunian2027Promo from "@/components/liunian/HomeLiunian2027Promo";
 import {
   academyCategories,
   getFeaturedAcademyCategories,
@@ -86,6 +87,8 @@ export default function HomePage() {
           </p>
         </div>
       </section>
+
+      <HomeLiunian2027Promo />
 
       <section className="py-14 px-4">
         <div className="max-w-5xl mx-auto">

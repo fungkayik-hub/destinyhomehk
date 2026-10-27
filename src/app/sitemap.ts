@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { academyCategories } from "@/lib/site-config";
 import { getArticleSitemapEntries } from "@/lib/articles";
+import { getLiunian2027SitemapEntries } from "@/lib/liunian-2027";
 import { getHongKongTodayISO } from "@/lib/hong-kong-time";
 import { getSiteUrl } from "@/lib/site-url";
 
@@ -66,5 +67,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
-  return [...staticPages, ...recentDailyUrls(site, 14), ...categoryPages, ...articlePages];
+  const liunianPages: MetadataRoute.Sitemap = getLiunian2027SitemapEntries().map(
+    ({ path, publishedAt }) => ({
+      url: `${site}${path}`,
+      lastModified: new Date(publishedAt),
+      changeFrequency: "monthly" as const,
+      priority: path === "/liunian/2027" ? 0.92 : 0.85,
+    }),
+  );
+
+  return [
+    ...staticPages,
+    ...recentDailyUrls(site, 14),
+    ...categoryPages,
+    ...articlePages,
+    ...liunianPages,
+  ];
 }
