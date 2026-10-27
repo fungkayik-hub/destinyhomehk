@@ -261,6 +261,7 @@ export type NavItem =
 
 export const navItems: NavItem[] = [
   { href: "/", label: "首頁" },
+  { href: "/liunian/2027", label: "2027流年" },
   { label: "小師傳(AI)", children: [...toolNavChildren] },
   { label: "學堂", sections: academyNavSections },
   { href: "/booking", label: "收費預約" },

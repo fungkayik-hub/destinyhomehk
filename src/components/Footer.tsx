@@ -23,6 +23,7 @@ export default function Footer() {
             <li><Link href="/chart" className="hover:text-destiny-gold">紫微即時排盤</Link></li>
             <li><Link href="/compatibility" className="hover:text-destiny-gold">姻緣探測器</Link></li>
             <li><Link href="/daily" className="hover:text-destiny-gold">每日流日黃曆</Link></li>
+            <li><Link href="/liunian/2027" className="hover:text-destiny-gold">2027丁未年流年</Link></li>
             <li><Link href="/date-picker" className="hover:text-destiny-gold">結婚吉日篩選</Link></li>
             <li><Link href="/wedding-date" className="hover:text-destiny-gold">結婚擇日</Link></li>
           </ul>
