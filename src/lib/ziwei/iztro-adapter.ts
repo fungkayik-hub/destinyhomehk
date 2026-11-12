@@ -222,6 +222,23 @@ const PLATE_LABELS: Record<ChartPlateType, string> = {
   human: "人盤",
 };
 
+/** 取得 iztro 星盤實例（供 horoscope 流月等運限計算） */
+export function getIztroAstrolabe(
+  input: BirthInput,
+  plateType: ChartPlateType = "heaven",
+): IztroAstrolabe {
+  const trueSolarTime = applyTrueSolarTime(input);
+  const timeIndex = hourMinuteToTimeIndex(
+    trueSolarTime.correctedHour,
+    trueSolarTime.correctedMinute,
+  );
+  return astro.withOptions(buildAstrolabeOptions(input, timeIndex, plateType));
+}
+
+export function mapIztroPalaceName(iztroName: string): PalaceInfo["name"] {
+  return (PALACE_NAME_MAP[iztroName] ?? iztroName) as PalaceInfo["name"];
+}
+
 /**
  * 中洲派天地人盤排盤（iztro withOptions + zhongzhou algorithm）
  * @see https://github.com/SylarLong/iztro
@@ -231,12 +248,7 @@ export function generateChart(
   plateType: ChartPlateType = "heaven",
 ): ZiWeiChart {
   const trueSolarTime = applyTrueSolarTime(input);
-  const timeIndex = hourMinuteToTimeIndex(
-    trueSolarTime.correctedHour,
-    trueSolarTime.correctedMinute,
-  );
-
-  const astrolabe = astro.withOptions(buildAstrolabeOptions(input, timeIndex, plateType));
+  const astrolabe = getIztroAstrolabe(input, plateType);
   return astrolabeToChart(
     astrolabe,
     input,

@@ -158,6 +158,8 @@ export default function ChartDisplay({
               initialAccess={annualAccess}
               initialReports={annualReports}
               layout={CHART_LAYOUT}
+              fortuneSummary={fortuneSummary}
+              scoreByPalace={scoreByPalace}
               locale={locale}
             />
           </Suspense>

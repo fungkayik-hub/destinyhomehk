@@ -3,6 +3,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { ZiWeiChart } from "@/lib/ziwei";
+import type { PalaceScore } from "@/lib/ai/types";
+import type { ChartFortuneSummaryData } from "@/lib/chart-fortune-summary";
+import AnnualMingshuCharts from "./annual-mingshu/AnnualMingshuCharts";
+import AnnualMingshuPdfExport from "./annual-mingshu/AnnualMingshuPdfExport";
 import {
   getPalaceReportCopy,
   reportViewTitle,
@@ -33,6 +37,8 @@ interface Props {
   initialAccess: AnnualReportAccess;
   initialReports: ReportView[];
   layout: string;
+  fortuneSummary: ChartFortuneSummaryData;
+  scoreByPalace: Map<string, PalaceScore>;
   locale?: "zh" | "en";
 }
 
@@ -57,6 +63,8 @@ export default function AnnualMingshuSection({
   initialAccess,
   initialReports,
   layout,
+  fortuneSummary,
+  scoreByPalace,
   locale = "zh",
 }: Props) {
   const copy = getPalaceReportCopy(locale);
@@ -249,7 +257,27 @@ export default function AnnualMingshuSection({
           <h3 className="font-display font-bold text-destiny-purple mb-2">
             {reportViewTitle(activeView, copy)}
           </h3>
-          <p className="text-destiny-purple/90 leading-relaxed text-base whitespace-pre-wrap">
+          {text && (
+            <>
+              <AnnualMingshuPdfExport
+                chart={chart}
+                scoreByPalace={scoreByPalace}
+                fortuneSummary={fortuneSummary}
+                reportText={text}
+                activeView={activeView}
+                locale={locale}
+              />
+              <AnnualMingshuCharts
+                chart={chart}
+                scoreByPalace={scoreByPalace}
+                fortuneSummary={fortuneSummary}
+                reportText={text}
+                activeView={activeView}
+                locale={locale}
+              />
+            </>
+          )}
+          <p className="text-destiny-purple/90 leading-relaxed text-base whitespace-pre-wrap mt-5">
             {text}
           </p>
           <p className="text-xs text-destiny-purple/45 mt-4 leading-relaxed">
