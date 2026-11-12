@@ -26,6 +26,7 @@
     "@vercel/speed-insights": "^2.0.0",
     "html-to-image": "^1.11.13",
     "iztro": "^2.5.8",
+    "jspdf": "^2.5.2",
     "lunar-typescript": "^1.8.6",
     "next": "^15.1.0",
     "react": "^19.0.0",
