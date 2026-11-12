@@ -1,105 +1,172 @@
 "use client";
 
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { useMemo } from "react";
+import type { ZiWeiChart } from "@/lib/ziwei";
+import type { PalaceScore } from "@/lib/ai/types";
 import type { ParsedLiuyueMonth } from "@/lib/palace-report/parse-liuyue";
+import {
+  buildLiuyueRhythmMonths,
+  type LiuyueRhythmTone,
+} from "@/lib/palace-report/liuyue-rhythm";
 
-const GOLD = "#C9A96E";
-const MUTED = "#6B7A99";
+const TONE_STYLE: Record<
+  LiuyueRhythmTone,
+  { bar: string; badge: string; height: string }
+> = {
+  順: {
+    bar: "bg-destiny-gold/35 border-destiny-gold/50",
+    badge: "bg-destiny-gold/20 text-destiny-gold border-destiny-gold/40",
+    height: "h-[4.5rem]",
+  },
+  平: {
+    bar: "bg-destiny-cream border-destiny-purple/12",
+    badge: "bg-destiny-purple/8 text-destiny-purple border-destiny-purple/15",
+    height: "h-[3rem]",
+  },
+  慎: {
+    bar: "bg-destiny-red/12 border-destiny-red/25",
+    badge: "bg-destiny-red/10 text-destiny-red border-destiny-red/20",
+    height: "h-[2rem]",
+  },
+};
 
 interface Props {
+  chart: ZiWeiChart;
+  scoreByPalace: Map<string, PalaceScore>;
   months: ParsedLiuyueMonth[];
   year: number;
   locale?: "zh" | "en";
 }
 
-/** 流月能量節奏（有主題則較高，方便一眼比較十二個月節奏） */
-function monthEnergy(m: ParsedLiuyueMonth, index: number): number {
-  if (!m.theme.trim()) return 3 + (index % 3);
-  const base = 5 + Math.min(3, Math.floor(m.theme.length / 8));
-  const yiBoost = m.yi ? 0.5 : 0;
-  const jiDrag = m.ji ? -0.25 : 0;
-  return Math.min(8, Math.max(3, base + yiBoost + jiDrag));
+function toneLabel(tone: LiuyueRhythmTone, zh: boolean): string {
+  if (zh) return tone;
+  const map: Record<LiuyueRhythmTone, string> = {
+    順: "Smooth",
+    平: "Steady",
+    慎: "Caution",
+  };
+  return map[tone];
 }
 
-export default function MingshuLiuyueChart({ months, year, locale = "zh" }: Props) {
+export default function MingshuLiuyueChart({
+  chart,
+  scoreByPalace,
+  months,
+  year,
+  locale = "zh",
+}: Props) {
   const zh = locale === "zh";
-  const data = months.map((m, i) => ({
-    label: m.month.replace("月", ""),
-    fullMonth: m.month,
-    energy: monthEnergy(m, i),
-    theme: m.theme || (zh ? "（待補）" : "—"),
-    yi: m.yi,
-    ji: m.ji,
-  }));
+  const rhythm = useMemo(
+    () => buildLiuyueRhythmMonths(chart, scoreByPalace, months, year),
+    [chart, scoreByPalace, months, year],
+  );
 
-  const hasAnyTheme = data.some((d) => d.theme && d.theme !== "（待補）" && d.theme !== "—");
+  const chartSourced = rhythm.filter((m) => m.source === "chart").length;
+  const toneCounts = rhythm.reduce(
+    (acc, m) => {
+      acc[m.tone] += 1;
+      return acc;
+    },
+    { 順: 0, 平: 0, 慎: 0 } as Record<LiuyueRhythmTone, number>,
+  );
 
   return (
     <div className="rounded-xl border border-destiny-purple/10 bg-white px-3 py-4">
-      <p className="text-xs text-destiny-purple/55 mb-3 text-center">
-        {zh ? `${year} 年十二流月節奏圖` : `${year} monthly rhythm`}
+      <p className="text-xs text-destiny-purple/55 mb-2 text-center">
+        {zh ? `${year} 年十二流月節奏` : `${year} monthly rhythm`}
       </p>
-      {!hasAnyTheme && (
-        <p className="text-[11px] text-destiny-purple/45 text-center mb-2">
-          {zh ? "圖表依命書流月主題整理；若文字尚未載入會顯示佔位。" : "Themes from report text."}
-        </p>
-      )}
-      <ResponsiveContainer width="100%" height={220}>
-        <BarChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke={MUTED} strokeOpacity={0.2} vertical={false} />
-          <XAxis
-            dataKey="label"
-            tick={{ fill: MUTED, fontSize: 10 }}
-            interval={0}
-            angle={-30}
-            textAnchor="end"
-            height={48}
-          />
-          <YAxis
-            domain={[0, 8]}
-            ticks={[2, 4, 6, 8]}
-            tick={{ fill: MUTED, fontSize: 10 }}
-            width={24}
-            hide
-          />
-          <Tooltip
-            contentStyle={{ borderRadius: 8, fontSize: 12, maxWidth: 280, border: `1px solid ${GOLD}` }}
-            labelFormatter={(_l, items) => {
-              const p = items[0]?.payload as (typeof data)[0] | undefined;
-              return p ? `${p.fullMonth}` : "";
-            }}
-            formatter={(_v, _n, item) => {
-              const p = item.payload as (typeof data)[0];
-              const lines = [
-                `${zh ? "主題" : "Theme"}：${p.theme}`,
-                p.yi ? `${zh ? "宜" : "Do"}：${p.yi}` : "",
-                p.ji ? `${zh ? "忌" : "Avoid"}：${p.ji}` : "",
-              ].filter(Boolean);
-              return [lines.join("\n"), zh ? "流月" : "Month"];
-            }}
-          />
-          <Bar dataKey="energy" fill={GOLD} fillOpacity={0.85} radius={[4, 4, 0, 0]} maxBarSize={36} />
-        </BarChart>
-      </ResponsiveContainer>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-3">
-        {data.map((d) => (
-          <div
-            key={d.fullMonth}
-            className="text-[10px] leading-snug rounded-lg border border-destiny-purple/8 bg-destiny-cream/30 px-2 py-1.5"
+      <p className="text-[10px] text-destiny-purple/45 text-center mb-3 leading-relaxed px-2">
+        {zh
+          ? chartSourced >= 12
+            ? "吉凶節奏依 iztro 流月命宮所落宮位，對照命盤宮位評分（7–8級順、5–6級平、1–4級慎）。"
+            : chartSourced > 0
+              ? `其中 ${chartSourced} 個月依流月宮位評分；其餘依命書宜忌關鍵字分類。`
+              : "依命書主題／宜／忌關鍵字分類（無流月宮位分數時）。"
+          : "Rhythm from iztro monthly palace scores when available; else report keywords."}
+      </p>
+
+      <div className="flex flex-wrap justify-center gap-2 mb-4 text-[10px]">
+        {(["順", "平", "慎"] as const).map((t) => (
+          <span
+            key={t}
+            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full border ${TONE_STYLE[t].badge}`}
           >
-            <span className="font-semibold text-destiny-purple">{d.fullMonth}</span>
-            <span className="text-destiny-purple/65"> · {d.theme}</span>
+            <span className="font-bold">{toneLabel(t, zh)}</span>
+            <span className="text-destiny-purple/50 tabular-nums">×{toneCounts[t]}</span>
+          </span>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-12 gap-1 items-end mb-4 min-h-[5rem]">
+        {rhythm.map((m) => (
+          <div key={m.monthLabel} className="flex flex-col items-center gap-1 min-w-0">
+            <span
+              className={`text-[9px] font-bold px-1 py-0.5 rounded border ${TONE_STYLE[m.tone].badge}`}
+            >
+              {toneLabel(m.tone, zh)}
+            </span>
+            <div
+              className={`w-full rounded-t-md border ${TONE_STYLE[m.tone].bar} ${TONE_STYLE[m.tone].height} transition-all`}
+              title={
+                m.flowPalace
+                  ? `${m.monthLabel} · 流月【${m.flowPalace}】${m.palaceGrade ?? ""}`
+                  : m.monthLabel
+              }
+            />
+            <span className="text-[9px] text-destiny-purple/55 truncate w-full text-center">
+              {m.monthLabel.replace("月", "")}
+            </span>
           </div>
         ))}
       </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+        {rhythm.map((m) => (
+          <MonthRhythmCard key={m.monthLabel} m={m} zh={zh} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MonthRhythmCard({
+  m,
+  zh,
+}: {
+  m: ReturnType<typeof buildLiuyueRhythmMonths>[0];
+  zh: boolean;
+}) {
+  return (
+    <div
+      className={`text-[10px] leading-snug rounded-lg border px-2 py-2 ${TONE_STYLE[m.tone].bar}`}
+    >
+      <div className="flex flex-wrap items-center gap-1.5 mb-1">
+        <span className="font-bold text-destiny-purple">{m.monthLabel}</span>
+        <span className={`font-bold px-1.5 py-0.5 rounded border text-[9px] ${TONE_STYLE[m.tone].badge}`}>
+          {toneLabel(m.tone, zh)}
+        </span>
+        {m.flowPalace && (
+          <span className="text-destiny-purple/60 text-[9px]">
+            {zh ? "流月" : "Flow"}【{m.flowPalace}】{m.palaceGrade}
+          </span>
+        )}
+      </div>
+      {m.theme ? (
+        <p className="text-destiny-purple/80">
+          <span className="text-destiny-purple/45">{zh ? "主題" : "Theme"}：</span>
+          {m.theme}
+        </p>
+      ) : null}
+      {m.yi ? (
+        <p className="text-destiny-purple/65 mt-0.5">
+          <span className="text-destiny-green/80">{zh ? "宜" : "Do"}</span> {m.yi}
+        </p>
+      ) : null}
+      {m.ji ? (
+        <p className="text-destiny-purple/65">
+          <span className="text-destiny-red/80">{zh ? "忌" : "Avoid"}</span> {m.ji}
+        </p>
+      ) : null}
     </div>
   );
 }

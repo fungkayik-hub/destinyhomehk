@@ -80,7 +80,13 @@ export default function AnnualMingshuCharts({
 
       <div>
         <SectionLabel zh={zh} title={zh ? "十二流月" : "Monthly flow"} forPdf={forPdf} />
-        <MingshuLiuyueChart months={months} year={year} locale={locale} />
+        <MingshuLiuyueChart
+          chart={chart}
+          scoreByPalace={scoreByPalace}
+          months={months}
+          year={year}
+          locale={locale}
+        />
       </div>
     </div>
   );
