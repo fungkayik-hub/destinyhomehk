@@ -2,7 +2,7 @@ import type { BirthInput } from "@/lib/ziwei/types";
 import { DEFAULT_BIRTH_PLACE_ID } from "@/lib/ziwei/birth-places";
 import { parseBirthPlaceId, parseUseTrueSolarTime } from "@/lib/parse-birth-fields";
 
-const DEFAULT_INPUT: BirthInput = {
+export const defaultBirthInput: BirthInput = {
   year: 2000,
   month: 1,
   day: 1,
@@ -31,15 +31,15 @@ export function birthInputFromSearchParams(
   sp: Record<string, string | string[] | undefined>,
 ): { submitted: boolean; input: BirthInput; error?: string } {
   if (!first(sp, "year")) {
-    return { submitted: false, input: DEFAULT_INPUT };
+    return { submitted: false, input: defaultBirthInput };
   }
 
   const input: BirthInput = {
-    year: clampInt(first(sp, "year"), DEFAULT_INPUT.year, 1900, 2100),
-    month: clampInt(first(sp, "month"), DEFAULT_INPUT.month, 1, 12),
-    day: clampInt(first(sp, "day"), DEFAULT_INPUT.day, 1, 31),
-    hour: clampInt(first(sp, "hour"), DEFAULT_INPUT.hour, 0, 23),
-    minute: clampInt(first(sp, "minute"), DEFAULT_INPUT.minute, 0, 59),
+    year: clampInt(first(sp, "year"), defaultBirthInput.year, 1900, 2100),
+    month: clampInt(first(sp, "month"), defaultBirthInput.month, 1, 12),
+    day: clampInt(first(sp, "day"), defaultBirthInput.day, 1, 31),
+    hour: clampInt(first(sp, "hour"), defaultBirthInput.hour, 0, 23),
+    minute: clampInt(first(sp, "minute"), defaultBirthInput.minute, 0, 59),
     gender: first(sp, "gender") === "female" ? "female" : "male",
     calendarType: first(sp, "calendarType") === "lunar" ? "lunar" : "solar",
     birthPlaceId: parseBirthPlaceId(first(sp, "birthPlaceId")),

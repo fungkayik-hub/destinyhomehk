@@ -26,9 +26,10 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-noto-sans)", "Noto Sans TC", "PingFang TC", "Helvetica Neue", "sans-serif"],
-        serif: ["var(--font-lxgw-wenkai)", "LXGW WenKai TC", "KaiTi", "serif"],
-        display: ["var(--font-noto-serif)", "Noto Serif TC", "Songti TC", "PMingLiU", "serif"],
+        sans: ["PingFang TC", "Microsoft JhengHei", "Noto Sans TC", "Helvetica Neue", "sans-serif"],
+        // 不下載 CJK webfont。系統楷／宋已覆蓋香港裝置，避免數 MB 高優先字檔擋住 LCP。
+        serif: ["Kaiti TC", "BiauKai", "KaiTi", "STKaiti", "Songti TC", "PMingLiU", "serif"],
+        display: ["Songti TC", "PMingLiU", "Songti SC", "Noto Serif TC", "serif"],
       },
     },
   },

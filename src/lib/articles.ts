@@ -30,6 +30,7 @@ export function prepareArticleHtml(html: string): string {
       if (!/\bwidth=/i.test(a)) a += ' width="800"';
       if (!/\bheight=/i.test(a)) a += ' height="533"';
       if (!/\bdecoding=/i.test(a)) a += ' decoding="async"';
+      if (!/\balt\s*=/i.test(a)) a += ' alt=""';
       return `<img${a}>`;
     });
 }
@@ -152,6 +153,18 @@ export function getAllArticleParams(): { slug: string; articleSlug: string }[] {
     slug,
     articleSlug,
   }));
+}
+
+/** 分類頁 lastmod：該分類最新一篇已發布文章的日期 */
+export function getCategoryContentDate(category: string): string | null {
+  const dates: string[] = [];
+  const page = getCategoryPageArticle(category);
+  if (page?.publishedAt) dates.push(page.publishedAt);
+  for (const article of getVisibleArticlesByCategory(category)) {
+    if (article.publishedAt) dates.push(article.publishedAt);
+  }
+  if (dates.length === 0) return null;
+  return dates.reduce((latest, value) => (value > latest ? value : latest));
 }
 
 export function getCategoryCoverImage(category: string): string | null {

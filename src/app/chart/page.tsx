@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { PageBanner } from "@/components/SiteImage";
 import ChartBirthForm from "@/components/chart/ChartBirthForm";
 import ChartDisplay from "@/components/chart/ChartDisplay";
@@ -10,7 +11,7 @@ import { FAQ_BY_PAGE } from "@/lib/faq-content";
 import { computeChartInsights } from "@/lib/ai/chart-insights";
 import { getCachedChartResults } from "@/lib/chart-analysis-cache";
 import { buildBirthKey } from "@/lib/chart-key";
-import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
+import { birthInputFromSearchParams, defaultBirthInput } from "@/lib/chart-parse-params";
 import { parseChartPlate, parseFocusPalace } from "@/lib/chart-layout";
 import { logToolUsage } from "@/lib/usage/log";
 import { generateThreePlates } from "@/lib/ziwei/iztro-adapter";
@@ -19,22 +20,70 @@ import { loadAnnualReportViews } from "@/lib/palace-report/load-reports";
 import { buildPageMetadata } from "@/lib/seo";
 import { siteImages } from "@/lib/site-images";
 export const metadata: Metadata = buildPageMetadata({
-  title: "紫微斗數天地人盤排盤 — 免費即時十二宮",
+  title: "紫微排盤免費 — 香港紫微斗數天地人盤",
   description:
-    "免費香港紫微斗數天地人盤排盤 — 無限次、真太陽時校正、中洲派十二宮小徒弟贈言。時辰唔準可參考定盤或預約 Sunny 師傅全批。",
+    "免費紫微排盤：香港紫微斗數天地人盤、無限次、真太陽時校正、中洲派十二宮。時辰唔準可參考定盤，或預約 Sunny 師傅全批。",
   path: "/chart",
   image: siteImages.services.chart,
   keywords: [
-    "紫微斗數天地人盤排盤",
     "紫微排盤",
+    "紫微斗數排盤免費",
+    "紫微斗數排盤香港",
     "天地人盤",
-    "免費算命",
     "真太陽時",
     "十二宮",
   ],
+  languages: {
+    "zh-HK": "/chart",
+    en: "/en/chart",
+    "x-default": "/chart",
+  },
 });
 
-export default async function ChartPage({
+function ChartLanding() {
+  return (
+    <>
+      <PageBanner
+        src={siteImages.services.chart}
+        title="紫微即時排盤及分析"
+        subtitle="輸入出生資料，即時起盤"
+        overlay="subtle"
+      />
+      <div className="py-10 px-4">
+        <ChartBirthForm input={defaultBirthInput} />
+      </div>
+    </>
+  );
+}
+
+export default function ChartPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  return (
+    <>
+      {/* 動態頁的 metadata 會串流到 body；搜尋引擎先讀到的是 head。 */}
+      <title>紫微排盤免費 — 香港紫微斗數天地人盤 | 馮命居</title>
+      <meta
+        name="description"
+        content="免費紫微排盤：香港紫微斗數天地人盤、無限次、真太陽時校正、中洲派十二宮。時辰唔準可參考定盤，或預約 Sunny 師傅全批。"
+      />
+      <Suspense fallback={<ChartLanding />}>
+        <ChartPageContent searchParams={searchParams} />
+      </Suspense>
+      <div className="px-4 pb-12">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ_BY_PAGE.chart)) }}
+        />
+        <FaqSection items={FAQ_BY_PAGE.chart} />
+      </div>
+    </>
+  );
+}
+
+async function ChartPageContent({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -123,13 +172,6 @@ export default async function ChartPage({
             />
           </div>
         )}
-      </div>
-      <div className="px-4 pb-12">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ_BY_PAGE.chart)) }}
-        />
-        <FaqSection items={FAQ_BY_PAGE.chart} />
       </div>
     </>
   );
