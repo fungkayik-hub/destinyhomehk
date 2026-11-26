@@ -27,8 +27,8 @@ export default function ArticleCard({ article, categorySlug }: Props) {
             src={article.image}
             alt={article.title}
             fill
+            sizes="128px"
             className="object-cover"
-            unoptimized
           />
         </div>
       )}

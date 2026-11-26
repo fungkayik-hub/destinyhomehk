@@ -7,7 +7,7 @@ export const siteConfig = {
   announcement:
     "可能係最體貼嘅紫微斗數師傅 🤍🤍🤍 已達過千客人真實好評‼️ IG 同 Google 都有評價，不斷更新",
   announcementShort: "過千真實好評 ⭐ 4.9 · IG + Google · ViuTV",
-  logo: "/images/site/logo.png",
+  logo: "/images/site/logo.jpg",
   heroImage:
     "/images/site/10.18CharlotteSunny6242QP.jpg",
   instagram: "https://www.instagram.com/destiny_home_/",

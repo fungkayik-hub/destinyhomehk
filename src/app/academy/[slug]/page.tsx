@@ -28,6 +28,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const meta = getCategoryMeta(slug);
   if (!meta) return { title: "學堂" };
+  if (slug === "name-numerology") {
+    return buildPageMetadata({
+      title: "姓名學總格筆劃吉凶 — 五格對照",
+      description:
+        "姓名學總格筆劃吉凶對照：天格、人格、地格、外格、總格。台灣姓名學五格剖象，Sunny 師傅提供香港改名諮詢（HK$3,800）。",
+      path: `/academy/${slug}`,
+      keywords: ["姓名學總格", "姓名筆劃吉凶", "筆畫吉凶", "五格剖象", "總格"],
+    });
+  }
   return buildPageMetadata({
     title: meta.title,
     description: meta.description,

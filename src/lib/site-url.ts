@@ -7,3 +7,8 @@ export function getSiteUrl(): string {
   }
   return "https://www.destinyhomehk.com";
 }
+
+/** 首頁正規網址。Google 把根網址記成帶結尾斜線；Next metadata 會把 `/` 削成無斜線。 */
+export function getHomepageUrl(): string {
+  return `${getSiteUrl()}/`;
+}

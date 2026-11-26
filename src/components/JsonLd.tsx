@@ -1,5 +1,5 @@
 import { siteConfig } from "@/lib/site-config";
-import { getSiteUrl } from "@/lib/site-url";
+import { getHomepageUrl, getSiteUrl } from "@/lib/site-url";
 
 function sameAsLinks(): string[] {
   return [
@@ -20,10 +20,12 @@ export function organizationJsonLd(site: string) {
     "@type": "Organization",
     "@id": `${site}/#organization`,
     name: siteConfig.name,
-    url: site,
+    url: getHomepageUrl(),
     logo: {
       "@type": "ImageObject",
       url: absoluteUrl(site, siteConfig.logo),
+      width: 1536,
+      height: 1024,
     },
   };
 }
@@ -45,7 +47,7 @@ export default function JsonLd() {
         name: siteConfig.name,
         alternateName: [`${siteConfig.nameEn} 紫微斗數`, siteConfig.nameEn],
         description: siteConfig.description,
-        url: site,
+        url: getHomepageUrl(),
         image: [absoluteUrl(site, siteConfig.heroImage), absoluteUrl(site, siteConfig.logo)],
         logo: absoluteUrl(site, siteConfig.logo),
         telephone: siteConfig.phone.replace(/\s/g, ""),
@@ -88,7 +90,7 @@ export default function JsonLd() {
         "@type": "WebSite",
         "@id": websiteId,
         name: `${siteConfig.name} | Sunny 師傅`,
-        url: site,
+        url: getHomepageUrl(),
         inLanguage: "zh-HK",
         publisher: { "@id": organization["@id"] },
       },
@@ -126,7 +128,7 @@ export function articleJsonLd(options: {
     publisher: {
       "@type": "Organization",
       name: siteConfig.name,
-      url: site,
+      url: getHomepageUrl(),
       logo: {
         "@type": "ImageObject",
         url: absoluteUrl(site, siteConfig.logo),

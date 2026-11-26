@@ -4,7 +4,6 @@ import { PageBanner } from "@/components/SiteImage";
 import {
   pricingPlans,
   siteConfig,
-  whatsappDatePickerUrl,
   whatsappUrl,
 } from "@/lib/site-config";
 import FaqSection from "@/components/FaqSection";
@@ -15,6 +14,7 @@ import TrackedWhatsAppLink from "@/components/TrackedWhatsAppLink";
 import { faqJsonLd } from "@/components/JsonLd";
 import { servicesJsonLd } from "@/lib/schema-extra";
 import { FAQ_BY_PAGE } from "@/lib/faq-content";
+import { BookingDateNotice, BookingFooterWhatsApp } from "@/components/booking/BookingDateQueryBits";
 import { buildPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
@@ -23,16 +23,14 @@ export const metadata: Metadata = buildPageMetadata({
     "Destiny Home 全批 HK$2,000、擇日 HK$800、流年問事 HK$1,000、風水陽宅 HK$11/尺、生孩改名 HK$3,800 — 灣仔 Sunny 師傅親批，WhatsApp 預約。",
   path: "/booking",
   keywords: ["紫微斗數收費", "香港算命預約", "結婚擇日價錢"],
+  languages: {
+    "zh-HK": "/booking",
+    en: "/en/booking",
+    "x-default": "/booking",
+  },
 });
 
-interface Props {
-  searchParams: Promise<{ service?: string }>;
-}
-
-export default async function BookingPage({ searchParams }: Props) {
-  const { service } = await searchParams;
-  const isDateService = service === "date";
-
+export default function BookingPage() {
   return (
     <>
       <script
@@ -43,30 +41,23 @@ export default async function BookingPage({ searchParams }: Props) {
       />
       <PageBanner
         src="/images/home-hero-stars.png"
-        title={isDateService ? "結婚／入伙擇日預約" : "服務及收費"}
+        title="服務及收費"
         subtitle={`命居 · ${siteConfig.school} · Sunny 師傅親批`}
         overlay="subtle"
       />
       <div className="py-12 px-4">
-        {isDateService && (
-          <div className="max-w-3xl mx-auto mb-8 card bg-destiny-gold/10 border-destiny-gold/30">
-            <p className="text-sm text-destiny-purple/80 leading-relaxed">
-              結婚、入伙等重要日子請 WhatsApp 預約，Sunny 師傅會按雙方生辰親自擇日及吉時（HK$800）。
-            </p>
-          </div>
-        )}
+        <BookingDateNotice />
 
         <div className="max-w-3xl mx-auto space-y-4 mb-10">
           {pricingPlans.map((plan) => {
             const waHref = whatsappUrl(plan.whatsappMessage);
-            const isFeatured = plan.id === "date-picker" && isDateService;
 
             return (
               <article
                 key={plan.id}
                 id={plan.id}
                 className={`card p-5 md:p-6 ${
-                  ("highlight" in plan && plan.highlight) || isFeatured
+                  "highlight" in plan && plan.highlight
                     ? "border-2 border-destiny-gold/50 bg-gradient-to-r from-destiny-gold/5 to-transparent"
                     : ""
                 }`}
@@ -158,15 +149,7 @@ export default async function BookingPage({ searchParams }: Props) {
             命理、風水擇日、改運服務屬個人化諮詢，一經提供即屬完成服務。
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <TrackedWhatsAppLink
-              href={isDateService ? whatsappDatePickerUrl() : whatsappUrl()}
-              target="_blank"
-              rel="noopener noreferrer"
-              location={isDateService ? "booking_footer_date" : "booking_footer"}
-              className="btn-primary"
-            >
-              WhatsApp 預約
-            </TrackedWhatsAppLink>
+            <BookingFooterWhatsApp />
             <Link href="/chart" className="btn-secondary">
               先試即時排盤
             </Link>

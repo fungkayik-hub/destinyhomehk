@@ -13,7 +13,7 @@ export function imageUrl(url: string, _width?: number): string {
 const S = "/images/site";
 
 export const siteImages = {
-  logo: `${S}/logo.png`,
+  logo: `${S}/logo.jpg`,
   heroPortrait: `${S}/WhatsApp_Image_2022-07-22_at_2.39.31_PM.webp`,
   /** 師傅專業照 */
   sunnyStudio: `${S}/10.18CharlotteSunny6242QP.jpg`,
@@ -22,7 +22,7 @@ export const siteImages = {
   /** 首頁橫幅 */
   bannerPrimary: `${S}/236.jpg`,
   bannerSecondary: `${S}/6662222.webp`,
-  decorativePanel: `${S}/6bc8d850816d1b76a987a8e771a21a89.png`,
+  decorativePanel: `${S}/6bc8d850816d1b76a987a8e771a21a89.webp`,
   zodiac2026: `${S}/6.jpg`,
   /** 三色人格 — 來自 Sunny 講故事 */
   tricolor: [
@@ -31,16 +31,16 @@ export const siteImages = {
     `${S}/WhatsApp_Image_2022-06-29_at_1.06.38_AM.jpg`,
   ],
   services: {
-    fullReading: "/images/full-reading-cover.png",
+    fullReading: "/images/full-reading-cover.jpg",
     /** 紫微排盤封面 — 本地星盤圖 */
     chart: "/images/chart-cover.png",
-    compatibility: "/images/compatibility-cover.png",
-    daily: "/images/daily-cover.png",
-    annualReading: "/images/annual-reading-cover.png",
+    compatibility: "/images/compatibility-cover.jpg",
+    daily: "/images/daily-cover.jpg",
+    annualReading: "/images/annual-reading-cover.jpg",
     chartLegacy: `${S}/sunny_star1.jpg`,
-    datePicker: "/images/date-picker-cover.png",
-    nameNumerology: "/images/name-numerology-cover.png",
-    fengShui: "/images/feng-shui-cover.png",
+    datePicker: "/images/date-picker-cover.jpg",
+    nameNumerology: "/images/name-numerology-cover.jpg",
+    fengShui: "/images/feng-shui-cover.jpg",
   },
   gallery: [
     `${S}/10.18CharlotteSunny6242QP.jpg`,

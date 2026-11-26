@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getHomepageUrl, getSiteUrl } from "@/lib/site-url";
 import SiteImage from "@/components/SiteImage";
 import PersonalityChart from "@/components/PersonalityChart";
 import MediaHighlights from "@/components/MediaHighlights";
@@ -24,8 +25,16 @@ import { siteImages } from "@/lib/site-images";
 export default function HomePage() {
   const latestArticles = getLatestVisibleArticles(3);
 
+  const homepageUrl = getHomepageUrl();
+
   return (
     <>
+      {/* metadata API 會把根路徑 canonical 削成無斜線；Google 索引的是帶斜線版本。 */}
+      <link rel="canonical" href={homepageUrl} />
+      <link rel="alternate" hrefLang="zh-HK" href={homepageUrl} />
+      <link rel="alternate" hrefLang="en" href={`${getSiteUrl()}/en`} />
+      <link rel="alternate" hrefLang="x-default" href={homepageUrl} />
+      <meta property="og:url" content={homepageUrl} />
       <section className="relative min-h-[420px] md:min-h-[520px] overflow-hidden flex items-center">
         <SiteImage
           src={siteImages.homeHero}

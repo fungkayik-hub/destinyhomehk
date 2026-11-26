@@ -25,7 +25,6 @@ export default function HomeLiunian2027Promo() {
                     fill
                     className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
                     sizes="(max-width: 1024px) 280px, 320px"
-                    priority
                   />
                   <span className="absolute top-3 left-3 bg-destiny-purple text-white text-xs font-bold px-3 py-1 rounded-full shadow">
                     免費閱讀

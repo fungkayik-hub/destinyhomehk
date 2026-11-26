@@ -93,6 +93,8 @@ export function shopifyRedirects(): Redirect[] {
     { source: "/checkouts/:path*", destination: "/booking", permanent: true },
     { source: "/account", destination: "/booking", permanent: true },
     { source: "/account/:path*", destination: "/booking", permanent: true },
+    { source: "/blogs", destination: "/academy", permanent: true },
+    { source: "/blogs/:path*", destination: "/academy", permanent: true },
   ];
 
   const exact = Array.from(map.entries()).map(([source, destination]) => ({

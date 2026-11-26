@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { prepareArticleHtml } from "@/lib/articles";
 import { whatsappUrl } from "@/lib/site-config";
 
@@ -18,18 +19,16 @@ export default function ArticleContent({ html }: Props) {
 
 export function ArticleHero({ image, title }: { image: string | null; title: string }) {
   if (!image) return null;
-  const src = image.replace(/_\d+x\d+\./, ".");
+  const src = image.replace(/_\d+x\d+\./, ".").split("?")[0];
   return (
     <div className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-2xl overflow-hidden mb-8 bg-destiny-cream shadow-md">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src={src}
         alt={title}
-        width={1200}
-        height={675}
-        className="w-full h-full object-cover"
-        loading="eager"
-        decoding="async"
+        fill
+        priority
+        sizes="(max-width: 768px) 100vw, 768px"
+        className="object-cover"
       />
     </div>
   );

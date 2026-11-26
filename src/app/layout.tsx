@@ -6,7 +6,6 @@ import WhatsAppButton from "@/components/WhatsAppButton";
 import SiteAnalytics from "@/components/SiteAnalytics";
 import JsonLd from "@/components/JsonLd";
 import { GA_ID } from "@/lib/ga";
-import { lxgwWenkaiTC, notoSansTC, notoSerifTC } from "@/lib/fonts";
 import { siteConfig } from "@/lib/site-config";
 import { LOCAL_SEO_KEYWORDS } from "@/lib/seo";
 import { getSiteUrl } from "@/lib/site-url";
@@ -40,9 +39,6 @@ export const metadata: Metadata = {
     "灣仔",
     ...LOCAL_SEO_KEYWORDS,
   ],
-  alternates: {
-    canonical: "/",
-  },
   ...(googleVerification
     ? { verification: { google: googleVerification } }
     : {}),
@@ -50,7 +46,6 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     locale: "zh_HK",
     type: "website",
-    url: getSiteUrl(),
     title: "馮命居 | 香港紫微斗數 | Sunny 師傅",
     description: siteConfig.description,
     images: [{ url: siteConfig.heroImage, width: 1200, height: 630, alt: "Master Sunny" }],
@@ -74,10 +69,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="zh-HK"
-      className={`${lxgwWenkaiTC.variable} ${notoSansTC.variable} ${notoSerifTC.variable}`}
-    >
+    <html lang="zh-HK">
       <head>
         {GA_ID ? (
           <>
@@ -96,7 +88,7 @@ export default function RootLayout({
           </>
         ) : null}
       </head>
-      <body className={`${lxgwWenkaiTC.className} antialiased bg-destiny-cream text-destiny-ink min-h-screen flex flex-col`}>
+      <body className="font-serif antialiased bg-destiny-cream text-destiny-ink min-h-screen flex flex-col">
         <JsonLd />
         <AnnouncementBar />
         <Header />

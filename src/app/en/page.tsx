@@ -11,7 +11,6 @@ export const metadata: Metadata = {
     "Free unlimited Purple Star astrology charts with true solar time correction. Master Sunny offers in-person readings in Wanchai — 1,000+ verified reviews.",
   alternates: {
     canonical: `${getSiteUrl()}/en`,
-    languages: { "zh-HK": "/", en: "/en" },
   },
   openGraph: {
     locale: "en_HK",
@@ -19,12 +18,31 @@ export const metadata: Metadata = {
     description:
       "Free chart tool · True solar time · Master Sunny in-person readings at Wanchai studio.",
     url: `${getSiteUrl()}/en`,
+    images: [
+      {
+        url: siteConfig.heroImage,
+        width: 1200,
+        height: 630,
+        alt: "Destiny Home Master Sunny",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Destiny Home | Zi Wei Dou Shu Hong Kong",
+    description:
+      "Free chart tool · True solar time · Master Sunny in-person readings at Wanchai studio.",
+    images: [siteConfig.heroImage],
   },
 };
 
 export default function EnHomePage() {
+  const homepageUrl = `${getSiteUrl()}/`;
   return (
     <>
+      <link rel="alternate" hrefLang="zh-HK" href={homepageUrl} />
+      <link rel="alternate" hrefLang="en" href={`${getSiteUrl()}/en`} />
+      <link rel="alternate" hrefLang="x-default" href={homepageUrl} />
       <section className="relative min-h-[420px] md:min-h-[480px] overflow-hidden flex items-center">
         <SiteImage
           src={siteImages.homeHero}

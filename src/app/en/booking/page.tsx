@@ -37,7 +37,20 @@ export const metadata: Metadata = {
     "Full reading HK$2,000, auspicious dates HK$800, annual inquiry HK$1,000. Book Master Sunny in Wanchai via WhatsApp.",
   alternates: {
     canonical: `${getSiteUrl()}/en/booking`,
-    languages: { "zh-HK": "/booking", en: "/en/booking" },
+    languages: { "zh-HK": "/booking", en: "/en/booking", "x-default": "/booking" },
+  },
+  openGraph: {
+    title: "Services & Booking | Master Sunny",
+    description:
+      "Full reading HK$2,000, auspicious dates HK$800, annual inquiry HK$1,000. Book Master Sunny in Wanchai via WhatsApp.",
+    url: `${getSiteUrl()}/en/booking`,
+    locale: "en_HK",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Services & Booking | Master Sunny",
+    description:
+      "Full reading HK$2,000, auspicious dates HK$800, annual inquiry HK$1,000. Book Master Sunny in Wanchai via WhatsApp.",
   },
 };
 

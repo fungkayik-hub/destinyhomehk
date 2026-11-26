@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { PageBanner } from "@/components/SiteImage";
 import ChartBirthForm from "@/components/chart/ChartBirthForm";
 import ChartDisplay from "@/components/chart/ChartDisplay";
@@ -6,7 +7,7 @@ import ChartEditBirthLink from "@/components/chart/ChartEditBirthLink";
 import { computeChartInsights } from "@/lib/ai/chart-insights";
 import { getCachedChartResults } from "@/lib/chart-analysis-cache";
 import { buildBirthKey } from "@/lib/chart-key";
-import { birthInputFromSearchParams } from "@/lib/chart-parse-params";
+import { birthInputFromSearchParams, defaultBirthInput } from "@/lib/chart-parse-params";
 import { parseChartPlate, parseFocusPalace } from "@/lib/chart-layout";
 import { logToolUsage } from "@/lib/usage/log";
 import { generateThreePlates } from "@/lib/ziwei/iztro-adapter";
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
     "Free unlimited Purple Star (Zi Wei Dou Shu) chart with true solar time correction. Hong Kong Zhong Zhou school method — no sign-up.",
   alternates: {
     canonical: `${getSiteUrl()}/en/chart`,
-    languages: { "zh-HK": "/chart", en: "/en/chart" },
+    languages: { "zh-HK": "/chart", en: "/en/chart", "x-default": "/chart" },
   },
   keywords: [
     "zi wei dou shu",
@@ -30,9 +31,57 @@ export const metadata: Metadata = {
     "free birth chart",
     "true solar time",
   ],
+  openGraph: {
+    title: "Free Zi Wei Chart | True Solar Time",
+    description:
+      "Free unlimited Purple Star (Zi Wei Dou Shu) chart with true solar time correction. Hong Kong Zhong Zhou school method — no sign-up.",
+    url: `${getSiteUrl()}/en/chart`,
+    locale: "en_HK",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Zi Wei Chart | True Solar Time",
+    description:
+      "Free unlimited Purple Star (Zi Wei Dou Shu) chart with true solar time correction. Hong Kong Zhong Zhou school method — no sign-up.",
+  },
 };
 
-export default async function EnChartPage({
+function EnChartLanding() {
+  return (
+    <>
+      <PageBanner
+        src={siteImages.services.chart}
+        title="Free Zi Wei Chart"
+        subtitle="Unlimited · True solar time · No sign-up"
+        overlay="subtle"
+      />
+      <div className="py-10 px-4">
+        <ChartBirthForm input={defaultBirthInput} locale="en" action="/en/chart" />
+      </div>
+    </>
+  );
+}
+
+export default function EnChartPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  return (
+    <>
+      <title>Free Zi Wei Chart | True Solar Time | 馮命居</title>
+      <meta
+        name="description"
+        content="Free unlimited Purple Star (Zi Wei Dou Shu) chart with true solar time correction. Hong Kong Zhong Zhou school method — no sign-up."
+      />
+      <Suspense fallback={<EnChartLanding />}>
+        <EnChartPageContent searchParams={searchParams} />
+      </Suspense>
+    </>
+  );
+}
+
+async function EnChartPageContent({
   searchParams,
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
